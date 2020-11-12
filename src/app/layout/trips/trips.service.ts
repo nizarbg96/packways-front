@@ -1,12 +1,13 @@
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
 import { MatSnackBar } from '@angular/material';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Trip } from './Trip';
+import {environment} from '../../../environments/environment';
 Trip;
 
 
@@ -14,14 +15,23 @@ Trip;
 export class TripService {
   constructor(public http: Http, private httpc: HttpClient , private snackBar: MatSnackBar, private spinner: NgxSpinnerService) { }
   // url = 'http://147.135.136.78:8052/trip/alls';
-  url = 'http://147.135.136.78:8052/trip';
-  urlAdd = 'http://147.135.136.78:8052/trip/add';
+  url = environment.serverUrl + '/trip';
+  urlAdd = environment.serverUrl + '/trip/add';
   // urltrip = 'http://147.135.136.78:8052/trip/bydate20?date=01/05/2019 2:47:21';
-  urlUp = 'http://147.135.136.78:8052/trip/update/';
+  urlUp = environment.serverUrl + '/trip/update/';
 
-  urlD = 'http://147.135.136.78:8052/driver';
-  urlU = 'http://147.135.136.78:8052/user';
-  urlA = 'http://147.135.136.78:8052/admin';
+  urlD = environment.serverUrl + '/driver';
+  urlU = environment.serverUrl + '/user';
+  urlA = environment.serverUrl + '/admin';
+  jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+  headerOptions = new  Headers({
+    'Content-Type':  'application/json',
+    'Access-Control-Allow-Credentials' : 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+    'Authorization': `Bearer ${this.jwt}`
+  });
 
 
   /* getTrips() {
@@ -30,80 +40,80 @@ export class TripService {
 
   getFiltredTrips(id, date, size, key, btn): Observable<any> {
     // http://147.135.136.78:8052/trip/bykey?id=admin&date=&size=&key=Liv&BTN=
-    return this.http.get(`${this.url}/bykey?id=` + id + `&date=` + date + `&size=` + size + `&key=` + key + `&BTN=` + btn);
+    return this.http.get(`${this.url}/bykey?id=` + id + `&date=` + date + `&size=` + size + `&key=` + key + `&BTN=` + btn,{headers: this.headerOptions});
   }
 
   getFiltredTrips1(id, size, d1, d2, key, key1, key2, key3, key4, key5, btn, key6): Observable<any> {
     // http://147.135.136.78:8052/trip/bykey?id=admin&date=&size=&key=Liv&BTN=
-    return this.http.get(`${this.url}/byCriterea?id=` + id + `&size=` + size + `&DD=` + d1 + `&DF=` + d2 + `&key=` + key + `&key1=` + key1 + `&key2=` + key2 + `&key3=` + key3 + `&key4=` + key4  + `&key5=` + key5 + `&BTN=` + btn  + `&key6=` + key6);
+    return this.http.get(`${this.url}/byCriterea?id=` +
+      id + `&size=` + size + `&DD=` + d1 + `&DF=` + d2 +
+      `&key=` + key + `&key1=` + key1 + `&key2=` +
+      key2 + `&key3=` + key3 + `&key4=` + key4  + `&key5=` + key5 +
+      `&BTN=` + btn  + `&key6=` + key6, {headers: this.headerOptions});
   }
 
   getTrips(id, size): Observable<any> {
-    return this.http.get(`${this.url}/sansdate2?id=` + id + `&size=` + size);
+    return this.http.get(`${this.url}/sansdate2?id=` + id + `&size=` + size,{headers: this.headerOptions});
   }
 
   getBS(id, data): Observable<any> {
-    return this.http.post(`${this.url}/exportpdf/` + id, data);
+    return this.http.post(`${this.url}/exportpdf/` + id, data,{headers: this.headerOptions});
   }
 
   getBRetour(id, data): Observable<any> {
-    return this.http.post(`${this.url}/exportpdfBretour/` + id, data);
+    return this.http.post(`${this.url}/exportpdfBretour/` + id, data,{headers: this.headerOptions});
   }
 
   getRC(data): Observable<any> {
-    return this.http.post(`${this.url}/exportpdfreciept/`, data);
+    return this.http.post(`${this.url}/exportpdfreciept/`, data,{headers: this.headerOptions});
   }
   getRapport(data): Observable<any> {
-    return this.http.post(`${this.url}/exportpdfrapport/`, data);
+    return this.http.post(`${this.url}/exportpdfrapport/`, data,{headers: this.headerOptions});
   }
 
   getBL(data): Observable<any> {
-    return this.http.post(`${this.url}/exportpdfBL/`, data);
+    return this.http.post(`${this.url}/exportpdfBL/`, data,{headers: this.headerOptions});
   }
   getNoDeletedTripsFromServer(): Observable<any> {
-    return this.http.get(`${this.url}/notdeleted`);
+    return this.http.get(`${this.url}/notdeleted`,{headers: this.headerOptions});
   }
 
   getTripsFromServerOnNext(id, nextDate): Observable<any> {
-    return this.http.get(`${this.url}/bydate20?id=` + id + `&date=` + nextDate);
+    return this.http.get(`${this.url}/bydate20?id=` + id + `&date=` + nextDate,{headers: this.headerOptions});
   }
 
   getTripsFromServerOnPrevious(id, previousDate): Observable<any> {
-    return this.http.get(`${this.url}/bydate20prec?id=` + id + `&date=` + previousDate);
+    return this.http.get(`${this.url}/bydate20prec?id=` + id + `&date=` + previousDate,{headers: this.headerOptions});
   }
 
   // Changement de web service ===> Ajout de flag deletedByUser
   getTripsFromServerOnInit(id): Observable<any> {
-    return this.http.get(`${this.url}/sansdate?id=` + id);
+    return this.http.get(`${this.url}/sansdate?id=` + id, {headers: this.headerOptions});
     // return this.http.get(`${this.urls}/all`);
   }
 
   AskOfBonLiv(id, auth): Observable<any> {
-    return this.http.get(`${this.url}/generatepdf?id=` + id + `&auth=` + auth);
+    return this.http.get(`${this.url}/generatepdf?id=` + id + `&auth=` + auth, {headers: this.headerOptions});
   }
 
   getTripscanList(id) {
-    return this.http.get(`${this.url}/one/` + id );
+    return this.http.get(`${this.url}/one/` + id,{headers: this.headerOptions} );
   }
 
   updateTrip(tripdata, id) {
-    const headers = new Headers();
-    headers.append('Accept', 'application/json');
-    headers.append('Content-Type', 'application/json' );
-    const options = new RequestOptions({ headers: headers });
-    return this.http.put(this.url + '/update/' + id, tripdata, options);
+    return this.http.put(this.url + '/update/' + id, tripdata, {headers: this.headerOptions});
   }
 
   getDrivers() {
-    return this.http.get(`${this.urlD}/alls`);
+    return this.http.get(`${this.urlD}/alls`, {headers: this.headerOptions});
   }
 
   getUsers() {
-    return this.http.get(`${this.urlU}/actives`);
+    return this.http.get(`${this.urlU}/actives`, {headers: this.headerOptions});
   }
 
   getAdmins() {
-    return this.http.get(`${this.urlA}/all`);
+    return this.http.get(`${this.urlA}/all`,{headers: this.headerOptions});
   }
 
   deleteTrip(idtrip, status) {
@@ -111,10 +121,6 @@ export class TripService {
     console.log('suscéés', auth);
 
     const date = new Date();
-    const headers = new Headers();
-    headers.append('Accept', 'application/json');
-    headers.append('Content-Type', 'application/json' );
-    const options = new RequestOptions({ headers: headers });
     let tripdata: any;
     if (auth === 'admin') {
       tripdata = {
@@ -126,7 +132,7 @@ export class TripService {
           datecanceledUser: date
         };
     }
-    this.http.put(this.urlUp + idtrip, tripdata, options).subscribe(data => {
+    this.http.put(this.urlUp + idtrip, tripdata, {headers: this.headerOptions}).subscribe(data => {
     }, error => {
     });
 
@@ -144,10 +150,7 @@ addTrip (nameUser, emailUser, rateUser, idUser, nbrateUser, nbrdeliveryUser, mob
     codeTrip = codeTrip + 10000;
   }
    console.log('finaldest----', cityAdrD);
-    const headers = new Headers();
-    headers.append('Accept', 'application/json');
-    headers.append('Content-Type', 'application/json' );
-    const options = new RequestOptions({ headers: headers });
+
 
     const deliverydata = {
         codeTrip : codeTrip,
@@ -210,7 +213,7 @@ addTrip (nameUser, emailUser, rateUser, idUser, nbrateUser, nbrdeliveryUser, mob
       };
 
       this.spinner.show();
-      this.http.post(this.urlAdd, deliverydata , options).subscribe(data => {
+      this.http.post(this.urlAdd, deliverydata , {headers: this.headerOptions}).subscribe(data => {
        console.log('Ok', data['_body']);
        this.spinner.hide();
         window.location.reload();
@@ -238,10 +241,7 @@ addTripFromExcel (nameUser, emailUser, rateUser, idUser, nbrateUser, nbrdelivery
    codeTrip = codeTrip + 10000;
  }
  // console.log(codeTrip)
-   const headers = new Headers();
-   headers.append('Accept', 'application/json');
-   headers.append('Content-Type', 'application/json' );
-   const options = new RequestOptions({ headers: headers });
+
 
    const deliverydata = {
        codeTrip : codeTrip,
@@ -300,7 +300,7 @@ addTripFromExcel (nameUser, emailUser, rateUser, idUser, nbrateUser, nbrdelivery
      };
 
    this.spinner.show();
-    this.http.post(this.urlAdd, deliverydata , options).subscribe(data => {
+    this.http.post(this.urlAdd, deliverydata , {headers: this.headerOptions}).subscribe(data => {
       console.log('Ok', data['_body']);
       this.spinner.hide();
      // window.location.reload();

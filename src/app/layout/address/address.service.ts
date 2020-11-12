@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 // import { HttpClient } from '@angular/common/http';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import {environment} from '../../../environments/environment';
 
 
 @Injectable()
@@ -13,12 +14,21 @@ export class AddressService {
   // result: any;
   currentUser: any;
   constructor(public http: Http) { }
-  url = 'http://147.135.136.78:8052/adress';
+  url = environment.serverUrl + '/adress';
+  jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+  headerOptions = new  Headers({
+    'Content-Type':  'application/json',
+    'Access-Control-Allow-Credentials' : 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+    'Authorization': `Bearer ${this.jwt}`
+  });
 
 
 
   getAdressByUser(id): Observable<any> {
-    return this.http.get(`${this.url}/byuser?id=` + id);
+    return this.http.get(`${this.url}/byuser?id=` + id, {headers: this.headerOptions});
   }
 
   addadress (latpos, lngpos, createdby, updateby, labelAdr, contactAdr, mobileAdr, typeAdr, sharedtoAdr, userAdr, cityAdr, imgAdr, adresse, delegation, gouvernorat, zipCode) {
@@ -58,7 +68,7 @@ export class AddressService {
 
       console.log('dataAdresse: ', adressdata);
 
-		 this.http.post(this.url + '/add', adressdata , options).subscribe(data => {
+		 this.http.post(this.url + '/add', adressdata , {headers: this.headerOptions}).subscribe(data => {
       console.log(data['_body']);
       window.location.reload();
       console.log('----------ok');
@@ -102,7 +112,7 @@ export class AddressService {
         const adrdata = {
             deletedbyUser : true
         };
-        this.http.put(this.url + '/update/' + idAdr, adrdata, options).subscribe(data => {
+        this.http.put(this.url + '/update/' + idAdr, adrdata, {headers: this.headerOptions}).subscribe(data => {
             console.log('Adresse deleted');
             }, error => {
         });
@@ -110,7 +120,7 @@ export class AddressService {
     }
 
     search_word(term) {
-        return this.http.get(this.url + term).map(res => {
+        return this.http.get(this.url + term, {headers: this.headerOptions}).map(res => {
         	return res.json().map(item => {
         		return item.word;
         	});
@@ -140,7 +150,7 @@ export class AddressService {
           sharedtoAdr: [sharedto]
             };
             console.log('dataadress : ', sharedto);
-             this.http.put(this.url + '/update/' + id, adressdata , options).subscribe(data => {
+             this.http.put(this.url + '/update/' + id, adressdata , {headers: this.headerOptions}).subscribe(data => {
           console.log(data['_body']);
           window.location.reload();
 

@@ -75,12 +75,35 @@ export class LoginComponent implements OnInit {
 
     authloginUser() {
             this.loginservice.loginUser(this.form.value.email, this.form.value.password).map(res => res.json()).subscribe((res) => {
-                console.log('testttttt', res);
+              console.log('testttttt', res);
+              console.log(this.form.value.email, this.form.value.password);
+              if (res.data === 'Account is not Active') {
+                console.log('Account is not Active');
+                this.snackBar.open('Votre compte n\'est pas activé.', 'Fermer', {
+                  duration: 5000,
+                });
+              } else {
+                  console.log('testttttt', res);
+                  this.loginservice.userData = res;
+                  console.log('API Response : ', res);
+                  console.log('userData: ', this.loginservice.userData.data[0].nameUser);
+                  localStorage.setItem('currentUser', JSON.stringify(res));
+                  console.log('jsonn', JSON.stringify(res));
+                  localStorage.setItem('loginLS', this.form.value.email);
+                  localStorage.setItem('pwdLS', this.form.value.password);
+                  localStorage.setItem('isLoggedin', 'true');
+                  localStorage.setItem('auth', 'user');
+                  this.router.navigate(['dashboard']);
+
+              }
+
+
+               /* console.log('testttttt', res);
                 console.log(this.form.value.email, this.form.value.password);
 
                 if (res.success) {
-                    console.log('testttttt', res);
-                   this.loginservice.loginUser(this.form.value.email, this.form.value.password).toPromise().then((response) => {
+                     console.log('testttttt', res);
+                     this.loginservice.loginUser(this.form.value.email, this.form.value.password).toPromise().then((response) => {
                      this.loginservice.userData = response.json();
                      console.log('API Response : ', response.json());
                      console.log('userData: ', this.loginservice.userData.data[0].nameUser);
@@ -105,13 +128,20 @@ export class LoginComponent implements OnInit {
                     this.snackBar.open('Le nom d\'utilisateur ou mot de passe est incorrecte.', 'Fermer', {
                         duration: 5000,
                     });
-                }
+                }*/
         }, (err) => {
-            console.log('Problème de connexion internet');
-            // alert('Problème de connexion internet!');
-            this.snackBar.open('Problème de connexion internet!', 'Fermer', {
-                duration: 5000,
-            });
+              const errorStatus = err.status;
+              if (errorStatus === 403) {
+                console.log('Le login ou le mot de passe est incorect');
+                this.snackBar.open('Le nom d\'utilisateur ou mot de passe est incorrecte.', 'Fermer', {
+                  duration: 5000,
+                });
+              } else {
+                console.log('internel server problem');
+                this.snackBar.open('Problème de connexion au serveur!', 'Fermer', {
+                  duration: 5000,
+                });
+              }
         });
     }
 
@@ -121,39 +151,30 @@ export class LoginComponent implements OnInit {
             console.log('testttttt', res);
             console.log(this.form.value.email, this.form.value.password);
 
-            if (res.success) {
-                 console.log('testttttt', res);
-                 this.loginservice.loginAdmin(this.form.value.email, this.form.value.password).toPromise().then((response) => {
-                 this.loginservice.userData = response.json();
-                 console.log('API Response : ', response.json());
-                 console.log('userData: ', this.loginservice.userData.data[0].nameUser);
-                 localStorage.setItem('currentUser', JSON.stringify(response.json()));
-               });
-
-               localStorage.setItem('loginLS', this.form.value.email);
-               localStorage.setItem('pwdLS', this.form.value.password);
-               localStorage.setItem('isLoggedin', 'true');
-               localStorage.setItem('auth', 'admin');
-               this.router.navigate(['dashboard']);
-            } else if (res.data === 'Account is not Active') {
-                console.log('Account is not Active');
-                // alert("Votre compte n'est pas activé.");
-                this.snackBar.open('Votre compte n\'est pas activé.', 'Fermer', {
-                    duration: 5000,
-                });
-            } else {
-                console.log('Le login ou le mot de passe est incorect');
-                // alert("Le nom d'utilisateur ou mot de passe est incorrecte.");
-                this.snackBar.open('Le nom d\'utilisateur ou mot de passe est incorrecte.', 'Fermer', {
-                    duration: 5000,
-                });
-            }
+          console.log('testttttt', res);
+          this.loginservice.userData = res;
+          console.log('API Response : ', res);
+          console.log('userData: ', this.loginservice.userData.data[0].nameUser);
+          localStorage.setItem('currentUser', JSON.stringify(res));
+          console.log('jsonn', JSON.stringify(res));
+          localStorage.setItem('loginLS', this.form.value.email);
+          localStorage.setItem('pwdLS', this.form.value.password);
+          localStorage.setItem('isLoggedin', 'true');
+          localStorage.setItem('auth', 'admin');
+          this.router.navigate(['dashboard']);
     }, (err) => {
-        console.log('Problème de connexion internet');
-        // alert('Problème de connexion internet!');
-        this.snackBar.open('Problème de connexion internet!', 'Fermer', {
-            duration: 5000,
-        });
+          const errorStatus = err.status;
+          if (errorStatus === 403) {
+            console.log('Le login ou le mot de passe est incorect');
+            this.snackBar.open('Le nom d\'utilisateur ou mot de passe est incorrecte.', 'Fermer', {
+              duration: 5000,
+            });
+          } else {
+            console.log('internel server problem');
+            this.snackBar.open('Problème de connexion au serveur!', 'Fermer', {
+              duration: 5000,
+            });
+          }
     });
     }
 

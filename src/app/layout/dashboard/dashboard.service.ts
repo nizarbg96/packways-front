@@ -2,13 +2,24 @@ import { Injectable } from '@angular/core';
 // import { HttpClient } from '@angular/common/http';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {environment} from '../../../environments/environment';
 
 @Injectable()
 export class DashboardService {
   constructor(public http: Http, public httpc: HttpClient) { }
-  url = 'http://147.135.136.78:8052/trip';
-  urlD = 'http://147.135.136.78:8052/driver';
+
+  url = environment.serverUrl + '/trip';
+  urlD = environment.serverUrl + '/driver';
+  jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+  headerOptions = new HttpHeaders({
+    'Content-Type':  'application/json',
+    'Access-Control-Allow-Credentials' : 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+    'Authorization': `Bearer ${this.jwt}`
+  });
 
   getTripsEncours(id) {
     return this.httpc.get(`${this.url}/encours?id=` + id);
@@ -45,8 +56,9 @@ export class DashboardService {
     return this.httpc.get(`${this.url}/cherchelivreur?id=` + id);
   }
   getTripParClient() {
-    return this.http.get(`${this.url}/statusparclient`);
-  }
+    return this.httpc.get(`${this.url}/statusparclient`);
+      }
+
 
 
 }

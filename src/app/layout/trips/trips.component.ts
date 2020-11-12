@@ -34,6 +34,7 @@ import { globalJsVarUp } from './tunisia-adr.js';
 
 import { TripExcelService } from './excel-trip.service';
 import {NgxImageCompressService} from 'ngx-image-compress';
+import {environment} from '../../../environments/environment';
 
 declare var angular: any;
 declare var UIkit: any;
@@ -243,6 +244,16 @@ export class TripsComponent implements OnInit {
   adminFilter: any;
   adminFilterkey: any;
   idadmin: any;
+  jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+  headerOptions = new  Headers({
+    'Content-Type':  'application/json',
+    'Access-Control-Allow-Credentials' : 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+    'Authorization': `Bearer ${this.jwt}`
+  });
+
 
 
 
@@ -369,7 +380,7 @@ export class TripsComponent implements OnInit {
         const zip = $( '#zipCode' );
         const delegation2 = $( '#delegation2' );
         // TunisiaGovAndDelg.autocompleteFromJson(delegation2, tunData);
-        TunisiaGovAndDelg.findGovAndDelegByZipCode(key, gouvernorat, delegation, compoAdr, zip, this.tunisiaData);
+        // TunisiaGovAndDelg.findGovAndDelegByZipCode(key, gouvernorat, delegation, compoAdr, zip, this.tunisiaData);
         this.tunisiaData = globalJsVar;
         console.log('globalJsVarv', globalJsVar);
         /* $.getJSON('https://raw.githubusercontent.com/marwein/tunisia/master/tunisia.json', function (data) {
@@ -565,13 +576,15 @@ export class TripsComponent implements OnInit {
             const obj = Array.of(jo.data);
             this.jsonObj = obj[0];
             console.log('items==', this.items);
-            this.items.reverse();
+            // this.items.reverse();
            for (let index = 0; index < this.jsonObj.length; index++) {
-                if (this.checkNotExist(this.items, this.jsonObj[index].idTrip)) {
+                if (this.checkNotExist(this.items, this.jsonObj[index].idTrip) === -1) {
                   this.items.push(this.jsonObj[index]);
+                } else {
+                  this.items[this.checkNotExist(this.items, this.jsonObj[index].idTrip)] = this.jsonObj[index];
                 }
             }
-            this.items.reverse();
+            // this.items.reverse();
             this.itemsSearch = this.items;
             this.spinner.hide();
 
@@ -592,10 +605,10 @@ export class TripsComponent implements OnInit {
       for (let index = 0; index < List.length; index++) {
         // console.log('notexist--', List[index].idTrip, '---', id);
         if (List[index].idTrip === id) {
-          return false;
+          return index;
         }
       }
-      return true;
+      return -1;
     }
 
     scanList() {
@@ -626,11 +639,13 @@ export class TripsComponent implements OnInit {
     chercher() {
         // this.items = [];
             for (let index = 0; index < this.ListScan.length; index++) {
-                if (this.checkNotExist(this.items, this.ListScan[index].idTrip)) {
-                  this.items.push(this.ListScan[index]);
-                }
+              if (this.checkNotExist(this.items, this.ListScan[index].idTrip) === -1) {
+                this.items.push(this.ListScan[index]);
+              } else {
+                this.items[this.checkNotExist(this.items, this.ListScan[index].idTrip)] = this.ListScan[index];
+              }
             }
-            this.items.reverse();
+            // this.items.reverse();
             this.itemsSearch = this.items;
             this.spinner.hide();
            // console.log('dataList:', this.items)
@@ -821,9 +836,9 @@ export class TripsComponent implements OnInit {
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
         const options = new RequestOptions({ headers: headers });
-        const urlCloseTrip = 'http://147.135.136.78:8052/trip/updateclosed';
+        const urlCloseTrip = environment.serverUrl + '/trip/updateclosed';
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlCloseTrip + '?name=' + this.userName, this.closedTrips , options).subscribe(data => {
+        this.http.post(urlCloseTrip + '?name=' + this.userName, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
@@ -861,10 +876,10 @@ export class TripsComponent implements OnInit {
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
         const options = new RequestOptions({ headers: headers });
-        const urlrecolterTrip = 'http://147.135.136.78:8052/trip/updaterecolter';
+        const urlrecolterTrip = environment.serverUrl + '/trip/updaterecolter';
         console.log('idamdin' + this.idadmin);
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlrecolterTrip + '?name=' + this.idadmin, this.closedTrips , options).subscribe(data => {
+        this.http.post(urlrecolterTrip + '?name=' + this.idadmin, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
@@ -906,9 +921,9 @@ export class TripsComponent implements OnInit {
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
         const options = new RequestOptions({ headers: headers });
-        const urlrecolterTrip = 'http://147.135.136.78:8052/trip/updatepresrecolte';
+        const urlrecolterTrip = environment.serverUrl + '/trip/updatepresrecolte';
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlrecolterTrip + '?name=' + this.idadmin, this.closedTrips , options).subscribe(data => {
+        this.http.post(urlrecolterTrip + '?name=' + this.idadmin, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
@@ -936,9 +951,9 @@ export class TripsComponent implements OnInit {
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
         const options = new RequestOptions({ headers: headers });
-        const urlpayedTrip = 'http://147.135.136.78:8052/trip/updatecost';
+        const urlpayedTrip = environment.serverUrl + '/trip/updatecost';
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlpayedTrip + '?name=' + this.userName, this.closedTrips , options).subscribe(data => {
+        this.http.post(urlpayedTrip + '?name=' + this.userName, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
@@ -985,9 +1000,9 @@ export class TripsComponent implements OnInit {
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
         const options = new RequestOptions({ headers: headers });
-        const urlpayedTrip = 'http://147.135.136.78:8052/trip/updatepayed';
+        const urlpayedTrip = environment.serverUrl + '/trip/updatepayed';
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlpayedTrip + '?name=' + this.userName, this.closedTrips , options).subscribe(data => {
+        this.http.post(urlpayedTrip + '?name=' + this.userName, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
@@ -1225,7 +1240,7 @@ export class TripsComponent implements OnInit {
                     duration: 12000,
                 });
                 return;
-            } else if (a === '' || b === '' || c === '' || b === 'undefined') {
+            } /*else if (a === '' || b === '' || c === '' || b === 'undefined') {
               console.log('entréé', newAdr);
                 if (newAdr.indexOf('Gouvernorat') >= 0) {
                   console.log('entréé 2222');
@@ -1243,9 +1258,9 @@ export class TripsComponent implements OnInit {
                         duration: 5000,
                     });
                     return;
-                }*/
+                }
 
-            }
+            }*/
             if (!this.contactAdresseDest) {
                 this.snackBar.open('Veuillez remplir le nom de déstinataire!', 'Fermer', {
                     duration: 5000,
@@ -1621,9 +1636,9 @@ export class TripsComponent implements OnInit {
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
         const options = new RequestOptions({ headers: headers });
-        const urlCloseTrip = 'http://147.135.136.78:8052/trip/sendAllsms';
+        const urlCloseTrip = environment.serverUrl + '/trip/sendAllsms';
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlCloseTrip + '?name=' + this.userName + '&sms=' + msg , this.closedTrips , options).subscribe(data => {
+        this.http.post(urlCloseTrip + '?name=' + this.userName + '&sms=' + msg , this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
@@ -1648,11 +1663,21 @@ export class TripsComponent implements OnInit {
             if (this.itemStatus === 'En cours de retour') {
               if (this.checkedTrips[i].statusTrip === 'Retour') {
                 this.closedTrips.push(this.checkedTrips[i].idTrip);
+              } else {
+                this.snackBar.open('Immpossible de modifier le colis ' + this.checkedTrips[i].refTrip + ' car le status n\'est pas Retour : ', 'Fermer', {
+                  duration: 12000,
+                });
+                return;
               }
             }
             if (this.itemStatus === 'Retournee') {
               if (this.checkedTrips[i].statusTrip === 'En cours de retour') {
                 this.closedTrips.push(this.checkedTrips[i].idTrip);
+              } else {
+                this.snackBar.open('Immpossible de modifier le colis ' + this.checkedTrips[i].refTrip + ' car le status n\'est pas En cours de retour : ', 'Fermer', {
+                  duration: 12000,
+                });
+                return;
               }
             }
             if (this.itemStatus === 'livraison en cours') {
@@ -1680,9 +1705,9 @@ export class TripsComponent implements OnInit {
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
         const options = new RequestOptions({ headers: headers });
-        const urlCloseTrip = 'http://147.135.136.78:8052/trip/updatestatus';
+        const urlCloseTrip = environment.serverUrl + '/trip/updatestatus';
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlCloseTrip + '?status=' + this.itemStatus + '&driverAffect=' + driverAffect + '&name=' + this.userName, this.closedTrips , options).subscribe(data => {
+        this.http.post(urlCloseTrip + '?status=' + this.itemStatus + '&driverAffect=' + driverAffect + '&name=' + this.userName, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
@@ -1719,9 +1744,9 @@ export class TripsComponent implements OnInit {
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
         const options = new RequestOptions({ headers: headers });
-        const urlCloseTrip = 'http://147.135.136.78:8052/trip/updatedriver/';
+        const urlCloseTrip = environment.serverUrl + '/trip/updatedriver/';
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlCloseTrip + id + '?name=' + this.userName, list , options).subscribe(data => {
+        this.http.post(urlCloseTrip + id + '?name=' + this.userName, list , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
@@ -1758,13 +1783,13 @@ export class TripsComponent implements OnInit {
         this.closedTrips = [];
         for (let i = 0; i < this.checkedTrips.length; i++) {
             this.closedTrips.push(this.checkedTrips[i].idTrip);
-            /*
-            if((this.checkedTrips[i].statusTrip==='Livree') ||(this.checkedTrips[i].statusTrip==='Annulée')) {
-                this.snackBar.open('Immpossible de modifier le colis '+this.checkedTrips[i].refTrip+' car le status est : '+this.checkedTrips[i].statusTrip, 'Fermer', {
+
+            if (this.checkedTrips[i].statusTrip === 'Livree') {
+                this.snackBar.open('Immpossible de modifier le colis ' + this.checkedTrips[i].refTrip + ' car le status est : ' + this.checkedTrips[i].statusTrip, 'Fermer', {
                     duration: 12000,
                 });
                 return;
-            }*/
+            }
 
             if ( this.checkedTrips[i].argentRecolte === true) {
               this.snackBar.open('Immpossible de modifier le colis ' + this.checkedTrips[i].refTrip + ' car est Récolté ', 'Fermer', {
@@ -1786,9 +1811,9 @@ export class TripsComponent implements OnInit {
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
         const options = new RequestOptions({ headers: headers });
-        const urlCloseTrip = 'http://147.135.136.78:8052/trip/updatedriver/';
+        const urlCloseTrip = environment.serverUrl + '/trip/updatedriver/';
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlCloseTrip + this.actionA.idDriver + '?name=' + this.userName, this.closedTrips , options).subscribe(data => {
+        this.http.post(urlCloseTrip + this.actionA.idDriver + '?name=' + this.userName, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
@@ -2392,7 +2417,7 @@ export class TripsComponent implements OnInit {
         const searchBox = new google.maps.places.SearchBox(this.input);
         searchBox.addListener('places_changed', function() {
            const places = searchBox.getPlaces();
-           console.log(this.palces);
+           // console.log(this.palces);
            let address = '';
            if (places[0].address_components) {
              address = [
@@ -2473,7 +2498,7 @@ export class TripsComponent implements OnInit {
           }]
           };
 
-        this.http.put('http://147.135.136.78:8052/trip/update/' + this.trpMsg.idTrip, msgdata , options).subscribe(data => {
+        this.http.put(environment.serverUrl + '/trip/update/' + this.trpMsg.idTrip, msgdata , {headers: this.headerOptions}).subscribe(data => {
             this.snackBar.open('Message envoyé avec succès.', 'Fermer', {
                 duration: 5000,
             });
@@ -2852,7 +2877,7 @@ export class TripsComponent implements OnInit {
             lastupdateby : this.userName
           };
 
-        this.http.put('http://147.135.136.78:8052/trip/updateargentrecolter/' + this.tripBl.idTrip, Trip , options).subscribe(data => {
+        this.http.put(environment.serverUrl + '/trip/updateargentrecolter/' + this.tripBl.idTrip, Trip , {headers: this.headerOptions}).subscribe(data => {
             this.snackBar.open('Ce clois est récolté avec succès.', 'Fermer', {
                 duration: 5000,
             });
@@ -3293,37 +3318,38 @@ export class TripsComponent implements OnInit {
       }
 
       downloadBS() {
-         this.pathBS = this.path1;
-         this.pathBS = this.pathBS.substring(30);
-        console.log(this.pathBS);
-        window.open('http://147.135.136.78:8052/trip/downloadBS/' + this.pathBS, '_blank');
-      }
-
-      downloadRC() {
-        this.pathRC = this.path2;
-       this.pathRC = this.pathRC.substring(35);
-       window.open('http://147.135.136.78:8052/trip/downloadRC/' + this.pathRC, '_blank');
+        this.pathBS = this.path1;
+        const index: number = this.pathBS.indexOf('Bon') - 1;
+        this.pathBS = this.pathBS.substring(index);
+       console.log(this.pathBS);
+       window.open(environment.serverUrl + '/trip/downloadBS/' + this.pathBS, '_blank');
      }
-
-     downloadBL() {
-      this.pathBL = this.path3;
-     this.pathBL = this.pathBL.substring(30);
-     window.open('http://147.135.136.78:8052/trip/downloadBL/' + this.pathBL, '_blank');
+     downloadRC() {
+       this.pathRC = this.path2;
+       const index: number = this.pathRC.indexOf('Bon') - 1;
+      this.pathRC = this.pathRC.substring(index);
+      window.open(environment.serverUrl + '/trip/downloadRC/' + this.pathRC, '_blank');
+    }
+    downloadBL() {
+     this.pathBL = this.path3;
+      const index: number = this.pathBL.indexOf('PDF/BL') + 6;
+    this.pathBL = this.pathBL.substring(index);
+    window.open(environment.serverUrl + '/trip/downloadBL/' + this.pathBL, '_blank');
+  }
+     downloadBRetour() {
+       this.pathBRetour = this.path4;
+       const index: number = this.pathBRetour.indexOf('Bon') - 1;
+       this.pathBRetour = this.pathBRetour.substring(index);
+     console.log(this.pathBRetour);
+     window.open(environment.serverUrl + '/trip/downloadBRetour/' + this.pathBRetour, '_blank');
    }
-      downloadBRetour() {
-        this.pathBRetour = this.path4;
-        this.pathBRetour = this.pathBRetour.substring(35);
-      console.log(this.pathBRetour);
-      window.open('http://147.135.136.78:8052/trip/downloadBRetour/' + this.pathBRetour, '_blank');
-    }
-
-    downloadRapport() {
-      this.pathRapport = this.path5;
-      this.pathRapport = this.pathRapport.substring(35);
-    console.log(this.pathRapport);
-    window.open('http://147.135.136.78:8052/trip/downloadRapport/' + this.pathRapport, '_blank');
-    }
-
+   downloadRapport() {
+     this.pathRapport = this.path5;
+     const index: number = this.pathBRetour.indexOf('PDF/Rapport') + 11;
+     this.pathRapport = this.pathRapport.substring(index);
+   console.log(this.pathRapport);
+   window.open(environment.serverUrl + '/trip/downloadRapport/' + this.pathRapport, '_blank');
+   }
 
     Viderlalist() {
       // console.log('liste avant--- ', this.checkedTrips);

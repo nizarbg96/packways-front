@@ -4,6 +4,7 @@ import { routerTransition } from '../router.animations';
 import { RequestOptions, Http, Headers } from '@angular/http';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-verifpage',
@@ -13,8 +14,17 @@ import { Router } from '@angular/router';
 })
 export class VerifpageComponent implements OnInit {
 
-  public url = 'http://147.135.136.78:8052/user/';
+  public url = environment.serverUrl + '/user/';
   codeVerif : any;
+  jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+  headerOptions = new  Headers({
+    'Content-Type':  'application/json',
+    'Access-Control-Allow-Credentials' : 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+    'Authorization': `Bearer ${this.jwt}`
+  });
   constructor(private http : Http, private snackBar: MatSnackBar, public router: Router) { }
 
   ngOnInit() {
@@ -24,7 +34,7 @@ export class VerifpageComponent implements OnInit {
   testvalid(){
     let id = localStorage.getItem('idUser');
     let code = localStorage.getItem('code');
-    
+
     if(this.codeVerif === code){
       const userdata = {
         accountActive : true
@@ -33,7 +43,7 @@ export class VerifpageComponent implements OnInit {
       headers.append('Accept', 'application/json');
       headers.append('Content-Type', 'application/json' );
       const options = new RequestOptions({ headers: headers });
-      this.http.put(this.url + 'update/' + id, userdata, options).subscribe(data => {
+      this.http.put(this.url + 'update/' + id, userdata, {headers: this.headerOptions}).subscribe(data => {
         console.log('User Blocked');
       }, error => {
       });

@@ -286,7 +286,7 @@
 
                                 <small class="form-text text-primary" style="font-size:12px !important;">Nombre des colis selectionnées:  <b>{{NBchecked}}</b></small>
                         </div>
-                        <table class="table" [mfData]="items" #mf="mfDataTable" [mfRowsOnPage]="chooseView" id="myTable">
+                        <table class="table" [mfData]="items.reverse()" #mf="mfDataTable" [mfRowsOnPage]="chooseView" id="myTable">
                                 <thead>
                                         <tr>
                                                 <th style="width:1%">#</th>

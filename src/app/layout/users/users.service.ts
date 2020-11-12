@@ -2,22 +2,33 @@ import { Injectable } from '@angular/core';
 // import { HttpClient } from '@angular/common/http';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import {environment} from '../../../environments/environment';
 
 
 @Injectable()
 export class UserService {
 
-  public url = 'http://147.135.136.78:8052/user/';
-  public urlTrip = 'http://147.135.136.78:8052/trip/';
+  public url = environment.serverUrl + '/user/';
+  public urlTrip = environment.serverUrl + '/trip/';
   result: any;
   jsonObj: any;
   items: any;
   tripsByUserAndDate: any;
+  jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+  headerOptions = new  Headers({
+    'Content-Type':  'application/json',
+    'Access-Control-Allow-Credentials' : 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+    'Authorization': `Bearer ${this.jwt}`
+  });
+
   constructor(public http: Http) { }
 
 
   getUsersFromServe(key1,key2) {
-    return this.http.get(`${this.url}/bykey?keyExp=`+key1+'&keyDes='+key2);
+    return this.http.get(`${this.url}/bykey?keyExp=`+key1+'&keyDes='+key2, {headers: this.headerOptions});
   }
 
 
@@ -26,7 +37,7 @@ export class UserService {
     headers.append('Accept', 'application/json');
     headers.append('Content-Type', 'application/json' );
     const options = new RequestOptions({ headers: headers });
-    this.http.put(this.url + 'update/' + idUser, userdata, options).subscribe(data => {
+    this.http.put(this.url + 'update/' + idUser, userdata, {headers: this.headerOptions}).subscribe(data => {
       console.log('User deleted');
     }, error => {
     });
@@ -38,7 +49,7 @@ export class UserService {
     headers.append('Accept', 'application/json');
     headers.append('Content-Type', 'application/json' );
     const options = new RequestOptions({ headers: headers });
-    this.http.put(this.url + 'update/' + idUser, userdata, options).subscribe(data => {
+    this.http.put(this.url + 'update/' + idUser, userdata, {headers: this.headerOptions}).subscribe(data => {
       console.log('User Blocked');
     }, error => {
     });
@@ -46,17 +57,17 @@ export class UserService {
   }
 
   gettripLivree(id){
-    
-    this.http.get(this.urlTrip+"byuser?id="+id+"&statustrip=Livree").subscribe(data => {
+
+    this.http.get(this.urlTrip+"byuser?id="+id+"&statustrip=Livree",{headers: this.headerOptions}).subscribe(data => {
       this.result = data['_body']
      // console.log(data['_body'])
       let jo = JSON.parse(this.result);
-      let obj = Array.of(jo.data);      
+      let obj = Array.of(jo.data);
     })
   }
 
   getTripsByUserAndDate(idUser, sDate, eDate) {
-    return this.http.get(`${this.urlTrip}bydate/` + idUser + `?d1=`  + sDate + `&d2=` + eDate);
+    return this.http.get(`${this.urlTrip}bydate/` + idUser + `?d1=`  + sDate + `&d2=` + eDate, {headers: this.headerOptions});
   }
 
   updateUser(userdata, id) {
@@ -64,7 +75,7 @@ export class UserService {
     headers.append('Accept', 'application/json');
     headers.append('Content-Type', 'application/json' );
     const options = new RequestOptions({ headers: headers });
-    return this.http.put(this.url + '/update/' + id, userdata, options);
+    return this.http.put(this.url + '/update/' + id, userdata, {headers: this.headerOptions});
     console.log("updated suscess")
   }
 

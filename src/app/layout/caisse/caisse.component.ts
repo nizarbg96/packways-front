@@ -1,8 +1,9 @@
-import { Http } from '@angular/http';
+import {Headers, Http} from '@angular/http';
 import { Component, OnInit } from '@angular/core';
 import { routerTransition } from '../../router.animations';
 import { ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {environment} from '../../../environments/environment';
 
 
 @Component({
@@ -23,9 +24,18 @@ export class CaisseComponent implements OnInit {
   itemsSearch: any;
   items: any = [];
   jsonObj: any;
+  jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+  headerOptions = new  Headers({
+    'Content-Type':  'application/json',
+    'Access-Control-Allow-Credentials' : 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+    'Authorization': `Bearer ${this.jwt}`
+  });
   constructor(private http: Http, private modalService: NgbModal) { }
-  url = 'http://147.135.136.78:8052/trip/bykey1?id=admin&size=2000&DD=&DF=&key=&key1=&key2=&key3=&key4=Récolté&key5=&BTN=&key6=';
-  url2 = 'http://147.135.136.78:8052/trip/recolterparclient';
+  url = environment.serverUrl + '/trip/byCriterea?id=admin&size=50&DD=&DF=&key=&key1=&key2=&key3=&key4=Récolté&key5=&BTN=&key6=';
+  url2 = environment.serverUrl + '/trip/recolterparclient';
   ngOnInit() {
    this.GetCaisse();
    this.getTripsRecolterParClient();
@@ -37,7 +47,7 @@ export class CaisseComponent implements OnInit {
     this.sommeVal = 0;
     this.sommeCout = 0;
     this.somme = 0;
-    return this.http.get(this.url).subscribe(data => {
+    return this.http.get(this.url, {headers: this.headerOptions}).subscribe(data => {
       const result = data['_body'];
       const jo = JSON.parse(result);
       const obj = Array.of(jo.data);
@@ -150,7 +160,7 @@ setFilteredItems() {
 }
 
 getTripsRecolterParClient() {
-  return this.http.get(this.url2).subscribe(data => {
+  return this.http.get(this.url2, {headers: this.headerOptions}).subscribe(data => {
     const result = data['_body'];
     const jo = JSON.parse(result);
     const obj = Array.of(jo.data);

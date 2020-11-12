@@ -172,12 +172,12 @@ export class DashboardComponent implements OnInit {
     getTrips(){
         this.sommeCH = 0;
         this.sommeLC = 0;
-        this.dservice.getTripParClient().subscribe(data => {
-            const result = data['_body'];
+        this.dservice.getTripParClient().subscribe((data: any) => {
+            /*const result = data['_body'];
             const jo = JSON.parse(result);
-            const obj = Array.of(jo.data);
-            this.jsonObj = obj[0];
-            console.log('cleint: ',this.jsonObj)
+            const obj = Array.of(jo.data);*/
+            this.jsonObj = data.data;
+            console.log('cleint: ', this.jsonObj)
             for (let index = 0; index < this.jsonObj.length; index++) {
                 this.items.push(this.jsonObj[index]);
                 this.somm = this.jsonObj[index]
@@ -185,9 +185,9 @@ export class DashboardComponent implements OnInit {
                 this.sommeLC += Number(this.somm[2]);
             }
 
-            console.log('cleint2222: ',this.items)
-            console.log('somme222: ',this.sommeCH )
-            console.log('somme222: ',this.sommeLC)
+            console.log('cleint2222: ', this.items)
+            console.log('somme222: ', this.sommeCH )
+            console.log('somme222: ', this.sommeLC);
         })
     }
 }

@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material';
 import { RequestOptions, Headers } from '@angular/http';
 import { Http } from '@angular/http';
 import { Router } from '@angular/router';
+import {environment} from '../../environments/environment';
 
 @Component({
     selector: 'app-signup',
@@ -25,8 +26,8 @@ export class SignupComponent implements OnInit {
     nomSte: any;
     codeParrain: any;
     adress: any ;
-    url = 'http://147.135.136.78:8052/user/';
-    urlN = 'http://147.135.136.78:8052/notification/';
+    url = environment.serverUrl + '/user/';
+    urlN = environment.serverUrl + '/notification/';
     constructor(private translate: TranslateService,
                 private fb: FormBuilder,
                 private snackBar: MatSnackBar,

@@ -16,6 +16,7 @@ import 'rxjs/add/operator/catch';
 
 import * as $ from 'jquery';
 import { Trip } from '../trips/Trip';
+import {environment} from '../../../environments/environment';
 
 
 declare const google: any;
@@ -37,10 +38,10 @@ export class UsersComponent implements OnInit {
     searchTerm: string = '';
     itemsSearch = [];
     objUser = new User;
-    idUserTr: any;    
+    idUserTr: any;
     nameUser: any;
     surnameUser: any;
-    emailUser: any; 
+    emailUser: any;
     mobileUser: any;
     tripsByUserAndDate: any;
     startDate: any;
@@ -57,14 +58,24 @@ export class UsersComponent implements OnInit {
     listTripTopayed = [];
     theCheckboxPayement = false;
     markedCheckbox = false;
+  jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+  headerOptions = new  Headers({
+    'Content-Type':  'application/json',
+    'Access-Control-Allow-Credentials' : 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+    'Authorization': `Bearer ${this.jwt}`
+  });
 
-    constructor( public userService: UserService, private modalService: NgbModal,
+
+  constructor( public userService: UserService, private modalService: NgbModal,
          private excelService: ExcelService, private spinner: NgxSpinnerService, public http: Http) { }
-  
+
     ngOnInit() {
       this.getUsers(true,false);
     }
-  
+
     open(content) {
       this.modalService.open(content, { size: 'lg' }).result.then((result) => {
           this.closeResult = `Closed with: ${result}`;
@@ -82,7 +93,7 @@ export class UsersComponent implements OnInit {
 
         this.objUser = user;
     }
-  
+
     private getDismissReason(reason: any): string {
       if (reason === ModalDismissReasons.ESC) {
           return 'by pressing ESC';
@@ -126,7 +137,7 @@ export class UsersComponent implements OnInit {
         this.items = [];
         this.userService.getUsersFromServe(key1,key2).subscribe(data => {
             this.result = data['_body'];
-    
+
             const jo = JSON.parse(this.result);
             const obj = Array.of(jo.data);
             this.jsonObj = obj[0];
@@ -209,7 +220,7 @@ export class UsersComponent implements OnInit {
    }
 
 
-   filterItems(searchTerm) {    
+   filterItems(searchTerm) {
 
     return this.items.filter((item) => {
         let nomUser: any; let loginUser: any; let mobUser: any; let snomUser: any; let mailUser: any; let adrUser: any; let createdDate: any; let accountStatus: any;
@@ -296,7 +307,7 @@ export class UsersComponent implements OnInit {
     var d = new Date(dd);
     var day = d.getDate();
     var month = d.getMonth() + 1;
-    let year = d.getFullYear();    
+    let year = d.getFullYear();
     let dformat = [month, day, year].join('/');
 
     return dformat;
@@ -307,11 +318,11 @@ export class UsersComponent implements OnInit {
         this.idUserTr = 'UT' + this.objUser.idUser;
         this.sDate = this.changeDateFormatMDY(this.startDate);
         this.eDate = this.changeDateFormatMDY(this.endDate);
-        this.tripsByUserAndDate = [];        
+        this.tripsByUserAndDate = [];
 
         this.userService.getTripsByUserAndDate(this.idUserTr, this.sDate, this.eDate).subscribe(data => {
             this.result = data['_body'];
-    
+
             const jo = JSON.parse(this.result);
             const obj = Array.of(jo.data);
             this.jsonObj = obj[0];
@@ -321,13 +332,13 @@ export class UsersComponent implements OnInit {
             for (let index = 0; index < this.jsonObj.length; index++) {
                 let jTemp = this.jsonObj[index];
 
-                if (this.tripStatus === 'Tous' || this.tripStatus === '') {                    
+                if (this.tripStatus === 'Tous' || this.tripStatus === '') {
                     if (jTemp.isClosed === true) {
                         cloture = 'Oui';
                     } else {
                         cloture = 'Non';
                     }
-    
+
                     if (jTemp.statusTrip === 'Retour') {
                         if (jTemp.isBilled === true) {
                             jTemp.packageTrip.valPackage = 0;
@@ -337,8 +348,8 @@ export class UsersComponent implements OnInit {
                             jTemp.packageTrip.valPackage = 0;
                             jTemp.statusTrip = 'Retour sans frais';
                         }
-                    }                
-    
+                    }
+
                     this.costtrip = this.costtrip + jTemp.costTrip;
                     this.valpack = this.valpack + jTemp.packageTrip.valPackage;
                     let tab: any = [];
@@ -348,13 +359,13 @@ export class UsersComponent implements OnInit {
 
                 } else if (this.tripStatus === 'Livree et retour') {
                     if (jTemp.argentRecolte === true || jTemp.statusTrip === 'Retour') {
-                            this.listTripTopayed.push(jTemp.idTrip);                        
+                            this.listTripTopayed.push(jTemp.idTrip);
                             if (jTemp.isClosed === true) {
                                 cloture = 'Oui';
                             } else {
                                 cloture = 'Non';
                             }
-            
+
                             if (jTemp.statusTrip === 'Retour') {
                                 if (jTemp.isBilled === true) {
                                     jTemp.packageTrip.valPackage = 0;
@@ -364,14 +375,14 @@ export class UsersComponent implements OnInit {
                                     jTemp.packageTrip.valPackage = 0;
                                     jTemp.statusTrip = 'Retour sans frais';
                                 }
-                            }                
-            
+                            }
+
                             this.costtrip = this.costtrip + jTemp.costTrip;
                             this.valpack = this.valpack + jTemp.packageTrip.valPackage;
                             let tab: any = [];
                             tab.push(jTemp.refTrip, jTemp.statusTrip, jTemp.costTrip, jTemp.destTrip.cityAdr, this.splitDateFormatMDY(jTemp.createdday),
                              this.splitDateFormatMDY(jTemp.livredday), jTemp.packageTrip.valPackage);
-                            this.tripsByUserAndDate.push(tab);   
+                            this.tripsByUserAndDate.push(tab);
                     }
 
                 } else if (this.tripStatus === 'Livree') {
@@ -389,7 +400,7 @@ export class UsersComponent implements OnInit {
                         tab.push(jTemp.refTrip, jTemp.statusTrip, jTemp.costTrip, jTemp.destTrip.cityAdr, this.splitDateFormatMDY(jTemp.createdday),
                         this.splitDateFormatMDY(jTemp.livredday),
                         jTemp.packageTrip.valPackage);
-                        this.tripsByUserAndDate.push(tab);                        
+                        this.tripsByUserAndDate.push(tab);
                     }
 
                 } else if (this.tripStatus === 'Retour') {
@@ -400,7 +411,7 @@ export class UsersComponent implements OnInit {
                         } else {
                             cloture = 'Non';
                         }
-        
+
                         if (jTemp.statusTrip === 'Retour') {
                             if (jTemp.isBilled === true) {
                                 jTemp.packageTrip.valPackage = 0;
@@ -410,15 +421,15 @@ export class UsersComponent implements OnInit {
                                 jTemp.packageTrip.valPackage = 0;
                                 jTemp.statusTrip = 'Retour sans frais';
                             }
-                        }            
+                        }
 
                         this.costtrip = this.costtrip + jTemp.costTrip;
                         this.valpack = this.valpack + jTemp.packageTrip.valPackage;
                         let tab: any = [];
-                        tab.push(jTemp.refTrip, jTemp.statusTrip, jTemp.costTrip, jTemp.destTrip.cityAdr, this.splitDateFormatMDY(jTemp.createdday), 
+                        tab.push(jTemp.refTrip, jTemp.statusTrip, jTemp.costTrip, jTemp.destTrip.cityAdr, this.splitDateFormatMDY(jTemp.createdday),
                         this.splitDateFormatMDY(jTemp.livredday),
                         jTemp.packageTrip.valPackage);
-                        this.tripsByUserAndDate.push(tab);                        
+                        this.tripsByUserAndDate.push(tab);
                     }
                 }
             }
@@ -426,7 +437,7 @@ export class UsersComponent implements OnInit {
             /* tab1.push('', '', '', '', '', '', '', '', '');
             this.tripsByUserAndDate.push(tab1);
             tab1 = []; */
-            tab1.push('', '', this.costtrip, '', '', '', '', '', this.valpack);   
+            tab1.push('', '', this.costtrip, '', '', '', '', '', this.valpack);
             this.tripsByUserAndDate.push(tab1);
             console.log(this.tripsByUserAndDate)
         },
@@ -450,8 +461,8 @@ export class UsersComponent implements OnInit {
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
         const options = new RequestOptions({ headers: headers });
-        const urlInPayementTrip = 'http://147.135.136.78:8052/trip/updatepayed';
-        this.http.post(urlInPayementTrip, listTripTopayed , options).subscribe(data => {
+        const urlInPayementTrip = environment.serverUrl + '/trip/updatepayed';
+        this.http.post(urlInPayementTrip, listTripTopayed , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
         }, error => {
             console.log('error');

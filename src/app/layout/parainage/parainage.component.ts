@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
+import {Headers, Http} from '@angular/http';
 import { routerTransition } from '../../router.animations';
+import {environment} from '../../../environments/environment';
 
 
 @Component({
@@ -11,11 +12,21 @@ import { routerTransition } from '../../router.animations';
 })
 export class ParainageComponent implements OnInit {
 
-  url = 'http://147.135.136.78:8052/trip/parainage';
+  url = environment.serverUrl + '/trip/parainage';
   items: any[];
   jsonObj: any[];
   id: any;
   currentUser: any;
+  jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+  headerOptions = new  Headers({
+    'Content-Type':  'application/json',
+    'Access-Control-Allow-Credentials' : 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+    'Authorization': `Bearer ${this.jwt}`
+  });
+
   constructor(private http : Http) { }
 
   ngOnInit() {
@@ -28,7 +39,7 @@ export class ParainageComponent implements OnInit {
   getClientParainee(id){
     this.jsonObj=[];
     this.items=[];
-    return this.http.get(this.url+'?id='+id).subscribe(data => {
+    return this.http.get(this.url+'?id='+id, {headers: this.headerOptions}).subscribe(data => {
       const result = data['_body'];
       const jo = JSON.parse(result);
       const obj = Array.of(jo.data);

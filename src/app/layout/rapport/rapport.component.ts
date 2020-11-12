@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { routerTransition } from '../../router.animations';
-import { Http } from '@angular/http';
+import {Headers, Http} from '@angular/http';
 import { MatSnackBar } from '@angular/material';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-rapport',
@@ -14,14 +15,14 @@ export class RapportComponent implements OnInit {
   ListDriver: any;
   Obj: any;
   items= [];
-  urlRACL = 'http://147.135.136.78:8052/RAClientLivreur/bydate';
-  urlRAC = 'http://147.135.136.78:8052/RAClient/bydate';
-  urlRAL = 'http://147.135.136.78:8052/RALivreur/bydate'
-  urlRAS = 'http://147.135.136.78:8052/RASimple/bydate';
-  urlRAMsg = 'http://147.135.136.78:8052/RAMsg/bydate';
-  urlRADes = 'http://147.135.136.78:8052/RAStatDestinataire/bydate';
-  urlUser = 'http://147.135.136.78:8052/user/all'
-  urlDriver = 'http://147.135.136.78:8052/driver/alls'
+  urlRACL = environment.serverUrl + '/RAClientLivreur/bydate';
+  urlRAC = environment.serverUrl + '/RAClient/bydate';
+  urlRAL = environment.serverUrl + '/RALivreur/bydate'
+  urlRAS = environment.serverUrl + '/RASimple/bydate';
+  urlRAMsg = environment.serverUrl + '/RAMsg/bydate';
+  urlRADes = environment.serverUrl + '/RAStatDestinataire/bydate';
+  urlUser = environment.serverUrl + '/user/all'
+  urlDriver = environment.serverUrl + '/driver/alls'
   jsonObj: any;
   startDateFilter : any;
   endDateFilter :any;
@@ -32,6 +33,15 @@ export class RapportComponent implements OnInit {
   flageRAS :boolean =false ;
   flageRAmsg:boolean =false;
   flageRADes:boolean =false;
+  jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+  headerOptions = new  Headers({
+    'Content-Type':  'application/json',
+    'Access-Control-Allow-Credentials' : 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+    'Authorization': `Bearer ${this.jwt}`
+  });
 
 
   constructor(private http : Http, private snackBar: MatSnackBar) { }
@@ -50,13 +60,13 @@ export class RapportComponent implements OnInit {
       this.jsonObj = obj[0];
       console.log('data: ',this.jsonObj);
     })
-    
+
   }*/
 
   getTableRACL(dd,df){
     this.jsonObj=[];
     this.items=[];
-    return this.http.get(this.urlRACL+'?DD='+dd+'&DF='+df).subscribe(data => {
+    return this.http.get(this.urlRACL+'?DD='+dd+'&DF='+df,{headers: this.headerOptions}).subscribe(data => {
       const result = data['_body'];
       const jo = JSON.parse(result);
       //const obj = Array.of(jo.data);
@@ -71,7 +81,7 @@ export class RapportComponent implements OnInit {
   getTableRAC(dd,df){
     this.jsonObj=[];
     this.items=[];
-    return this.http.get(this.urlRAC+'?DD='+dd+'&DF='+df).subscribe(data => {
+    return this.http.get(this.urlRAC+'?DD='+dd+'&DF='+df, {headers: this.headerOptions}).subscribe(data => {
       const result = data['_body'];
       const jo = JSON.parse(result);
      // const obj = Array.of(jo.data);
@@ -86,7 +96,7 @@ export class RapportComponent implements OnInit {
   getTableRAL(dd,df){
     this.jsonObj=[];
     this.items=[];
-    return this.http.get(this.urlRAL+'?DD='+dd+'&DF='+df).subscribe(data => {
+    return this.http.get(this.urlRAL+'?DD='+dd+'&DF='+df, {headers: this.headerOptions}).subscribe(data => {
       const result = data['_body'];
       const jo = JSON.parse(result);
      // const obj = Array.of(jo.data);
@@ -101,7 +111,7 @@ export class RapportComponent implements OnInit {
   getTableRAS(dd,df){
     this.jsonObj=[];
     this.items=[];
-    return this.http.get(this.urlRAS+'?DD='+dd+'&DF='+df).subscribe(data => {
+    return this.http.get(this.urlRAS+'?DD='+dd+'&DF='+df, {headers: this.headerOptions}).subscribe(data => {
       const result = data['_body'];
       const jo = JSON.parse(result);
      // const obj = Array.of(jo.data);
@@ -116,7 +126,7 @@ export class RapportComponent implements OnInit {
   getTableRAMsg(dd,df){
     this.jsonObj=[];
     this.items=[];
-    return this.http.get(this.urlRAMsg+'?DD='+dd+'&DF='+df).subscribe(data => {
+    return this.http.get(this.urlRAMsg+'?DD='+dd+'&DF='+df, {headers: this.headerOptions}).subscribe(data => {
       const result = data['_body'];
       const jo = JSON.parse(result);
       //const obj = Array.of(jo.data);
@@ -131,7 +141,7 @@ export class RapportComponent implements OnInit {
   getTableRADes(dd,df){
     this.jsonObj=[];
     this.items=[];
-    return this.http.get(this.urlRADes+'?DD='+dd+'&DF='+df).subscribe(data => {
+    return this.http.get(this.urlRADes+'?DD='+dd+'&DF='+df, {headers: this.headerOptions}).subscribe(data => {
       const result = data['_body'];
       const jo = JSON.parse(result);
       //const obj = Array.of(jo.data);
@@ -199,20 +209,20 @@ export class RapportComponent implements OnInit {
       this.flageRADes = true;
       this.getTableRADes(this.startDateFilter, this.endDateFilter);
     }
-    
+
   }
 
   getUserfromServer(){
-    
-    return this.http.get(this.urlUser).subscribe(data => {
+
+    return this.http.get(this.urlUser, {headers: this.headerOptions}).subscribe(data => {
       const result = data['_body'];
       const jo = JSON.parse(result);
       const obj = Array.of(jo.data);
       this.Obj = obj[0];
     })
-    
+
   }
- 
+
 
   getUser(id){
     let name ="";
@@ -223,16 +233,16 @@ export class RapportComponent implements OnInit {
     }
     return name;
   }
-  
+
   getDriverfromServer(){
-    
-    return this.http.get(this.urlDriver).subscribe(data => {
+
+    return this.http.get(this.urlDriver, {headers: this.headerOptions}).subscribe(data => {
       const result = data['_body'];
       const jo = JSON.parse(result);
       const obj = Array.of(jo.data);
-      this.ListDriver = obj[0]; 
+      this.ListDriver = obj[0];
     })
-    
+
   }
 
   getDriver(id){
