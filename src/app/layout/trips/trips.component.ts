@@ -818,7 +818,7 @@ export class TripsComponent implements OnInit {
       }
 
     onCheckboxChange(option, event) {
-		  if (this.listScanId.indexOf(option.refTrip) >= 0 ) {
+		  if (this.checkScanId(option.refTrip)) {
         this.listScanId = this.listScanId.filter(ref => ref !== option.refTrip);
       }
         if (event.target.checked) {
