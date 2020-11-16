@@ -262,7 +262,9 @@
                                 <li *ngFor="let item of scans">{{trip.refTrip}}</li>
                         </ul>
                 </div> -->
-                <ngx-spinner class="myspinner" bdColor = "rgba(255,255,255,0.8)" size = "large" color = "#000000" type = "ball-square-clockwise-spin"></ngx-spinner>
+                <ngx-spinner class="myspinner" bdColor = "rgba(255,255,255,0.8)" fullScreen="false" size = "large" color = "#000000" type = "ball-square-clockwise-spin">
+                  <p style="color: black; font-size: large; margin-top: 100px; height: 100vh !important"> Veuillez patienter...</p>
+                </ngx-spinner>
                 <div class="card-body table-responsive">
                         <div class="row">
                                 <div class="col-xl-3 text-xs-center"><input type="checkbox" [(ngModel)]="selectedAll" (change)="selectAll($event);"/> Sélectionner tout</div>

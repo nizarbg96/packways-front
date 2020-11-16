@@ -2,7 +2,7 @@ import { AdresseService } from './../adresses/adresses.service';
 import { Adresse } from './../adresses/Adresse';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { routerTransition } from '../../router.animations';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
 
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
@@ -35,6 +35,7 @@ import { globalJsVarUp } from './tunisia-adr.js';
 import { TripExcelService } from './excel-trip.service';
 import {NgxImageCompressService} from 'ngx-image-compress';
 import {environment} from '../../../environments/environment';
+import { map } from 'rxjs/operators';
 
 declare var angular: any;
 declare var UIkit: any;
@@ -152,6 +153,9 @@ export class TripsComponent implements OnInit {
     cityGlobalDest: any;
     random: any;
     scans: any;
+
+    tripDataFromExcel: any;
+    listTripDataFromExcel = [];
 
     numDisplayedElement: any;
     sizeListTrip: any;
@@ -2730,7 +2734,7 @@ export class TripsComponent implements OnInit {
     } */
 
     addTripsFromExcelFile() {
-        this.spinner.show();
+
         const that = this;
         console.log('Test2');
         const nowd = new Date();
@@ -2784,25 +2788,22 @@ export class TripsComponent implements OnInit {
                 }
 
                 // valueTrip = valueTrip.replace(/,/g, '.');
-                this.tservice.addTripFromExcel(
+                this.tripDataFromExcel = this.tservice.addTripFromExcel(
                     this.dataUser.nameUser, this.dataUser.emailUser, this.dataUser.rateUser, this.dataUser.idUser,
                     this.dataUser.nbrateUser, this.dataUser.nbrdeliveryUser, this.dataUser.mobileUser, this.dataUser.surnameUser,
                     this.selectedAdresseExpExcel.geolocAdr.lat, this.selectedAdresseExpExcel.geolocAdr.lng, this.selectedAdresseExpExcel.contactAdr,
                     this.selectedAdresseExpExcel.mobileAdr, contactAdresseDest,
                     telContAdresseDest, null, nowd, 'UT' + this.dataUser.idUser, this.dataUser.idUser,
                     nowd, latGlobalDest, lngGlobalDest, modeLiv,
-                    pricePack, tripType, valueTrip, poidsTrip,
+                    this.dataUser.cout, tripType, valueTrip, poidsTrip,
                     sizePack, typePaiement, 'REF', 'cherche un livreur',
                     this.selectedAdresseExpExcel.cityAdr, cityGlobalDest, null, descriptionTrip,
                     null, this.selectedAdresseExpExcel.labelAdr, labelAdrD);
-                    setTimeout(function() {
-                   }, 1000);
+                  this.listTripDataFromExcel.push(this.tripDataFromExcel);
             }
             // this.spinner.hide();
             // window.location.reload();
-            this.snackBar.open('Ajout avec succès.', 'Fermer', {
-                duration: 5000,
-            });
+            this.tservice.addListTripsFromExel(this.listTripDataFromExcel);
 
         } else {
             this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
@@ -2817,7 +2818,7 @@ export class TripsComponent implements OnInit {
                 window.location.reload();
        }, this.out);
        */
-      this.spinner.hide();
+
     }
 
     EditAddressDest() {
@@ -3203,17 +3204,18 @@ export class TripsComponent implements OnInit {
       }
 
       BSFromServer(contentBSTelechargement) {
-        this.spinner.show();
+
         for (let i = 0; i < this.checkedTrips.length; i++) {
-          /*
+
           if (this.checkedTrips[i].statusTrip !== 'Chez Livreur') {
             this.snackBar.open('Immpossible de ajouter le colis ' + this.checkedTrips[i].refTrip + 'car n est pas Chez Entrepôt', 'Fermer', {
                 duration: 12000,
             });
             return;
-          }*/
+          }
           this.ListIdTrip.push(this.checkedTrips[i].idTrip);
         }
+        this.spinner.show();
 
          this.tservice.getBS(this.actionA.idDriver, this.ListIdTrip).subscribe(data => {
           this.result = data['_body'];
@@ -3273,7 +3275,7 @@ export class TripsComponent implements OnInit {
       }
 
       BRetourFromServer(contentBRetourTelechargement) {
-        this.spinner.show();
+
         for (let i = 0; i < this.checkedTrips.length; i++) {
           if (this.checkedTrips[i].statusTrip !== 'Retour') {
             this.snackBar.open('Immpossible de ajouter le colis ' + this.checkedTrips[i].refTrip + 'car n est pas Retour', 'Fermer', {
@@ -3283,7 +3285,7 @@ export class TripsComponent implements OnInit {
           }
           this.ListIdTrip.push(this.checkedTrips[i].idTrip);
         }
-
+        this.spinner.show();
          this.tservice.getBRetour(this.actionA.idDriver, this.ListIdTrip).subscribe(data => {
           this.result = data['_body'];
           console.log(data['_body']);
@@ -3322,34 +3324,62 @@ export class TripsComponent implements OnInit {
         const index: number = this.pathBS.indexOf('Bon') - 1;
         this.pathBS = this.pathBS.substring(index);
        console.log(this.pathBS);
-       window.open(environment.serverUrl + '/trip/downloadBS/' + this.pathBS, '_blank');
+       this.downloadPDF(environment.serverUrl + '/trip/downloadBS/' + this.pathBS).subscribe(res => {
+        const fileURL = URL.createObjectURL(res);
+       window.open( fileURL, '_blank');
+      });
      }
      downloadRC() {
        this.pathRC = this.path2;
        const index: number = this.pathRC.indexOf('Bon') - 1;
       this.pathRC = this.pathRC.substring(index);
       window.open(environment.serverUrl + '/trip/downloadRC/' + this.pathRC, '_blank');
+      this.downloadPDF(environment.serverUrl + '/trip/downloadRC/' + this.pathRC).subscribe(res => {
+        const fileURL = URL.createObjectURL(res);
+       window.open( fileURL, '_blank');
+      });
     }
+
     downloadBL() {
      this.pathBL = this.path3;
       const index: number = this.pathBL.indexOf('PDF/BL') + 6;
     this.pathBL = this.pathBL.substring(index);
-    window.open(environment.serverUrl + '/trip/downloadBL/' + this.pathBL, '_blank');
+    this.downloadPDF(environment.serverUrl + '/trip/downloadBL/' + this.pathBL).subscribe(res => {
+      const fileURL = URL.createObjectURL(res);
+     window.open( fileURL, '_blank');
+    });
   }
      downloadBRetour() {
        this.pathBRetour = this.path4;
        const index: number = this.pathBRetour.indexOf('Bon') - 1;
        this.pathBRetour = this.pathBRetour.substring(index);
      console.log(this.pathBRetour);
-     window.open(environment.serverUrl + '/trip/downloadBRetour/' + this.pathBRetour, '_blank');
+     this.downloadPDF(environment.serverUrl + '/trip/downloadBRetour/' + this.pathBRetour, ).subscribe(res => {
+      const fileURL = URL.createObjectURL(res);
+     window.open( fileURL, '_blank');
+    });
    }
    downloadRapport() {
      this.pathRapport = this.path5;
-     const index: number = this.pathBRetour.indexOf('PDF/Rapport') + 11;
+     const index: number = this.pathRapport.indexOf('PDF/Rapport') + 11;
      this.pathRapport = this.pathRapport.substring(index);
    console.log(this.pathRapport);
-   window.open(environment.serverUrl + '/trip/downloadRapport/' + this.pathRapport, '_blank');
+   this.downloadPDF(environment.serverUrl + '/trip/downloadRapport/' + this.pathRapport).subscribe(res => {
+    const fileURL = URL.createObjectURL(res);
+
+   window.open(fileURL, '_blank');
+   });
    }
+
+   downloadPDF(url): any {
+    const options = { responseType: ResponseContentType.Blob  };
+    return this.http.get(url, options).pipe(
+      map(
+        (res) => {
+            return new Blob([res.blob()], { type: 'application/pdf' });
+        })
+    );
+  }
 
     Viderlalist() {
       // console.log('liste avant--- ', this.checkedTrips);
