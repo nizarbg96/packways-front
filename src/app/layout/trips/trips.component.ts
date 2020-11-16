@@ -1,6 +1,6 @@
 import { AdresseService } from './../adresses/adresses.service';
 import { Adresse } from './../adresses/Adresse';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { routerTransition } from '../../router.animations';
 import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
 
@@ -257,6 +257,9 @@ export class TripsComponent implements OnInit {
     'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
     'Authorization': `Bearer ${this.jwt}`
   });
+  scanId:string ='';
+  listScanId:string[]=[];
+  testScan: string='test';
 
 
 
@@ -272,6 +275,22 @@ export class TripsComponent implements OnInit {
             }
             this.random = Math.random;
          }
+		 
+		  @HostListener('document:keypress', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      console.log(this.scanId);
+      this.listScanId.push(this.scanId);
+      setTimeout(() => {
+        this.scanId = '';
+      }, 1000);
+      } else {
+      this.scanId = this.scanId + event.key;
+    }
+  }
+  addTestScan() {
+    this.listScanId.push(this.testScan);
+  }
 
     ngOnInit() {
 
@@ -801,6 +820,9 @@ export class TripsComponent implements OnInit {
       }
 
     onCheckboxChange(option, event) {
+		  if(this.listScanId.indexOf(option.refTrip) >= 0 ){
+        this.listScanId = this.listScanId.filter(ref => ref !== option.refTrip);
+      }
         if (event.target.checked) {
           this.checkedTrips.push(option);
         } else {
