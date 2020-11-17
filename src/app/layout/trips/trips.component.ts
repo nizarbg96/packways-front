@@ -257,9 +257,8 @@ export class TripsComponent implements OnInit {
     'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
     'Authorization': `Bearer ${this.jwt}`
   });
-  scanId:string ='';
-  listScanId:string[]=[];
-  testScan: string='test';
+  scanId = '';
+  listScanId: string[] = [];
 
 
 
@@ -275,12 +274,13 @@ export class TripsComponent implements OnInit {
             }
             this.random = Math.random;
          }
-		 
+
 		  @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       console.log(this.scanId);
-      this.listScanId.push(this.scanId);
+      this.listScanId.push('REF' + this.scanId);
+      console.log(this.listScanId);
       setTimeout(() => {
         this.scanId = '';
       }, 1000);
@@ -288,9 +288,7 @@ export class TripsComponent implements OnInit {
       this.scanId = this.scanId + event.key;
     }
   }
-  addTestScan() {
-    this.listScanId.push(this.testScan);
-  }
+
 
     ngOnInit() {
 
@@ -820,7 +818,7 @@ export class TripsComponent implements OnInit {
       }
 
     onCheckboxChange(option, event) {
-		  if(this.listScanId.indexOf(option.refTrip) >= 0 ){
+		  if (this.checkScanId(option.refTrip)) {
         this.listScanId = this.listScanId.filter(ref => ref !== option.refTrip);
       }
         if (event.target.checked) {
@@ -3419,6 +3417,10 @@ export class TripsComponent implements OnInit {
         listSlected[i].selected = false;
       }
     }
+
+  checkScanId(refTrip: any) {
+      if (this.listScanId.slice().filter((ref) => ref === refTrip).length > 0) { return true; } else { return false; }
+  }
 }
 
 
