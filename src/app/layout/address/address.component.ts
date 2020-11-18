@@ -17,6 +17,8 @@ import * as jsonData from './tunisia.json';
 
 import { globalJsVar } from './tunisia.js';
 import { globalJsVarUp } from './tunisia-adr.js';
+import {UserService} from '../users/users.service';
+import {TripService} from '../trips/trips.service';
 
 declare var require: any;
 const TunisiaGovAndDelg = require('./tunisia.js');
@@ -118,9 +120,17 @@ export class AddressComponent implements OnInit {
   lngAdrUp: any;
   cityAdrUp: any;
   input: any;
+  Listuserauto = [];
+  clientFilter: any;
+
+
 
   @ViewChild('search')
   public searchElementRef: ElementRef;
+  private Listuser = [];
+  private selectedUser: string;
+  private selecteduserExp: any;
+  private dataUser: any;
 
   constructor(
     private mapsAPILoader: MapsAPILoader,
@@ -129,12 +139,42 @@ export class AddressComponent implements OnInit {
     private modalService: NgbModal,
     public http: Http,
     public sanitizer: DomSanitizer,
-    private tservice: AddressService
+    private tservice: AddressService,
+    private  userService: UserService,
+    private tripService: TripService
   ) {}
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getAdresses();
+    this.getAllUsers();
+  }
+  getAllUsers() {
+    this.tripService.getUsers().subscribe(data => {
+      this.result = data['_body'];
+      // console.log(data['_body'])
+      const jo = JSON.parse(this.result);
+      const obj = Array.of(jo.data);
+      this.jsonObj = obj[0];
+      // this.Listuser = this.jsonObj;
+      for (let i = 0; i < this.jsonObj.length; i++) {
+        if (this.jsonObj[i].accountActive === true) {
+          this.Listuser.push(this.jsonObj[i]);
+          this.Listuserauto.push(this.jsonObj[i].nameUser + ' ' + this.jsonObj[i].surnameUser);
+        }
+      }
+      // console.log('listuser!::', this.Listuserauto);
+    }, error => {
+      // console.log(error);
+    });
+  }
+  onClickUserExp(user) {
+    if (user != null) {
+      this.selectedUser = user.title;
+      console.log(this.selectedUser);
+      const ind = this.Listuserauto.indexOf(this.selectedUser);
+      this.selecteduserExp = this.Listuser[ind];
+    }
   }
 
   searchAddressFromList() {
@@ -415,9 +455,15 @@ addAdresse(model) {
   if (this.zipCode !== undefined) {
     this.cityGlobalDest = this.cityGlobalDest + ' ' + this.zipCode;
   }
+  let userId: string = null
+ if (this.selecteduserExp){
+   userId = this.selecteduserExp.idUser;
+ } else {
+   userId = this.currentUser.data[0].idUser;
+ }
 
   console.log(this.latGlobalDest + '***' + this.lngGlobalDest + '***' + this.cityGlobalDest);
-  this.tservice.addadress(this.latGlobalDest, this.lngGlobalDest, this.currentUser.data[0].idUser, this.currentUser.data[0].idUser,
+  this.tservice.addadress(this.latGlobalDest, this.lngGlobalDest, userId, userId,
        this.labelAdresse, this.nomContact, this.telContact, this.typeAdresse, this.list, this.currentUser.data[0].nameUser,
         this.cityGlobalDest, this.base64textString[0], this.adresse, this.delegation, this.gouvernorat, this.zipCode);
         this.getAdresses();
@@ -543,6 +589,8 @@ deleteAdresse(adresse) {
   }
 
   /* --- */
+
+
 
   resetDelegInput() {
     this.delegation = '';

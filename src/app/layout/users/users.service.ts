@@ -76,7 +76,10 @@ export class UserService {
     headers.append('Content-Type', 'application/json' );
     const options = new RequestOptions({ headers: headers });
     return this.http.put(this.url + '/update/' + id, userdata, {headers: this.headerOptions});
-    console.log("updated suscess")
+    console.log('updated suscess');
+  }
+  getActiveUsers(){
+    return this.http.get(this.url + 'actives/', {headers: this.headerOptions});
   }
 
 }
