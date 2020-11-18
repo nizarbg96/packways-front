@@ -236,7 +236,14 @@
         <br>
         <div class="container">
         <div class="row">
+
             <div class="col-xl-6 text-xs-center">
+              <div class="form-group">
+                <ng2-completer [inputClass]="'form-control form-control-inline'" [datasource]="Listuserauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
+                               [textNoResults]="'Pas trouvé.'" [placeholder]="'Entrer le client'" id="selecteduserExp" name="selecteduserExp" [(ngModel)]="clientFilter"
+                               (selected)="onClickUserExp($event)">
+                </ng2-completer>
+              </div>
                 <div class="form-group">
                         <input type="text" class="form-control" id="inputNewLabelAdresse" name="inputNewLabelAdresse" [(ngModel)]="labelAdresse" placeholder="Label" required>
                 </div>

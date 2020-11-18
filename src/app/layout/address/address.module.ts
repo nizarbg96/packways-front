@@ -14,6 +14,8 @@ import { HttpModule } from '@angular/http';
 import {DataTableModule} from 'angular-6-datatable';
 import { AddressService } from './address.service';
 import { Ng2CompleterModule } from 'ng2-completer';
+import {UserService} from '../users/users.service';
+import {TripService} from '../trips/trips.service';
 
 @NgModule({
   imports: [
@@ -34,7 +36,7 @@ import { Ng2CompleterModule } from 'ng2-completer';
     Ng2CompleterModule
   ],
   declarations: [ AddressComponent ],
-  providers: [AddressService],
+  providers: [AddressService, UserService, TripService],
   bootstrap: [ AddressComponent ]
 })
 export class AddressModule { }
