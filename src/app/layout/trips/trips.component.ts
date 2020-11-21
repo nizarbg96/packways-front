@@ -1,6 +1,6 @@
 import { AdresseService } from './../adresses/adresses.service';
 import { Adresse } from './../adresses/Adresse';
-import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, Inject } from '@angular/core';
 import { routerTransition } from '../../router.animations';
 import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
 
@@ -13,7 +13,7 @@ import {Trip} from './Trip';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 // import { Observable} from 'rxjs';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {MatDialog, MatDialogRef, MatPaginator, MatSort, MatTableDataSource, MAT_DIALOG_DATA} from '@angular/material';
 import { LoginService } from 'src/app/login/login.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatSnackBar } from '@angular/material';
@@ -248,6 +248,9 @@ export class TripsComponent implements OnInit {
   adminFilter: any;
   adminFilterkey: any;
   idadmin: any;
+  animal: string;
+  name: string;
+
   jwt = JSON.parse(localStorage.getItem('currentUser')).token;
   headerOptions = new  Headers({
     'Content-Type':  'application/json',
@@ -263,7 +266,7 @@ export class TripsComponent implements OnInit {
 
 
 
-    constructor( private imageCompress: NgxImageCompressService,  private modalService: NgbModal, public adressService: AdresseService, private tservice: TripService,
+    constructor( public dialog: MatDialog, private imageCompress: NgxImageCompressService,  private modalService: NgbModal, public adressService: AdresseService, private tservice: TripService,
          public loginService: LoginService, public http: Http, public sanitizer: DomSanitizer, public router: Router,
          private spinner: NgxSpinnerService, private snackBar: MatSnackBar, private tripExcelService: TripExcelService) {
             this.auth = localStorage.getItem('auth');
@@ -314,6 +317,17 @@ export class TripsComponent implements OnInit {
         console.log(this.Adresses);
 
     }
+    openDialog(): void {
+        const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+          width: '60%',
+          data: this.listTripDataFromExcel
+        });
+        console.log(this.tripDataFromExcel);
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+          this.animal = result;
+        });
+      }
 
     onClickUserExp(user) {
         if (user != null) {
@@ -2796,6 +2810,8 @@ export class TripsComponent implements OnInit {
                     this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
                         duration: 5000,
                     });
+                    this.openDialog();
+
                     return;
                 } else if ((descriptionTrip === null || descriptionTrip === '') || (valueTrip === null || valueTrip === '')
                 || (telContAdresseDest === null || telContAdresseDest === '')
@@ -2804,6 +2820,7 @@ export class TripsComponent implements OnInit {
                     this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
                         duration: 5000,
                     });
+                    this.openDialog();
                     return;
                 }
 
@@ -3422,5 +3439,28 @@ export class TripsComponent implements OnInit {
       if (this.listScanId.slice().filter((ref) => ref === refTrip).length > 0) { return true; } else { return false; }
   }
 }
+@Component({
+  selector: 'dialog-overview-example-dialog',
+  templateUrl: 'dialog-overview-example-dialog.html',
+})
+export class DialogOverviewExampleDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any[],  private tservice: TripService) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+  saveExcelTrips(data: any[]) {
+    this.tservice.addListTripsFromExel(data);
+    this.dialogRef.close();
+  }
+
+}
+export interface DialogData {
+    animal: string;
+    name: string;
+  }
 
 
