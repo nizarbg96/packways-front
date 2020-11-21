@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 
 
 import { TripsRoutingModule } from './trips-routing.module';
-import { TripsComponent } from './trips.component';
+import { DialogOverviewExampleDialog, TripsComponent } from './trips.component';
 import { PageHeaderModule } from '../../shared';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -24,6 +24,7 @@ import { MatSnackBarModule } from '@angular/material';
 import { Ng2CompleterModule } from 'ng2-completer';
 
 import {NgxImageCompressService} from 'ngx-image-compress';
+import { MaterialLibModule } from '../material/material.module';
 
 /* import * as bootstrap from 'bootstrap';
 import * as $ from 'jquery'; */
@@ -33,9 +34,10 @@ import * as $ from 'jquery'; */
     imports: [CommonModule, TripsRoutingModule, PageHeaderModule, NgbModule, HttpModule,
          HttpClientModule, DataTableModule, FormsModule, MatCardModule, NgxQRCodeModule,
           MatTableModule, MatPaginatorModule, MatFormFieldModule, UiSwitchModule,
-           NgxSpinnerModule, MatSnackBarModule, Ng2CompleterModule],
-    declarations: [TripsComponent],
-    providers: [TripService, LoginService, AdresseService,  NgxImageCompressService ]
+           NgxSpinnerModule, MatSnackBarModule, Ng2CompleterModule, MaterialLibModule],
+    declarations: [TripsComponent, DialogOverviewExampleDialog],
+    providers: [TripService, LoginService, AdresseService,  NgxImageCompressService ],
+    entryComponents: [DialogOverviewExampleDialog]
 })
 export class TripsModule {}
 

@@ -12,6 +12,7 @@ import { CaisseComponent } from './caisse/caisse.component';
 import { RapportComponent } from './rapport/rapport.component';
 import { ParainageComponent } from './parainage/parainage.component';
 
+
 @NgModule({
     imports: [
         CommonModule,

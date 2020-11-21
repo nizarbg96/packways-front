@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>{{data.length}} colis sont prêts à importer</h1>
+<p mat-dialog-title class="text-danger"> Veuillez vérifier la {{data.length + 2}} éme ligne dans votre fichier excel</p>
+<div mat-dialog-content>
+  <p>Liste des colis prêts à importer</p>
+  <div class="row  border rounded" style="max-height:40vh;overflow-y:scroll">
+    <div *ngFor="let trip of data"  style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        <strong>Destinataire:</strong> {{trip.destTrip.contactAdr}} | 
+        <strong>Tél:</strong> {{trip.destTrip.mobileAdr}} | 
+        <strong> Adresse:</strong> {{trip.destTrip.cityAdr}} 
+      </p> 
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>  
+  </div>
+</div>
+<div mat-dialog-actions class="mt-3 mb-3">
+  <button mat-raised-button color="primary" (click)='saveExcelTrips(data)' cdkFocusInitial>Confirmer l'importation</button>
+  <button  mat-stroked-button color="primary" (click)="onNoClick()" class="ml-2" >Annuler</button>
+</div>
