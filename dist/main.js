@@ -14,21 +14,22 @@ var map = {
 	],
 	"./address/address.module": [
 		"./src/app/layout/address/address.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~6aaab6f4",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~rapport-rapport-mod~e5c51556",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-mod~a3830262",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage~1b775397",
 		"default~address-address-module~adresses-adresses-module~trips-trips-module~users-users-module",
-		"default~address-address-module~map-trips-map-trips-module",
+		"default~address-address-module~trips-trips-module",
 		"common",
 		"address-address-module"
 	],
 	"./adresses/adresses.module": [
 		"./src/app/layout/adresses/adresses.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~6aaab6f4",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
 		"default~address-address-module~adresses-adresses-module~trips-trips-module~users-users-module",
 		"default~adresses-adresses-module~users-users-module",
 		"common",
@@ -40,7 +41,7 @@ var map = {
 	],
 	"./bs-component/bs-component.module": [
 		"./src/app/layout/bs-component/bs-component.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
 		"common",
 		"bs-component-bs-component-module"
 	],
@@ -51,13 +52,13 @@ var map = {
 	],
 	"./caisse/caisse.module": [
 		"./src/app/layout/caisse/caisse.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~6aaab6f4",
-		"default~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-module~pickup-pickup-modul~51ee4f5d",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~rapport-rapport-mod~e5c51556",
-		"default~caisse-caisse-module~courbeille-courbeille-module~rapport-rapport-module~statlivreur-statliv~83f43d45",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-mod~a3830262",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage~1b775397",
+		"default~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage-module~rapport-rapport~cc5e1e60",
 		"common",
 		"caisse-caisse-module"
 	],
@@ -68,32 +69,32 @@ var map = {
 	],
 	"./courbeille/courbeille.module": [
 		"./src/app/layout/courbeille/courbeille.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~6aaab6f4",
-		"default~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-module~pickup-pickup-modul~51ee4f5d",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~rapport-rapport-mod~e5c51556",
-		"default~caisse-caisse-module~courbeille-courbeille-module~rapport-rapport-module~statlivreur-statliv~83f43d45",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-mod~a3830262",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage~1b775397",
+		"default~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage-module~rapport-rapport~cc5e1e60",
 		"common",
 		"courbeille-courbeille-module"
 	],
 	"./dashboard/dashboard.module": [
 		"./src/app/layout/dashboard/dashboard.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~6aaab6f4",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
 		"common",
 		"dashboard-dashboard-module"
 	],
 	"./drivers/drivers.module": [
 		"./src/app/layout/drivers/drivers.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~6aaab6f4",
-		"default~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-module~pickup-pickup-modul~51ee4f5d",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-mod~a3830262",
 		"default~drivers-drivers-module~pickup-pickup-module~trips-trips-module~users-users-module",
 		"common",
 		"drivers-drivers-module"
@@ -110,21 +111,20 @@ var map = {
 	],
 	"./layout/layout.module": [
 		"./src/app/layout/layout.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
 		"common",
 		"layout-layout-module"
 	],
 	"./login/login.module": [
 		"./src/app/login/login.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
 		"common",
 		"login-login-module"
 	],
 	"./map-trips/map-trips.module": [
 		"./src/app/layout/map-trips/map-trips.module.ts",
-		"default~address-address-module~map-trips-map-trips-module",
 		"common",
 		"map-trips-map-trips-module"
 	],
@@ -132,36 +132,48 @@ var map = {
 		"./src/app/not-found/not-found.module.ts",
 		"not-found-not-found-module"
 	],
+	"./parainage/parainage.module": [
+		"./src/app/layout/parainage/parainage.module.ts",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-mod~a3830262",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage~1b775397",
+		"default~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage-module~rapport-rapport~cc5e1e60",
+		"common",
+		"parainage-parainage-module"
+	],
 	"./pickup/pickup.module": [
 		"./src/app/layout/pickup/pickup.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~6aaab6f4",
-		"default~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-module~pickup-pickup-modul~51ee4f5d",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-mod~a3830262",
 		"default~drivers-drivers-module~pickup-pickup-module~trips-trips-module~users-users-module",
 		"common",
 		"pickup-pickup-module"
 	],
 	"./profile/profile.module": [
 		"./src/app/layout/profile/profile.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~6aaab6f4",
-		"default~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-module~pickup-pickup-modul~51ee4f5d",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-mod~a3830262",
 		"common",
 		"profile-profile-module"
 	],
 	"./rapport/rapport.module": [
 		"./src/app/layout/rapport/rapport.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~6aaab6f4",
-		"default~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-module~pickup-pickup-modul~51ee4f5d",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~rapport-rapport-mod~e5c51556",
-		"default~caisse-caisse-module~courbeille-courbeille-module~rapport-rapport-module~statlivreur-statliv~83f43d45",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-mod~a3830262",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage~1b775397",
+		"default~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage-module~rapport-rapport~cc5e1e60",
 		"common",
 		"rapport-rapport-module"
 	],
@@ -171,21 +183,21 @@ var map = {
 	],
 	"./signup/signup.module": [
 		"./src/app/signup/signup.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
 		"common",
 		"signup-signup-module"
 	],
 	"./statlivreur/statlivreur.module": [
 		"./src/app/layout/statlivreur/statlivreur.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~6aaab6f4",
-		"default~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-module~pickup-pickup-modul~51ee4f5d",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~rapport-rapport-mod~e5c51556",
-		"default~caisse-caisse-module~courbeille-courbeille-module~rapport-rapport-module~statlivreur-statliv~83f43d45",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-mod~a3830262",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage~1b775397",
+		"default~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage-module~rapport-rapport~cc5e1e60",
 		"common",
 		"statlivreur-statlivreur-module"
 	],
@@ -196,25 +208,26 @@ var map = {
 	],
 	"./trips/trips.module": [
 		"./src/app/layout/trips/trips.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~6aaab6f4",
-		"default~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-module~pickup-pickup-modul~51ee4f5d",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~rapport-rapport-mod~e5c51556",
-		"default~caisse-caisse-module~courbeille-courbeille-module~rapport-rapport-module~statlivreur-statliv~83f43d45",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-mod~a3830262",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage~1b775397",
+		"default~caisse-caisse-module~courbeille-courbeille-module~parainage-parainage-module~rapport-rapport~cc5e1e60",
 		"default~drivers-drivers-module~pickup-pickup-module~trips-trips-module~users-users-module",
 		"default~address-address-module~adresses-adresses-module~trips-trips-module~users-users-module",
+		"default~address-address-module~trips-trips-module",
 		"common",
 		"trips-trips-module"
 	],
 	"./users/users.module": [
 		"./src/app/layout/users/users.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~6aaab6f4",
-		"default~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-module~pickup-pickup-modul~51ee4f5d",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~49244785",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~drivers-drivers-mod~a3830262",
 		"default~drivers-drivers-module~pickup-pickup-module~trips-trips-module~users-users-module",
 		"default~address-address-module~adresses-adresses-module~trips-trips-module~users-users-module",
 		"default~adresses-adresses-module~users-users-module",
@@ -223,9 +236,9 @@ var map = {
 	],
 	"./verifpage/verifpage.module": [
 		"./src/app/verifpage/verifpage.module.ts",
-		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~9385c6ba",
-		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~ff5ffe15",
-		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~4f7a1040",
+		"default~address-address-module~adresses-adresses-module~bs-component-bs-component-module~caisse-cais~71345502",
+		"default~address-address-module~adresses-adresses-module~caisse-caisse-module~courbeille-courbeille-m~06b30971",
+		"default~address-address-module~caisse-caisse-module~courbeille-courbeille-module~dashboard-dashboard~363f7ea2",
 		"common",
 		"verifpage-verifpage-module"
 	]
@@ -281,8 +294,8 @@ var routes = [
     { path: 'signup', loadChildren: './signup/signup.module#SignupModule' },
     { path: 'error', loadChildren: './server-error/server-error.module#ServerErrorModule' },
     { path: 'access-denied', loadChildren: './access-denied/access-denied.module#AccessDeniedModule' },
-    { path: 'not-found', loadChildren: './not-found/not-found.module#NotFoundModule' },
-    { path: '**', redirectTo: 'not-found' }
+    { path: 'accueil', loadChildren: './not-found/not-found.module#NotFoundModule' },
+    { path: '**', redirectTo: 'accueil' }
 ];
 var AppRoutingModule = /** @class */ (function () {
     function AppRoutingModule() {
@@ -379,11 +392,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
 /* harmony import */ var _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/platform-browser/animations */ "./node_modules/@angular/platform-browser/fesm5/animations.js");
-/* harmony import */ var _ngx_translate_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @ngx-translate/core */ "./node_modules/@ngx-translate/core/fesm5/ngx-translate-core.js");
-/* harmony import */ var _ngx_translate_http_loader__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @ngx-translate/http-loader */ "./node_modules/@ngx-translate/http-loader/fesm5/ngx-translate-http-loader.js");
-/* harmony import */ var _app_routing_module__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./app-routing.module */ "./src/app/app-routing.module.ts");
-/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
-/* harmony import */ var _shared__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./shared */ "./src/app/shared/index.ts");
+/* harmony import */ var _ng_idle_keepalive__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @ng-idle/keepalive */ "./node_modules/@ng-idle/keepalive/fesm2015/ng-idle-keepalive.js");
+/* harmony import */ var _ngx_translate_core__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @ngx-translate/core */ "./node_modules/@ngx-translate/core/fesm5/ngx-translate-core.js");
+/* harmony import */ var _ngx_translate_http_loader__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @ngx-translate/http-loader */ "./node_modules/@ngx-translate/http-loader/fesm5/ngx-translate-http-loader.js");
+/* harmony import */ var _app_routing_module__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./app-routing.module */ "./src/app/app-routing.module.ts");
+/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
+/* harmony import */ var _shared__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./shared */ "./src/app/shared/index.ts");
+/* harmony import */ var _auth_auth_interceptor_service__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./auth/auth-interceptor.service */ "./src/app/auth/auth-interceptor.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -400,6 +415,9 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
 
+
+
+// import { BnNgIdleService } from 'bn-ng-idle';
 // AoT requires an exported function for factories
 var createTranslateLoader = function (http) {
     /* for development
@@ -408,7 +426,7 @@ var createTranslateLoader = function (http) {
         '/start-angular/SB-Admin-BS4-Angular-6/master/dist/assets/i18n/',
         '.json'
     ); */
-    return new _ngx_translate_http_loader__WEBPACK_IMPORTED_MODULE_6__["TranslateHttpLoader"](http, './assets/i18n/', '.json');
+    return new _ngx_translate_http_loader__WEBPACK_IMPORTED_MODULE_7__["TranslateHttpLoader"](http, './assets/i18n/', '.json');
 };
 var AppModule = /** @class */ (function () {
     function AppModule() {
@@ -420,21 +438,97 @@ var AppModule = /** @class */ (function () {
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_3__["BrowserModule"],
                 _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_4__["BrowserAnimationsModule"],
                 _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClientModule"],
-                _ngx_translate_core__WEBPACK_IMPORTED_MODULE_5__["TranslateModule"].forRoot({
+                _ngx_translate_core__WEBPACK_IMPORTED_MODULE_6__["TranslateModule"].forRoot({
                     loader: {
-                        provide: _ngx_translate_core__WEBPACK_IMPORTED_MODULE_5__["TranslateLoader"],
+                        provide: _ngx_translate_core__WEBPACK_IMPORTED_MODULE_6__["TranslateLoader"],
                         useFactory: createTranslateLoader,
                         deps: [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"]]
                     }
                 }),
-                _app_routing_module__WEBPACK_IMPORTED_MODULE_7__["AppRoutingModule"]
+                _app_routing_module__WEBPACK_IMPORTED_MODULE_8__["AppRoutingModule"],
+                _ng_idle_keepalive__WEBPACK_IMPORTED_MODULE_5__["NgIdleKeepaliveModule"].forRoot(),
             ],
-            declarations: [_app_component__WEBPACK_IMPORTED_MODULE_8__["AppComponent"]],
-            providers: [_shared__WEBPACK_IMPORTED_MODULE_9__["AuthGuard"]],
-            bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_8__["AppComponent"]]
+            declarations: [_app_component__WEBPACK_IMPORTED_MODULE_9__["AppComponent"]],
+            providers: [_shared__WEBPACK_IMPORTED_MODULE_10__["AuthGuard"],
+                {
+                    provide: _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HTTP_INTERCEPTORS"],
+                    useClass: _auth_auth_interceptor_service__WEBPACK_IMPORTED_MODULE_11__["AuthInterceptorService"],
+                    multi: true
+                }],
+            bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_9__["AppComponent"]]
         })
     ], AppModule);
     return AppModule;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/auth/auth-interceptor.service.ts":
+/*!**************************************************!*\
+  !*** ./src/app/auth/auth-interceptor.service.ts ***!
+  \**************************************************/
+/*! exports provided: AuthInterceptorService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AuthInterceptorService", function() { return AuthInterceptorService; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var AuthInterceptorService = /** @class */ (function () {
+    function AuthInterceptorService() {
+    }
+    AuthInterceptorService.prototype.intercept = function (req, next) {
+        if (localStorage.getItem('isLoggedin') && localStorage.getItem('currentUser')) {
+            console.log('cloning request');
+            var jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+            console.log('after cloning jwt = ' + jwt);
+            var modifiedReq = req.clone({
+                headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpHeaders"]({
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Credentials': 'true',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+                    'Authorization': "Bearer " + jwt
+                })
+            });
+            return next.handle(modifiedReq);
+        }
+        else {
+            return next.handle(req);
+        }
+        /*return this.authService.user.pipe(
+          take(1),
+          exhaustMap(user => {
+            if (!user) {
+              return next.handle(req);
+            }
+            const modifiedReq = req.clone({
+              params: new HttpParams().set('auth', user.token)
+            });
+            return next.handle(modifiedReq);
+          })
+        );*/
+    };
+    AuthInterceptorService = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])(),
+        __metadata("design:paramtypes", [])
+    ], AuthInterceptorService);
+    return AuthInterceptorService;
 }());
 
 
@@ -971,9 +1065,14 @@ __webpack_require__.r(__webpack_exports__);
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+var REMOTE_URL = 'http://5.39.65.18:8052';
+var LOCAL_URL = 'http://127.0.0.1:8052';
 var environment = {
     production: false,
-    googleAPIKey: 'AIzaSyAPAf-flbiOFpWjBaVK_p0sH1mWGYNdCAM'
+    // googleAPIKey: 'AIzaSyAPAf-flbiOFpWjBaVK_p0sH1mWGYNdCAM'
+    googleAPIKey: 'AIzaSyA-Mv9N7wwVvT4xndz8QFkxuZpWlmdoKgw',
+    // localhost url
+    serverUrl: REMOTE_URL
 };
 /*
  * For easier debugging in development mode, you can import the following file
@@ -1023,7 +1122,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_2__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\NewPackwaysWeb\dotways\src\main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! C:\Users\ACER\Desktop\packways-front\src\main.ts */"./src/main.ts");
 
 
 /***/ })

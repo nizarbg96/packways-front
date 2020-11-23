@@ -50,7 +50,7 @@ var NotFoundRoutingModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<p>\n  not-found works!\n</p>\n"
+module.exports = "<html>\n  <body>\n      <div>\n      <div><img src=\"assets/images/logo.png\" width=\"150px\" class=\"user-avatar\" />\n        <div Align=RIGHT>Pour profiter de nos services merci de <br><a href=\"\" [routerLink]=\"['/login']\">cliquer ici</a></div>\n      </div>\n    </div>\n  </body>\n</html>\n"
 
 /***/ }),
 
