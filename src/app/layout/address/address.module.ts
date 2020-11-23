@@ -16,13 +16,12 @@ import { AddressService } from './address.service';
 import { Ng2CompleterModule } from 'ng2-completer';
 import {UserService} from '../users/users.service';
 import {TripService} from '../trips/trips.service';
-
+ // imports: [
+  //   AgmCoreModule.forRoot({
+  //     apiKey: environment.googleAPIKey,
+  //     libraries: ['places']
+  //   }),
 @NgModule({
-  imports: [
-    AgmCoreModule.forRoot({
-      apiKey: environment.googleAPIKey,
-      libraries: ['places']
-    }),
     CommonModule,
     AddressRoutingModule,
     FormsModule,
