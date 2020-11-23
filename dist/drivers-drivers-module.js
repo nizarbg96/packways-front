@@ -38,7 +38,7 @@ module.exports = "<div [@routerTransition]>\n    <app-page-header [heading]=\"'G
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "fieldset.scheduler-border {\n  border: 1px groove #ddd !important;\n  padding: 0 1.4em 1.4em 1.4em !important;\n  margin: 0 0 1.5em 0 !important;\n  box-shadow: 0px 0px 0px 0px #000; }\n\nlegend.scheduler-border {\n  font-size: 1.2em !important;\n  font-weight: bold !important;\n  text-align: left !important;\n  width: auto;\n  padding: 0 10px;\n  border-bottom: none; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvbGF5b3V0L2RyaXZlcnMvRDpcXE5ld1BhY2t3YXlzV2ViXFxkb3R3YXlzL3NyY1xcYXBwXFxsYXlvdXRcXGRyaXZlcnNcXGRyaXZlcnMuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxtQ0FBa0M7RUFDbEMsd0NBQXVDO0VBQ3ZDLCtCQUE4QjtFQUV0QixpQ0FBaUMsRUFDNUM7O0FBRUQ7RUFDSSw0QkFBMkI7RUFDM0IsNkJBQTRCO0VBQzVCLDRCQUEyQjtFQUMzQixZQUFVO0VBQ1YsZ0JBQWM7RUFDZCxvQkFBa0IsRUFDckIiLCJmaWxlIjoic3JjL2FwcC9sYXlvdXQvZHJpdmVycy9kcml2ZXJzLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiZmllbGRzZXQuc2NoZWR1bGVyLWJvcmRlciB7XHJcbiAgICBib3JkZXI6IDFweCBncm9vdmUgI2RkZCAhaW1wb3J0YW50O1xyXG4gICAgcGFkZGluZzogMCAxLjRlbSAxLjRlbSAxLjRlbSAhaW1wb3J0YW50O1xyXG4gICAgbWFyZ2luOiAwIDAgMS41ZW0gMCAhaW1wb3J0YW50O1xyXG4gICAgLXdlYmtpdC1ib3gtc2hhZG93OiAgMHB4IDBweCAwcHggMHB4ICMwMDA7XHJcbiAgICAgICAgICAgIGJveC1zaGFkb3c6ICAwcHggMHB4IDBweCAwcHggIzAwMDtcclxufVxyXG5cclxubGVnZW5kLnNjaGVkdWxlci1ib3JkZXIge1xyXG4gICAgZm9udC1zaXplOiAxLjJlbSAhaW1wb3J0YW50O1xyXG4gICAgZm9udC13ZWlnaHQ6IGJvbGQgIWltcG9ydGFudDtcclxuICAgIHRleHQtYWxpZ246IGxlZnQgIWltcG9ydGFudDtcclxuICAgIHdpZHRoOmF1dG87XHJcbiAgICBwYWRkaW5nOjAgMTBweDtcclxuICAgIGJvcmRlci1ib3R0b206bm9uZTtcclxufSJdfQ== */"
+module.exports = "fieldset.scheduler-border {\n  border: 1px groove #ddd !important;\n  padding: 0 1.4em 1.4em 1.4em !important;\n  margin: 0 0 1.5em 0 !important;\n  box-shadow: 0px 0px 0px 0px #000; }\n\nlegend.scheduler-border {\n  font-size: 1.2em !important;\n  font-weight: bold !important;\n  text-align: left !important;\n  width: auto;\n  padding: 0 10px;\n  border-bottom: none; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvbGF5b3V0L2RyaXZlcnMvQzpcXFVzZXJzXFxBQ0VSXFxEZXNrdG9wXFxwYWNrd2F5cy1mcm9udC9zcmNcXGFwcFxcbGF5b3V0XFxkcml2ZXJzXFxkcml2ZXJzLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksbUNBQWtDO0VBQ2xDLHdDQUF1QztFQUN2QywrQkFBOEI7RUFFdEIsaUNBQWlDLEVBQzVDOztBQUVEO0VBQ0ksNEJBQTJCO0VBQzNCLDZCQUE0QjtFQUM1Qiw0QkFBMkI7RUFDM0IsWUFBVTtFQUNWLGdCQUFjO0VBQ2Qsb0JBQWtCLEVBQ3JCIiwiZmlsZSI6InNyYy9hcHAvbGF5b3V0L2RyaXZlcnMvZHJpdmVycy5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbImZpZWxkc2V0LnNjaGVkdWxlci1ib3JkZXIge1xuICAgIGJvcmRlcjogMXB4IGdyb292ZSAjZGRkICFpbXBvcnRhbnQ7XG4gICAgcGFkZGluZzogMCAxLjRlbSAxLjRlbSAxLjRlbSAhaW1wb3J0YW50O1xuICAgIG1hcmdpbjogMCAwIDEuNWVtIDAgIWltcG9ydGFudDtcbiAgICAtd2Via2l0LWJveC1zaGFkb3c6ICAwcHggMHB4IDBweCAwcHggIzAwMDtcbiAgICAgICAgICAgIGJveC1zaGFkb3c6ICAwcHggMHB4IDBweCAwcHggIzAwMDtcbn1cblxubGVnZW5kLnNjaGVkdWxlci1ib3JkZXIge1xuICAgIGZvbnQtc2l6ZTogMS4yZW0gIWltcG9ydGFudDtcbiAgICBmb250LXdlaWdodDogYm9sZCAhaW1wb3J0YW50O1xuICAgIHRleHQtYWxpZ246IGxlZnQgIWltcG9ydGFudDtcbiAgICB3aWR0aDphdXRvO1xuICAgIHBhZGRpbmc6MCAxMHB4O1xuICAgIGJvcmRlci1ib3R0b206bm9uZTtcbn0iXX0= */"
 
 /***/ }),
 
@@ -520,6 +520,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DriversService", function() { return DriversService; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/http */ "./node_modules/@angular/http/fesm5/http.js");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../environments/environment */ "./src/environments/environment.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -532,24 +533,34 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 // import { HttpClient } from '@angular/common/http';
 
+
 var DriversService = /** @class */ (function () {
     function DriversService(http) {
         this.http = http;
-        this.url = 'http://147.135.136.78:8052/driver/';
-        this.urlTrip = 'http://147.135.136.78:8052/trip/';
+        this.url = _environments_environment__WEBPACK_IMPORTED_MODULE_2__["environment"].serverUrl + '/driver/';
+        this.urlTrip = _environments_environment__WEBPACK_IMPORTED_MODULE_2__["environment"].serverUrl + '/trip/';
+        this.jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+        this.headerOptions = new _angular_http__WEBPACK_IMPORTED_MODULE_1__["Headers"]({
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+            'Authorization': "Bearer " + this.jwt
+        });
     }
     DriversService.prototype.getDriversFromServe = function () {
-        return this.http.get(this.url + "/alls");
+        return this.http.get(this.url + "/alls", { headers: this.headerOptions });
     };
     DriversService.prototype.getTripsByDriverAndDate = function (idDriver, sDate, eDate) {
-        return this.http.get(this.urlTrip + "bydatedriver?id=" + idDriver + "&d1=" + sDate + "&d2=" + eDate);
+        return this.http.get(this.urlTrip + "bydatedriver?id=" + idDriver + "&d1=" + sDate + "&d2=" + eDate, { headers: this.headerOptions });
     };
     DriversService.prototype.deleteDriver = function (idDriver, driverData) {
         var headers = new _angular_http__WEBPACK_IMPORTED_MODULE_1__["Headers"]();
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json');
         var options = new _angular_http__WEBPACK_IMPORTED_MODULE_1__["RequestOptions"]({ headers: headers });
-        this.http.put(this.url + 'update/' + idDriver, driverData, options).subscribe(function (data) {
+        this.http.put(this.url + 'update/' + idDriver, driverData, { headers: this.headerOptions }).subscribe(function (data) {
             console.log('Driver deleted');
         }, function (error) {
         });
@@ -559,7 +570,7 @@ var DriversService = /** @class */ (function () {
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json');
         var options = new _angular_http__WEBPACK_IMPORTED_MODULE_1__["RequestOptions"]({ headers: headers });
-        return this.http.put(this.url + '/update/' + id, driverData, options);
+        return this.http.put(this.url + '/update/' + id, driverData, { headers: this.headerOptions });
         console.log("updated suscess");
     };
     DriversService.prototype.BlockDriver = function (idDriver, driverData) {
@@ -567,7 +578,7 @@ var DriversService = /** @class */ (function () {
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json');
         var options = new _angular_http__WEBPACK_IMPORTED_MODULE_1__["RequestOptions"]({ headers: headers });
-        this.http.put(this.url + 'update/' + idDriver, driverData, options).subscribe(function (data) {
+        this.http.put(this.url + 'update/' + idDriver, driverData, { headers: this.headerOptions }).subscribe(function (data) {
             console.log('User Blocked');
         }, function (error) {
         });

@@ -81,7 +81,7 @@ module.exports = "<div [@routerTransition]>\n    <app-page-header [heading]=\"'P
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "fieldset.scheduler-border {\n  border: 1px groove #ddd !important;\n  padding: 0 1.4em 1.4em 1.4em !important;\n  margin: 0 0 1.5em 0 !important;\n  box-shadow: 0px 0px 0px 0px #000; }\n\nlegend.scheduler-border {\n  font-size: 1.2em !important;\n  font-weight: bold !important;\n  text-align: left !important;\n  width: auto;\n  padding: 0 10px;\n  border-bottom: none; }\n\nfieldset.scheduler-border-1 {\n  border: 1px groove #ddd !important;\n  padding: 0 0.3em 0.3em 0.3em !important;\n  margin: 0 0 0.2em 0 !important;\n  box-shadow: 0px 0px 0px 0px #000; }\n\nlegend.scheduler-border-1 {\n  font-size: 1.0em !important;\n  font-weight: bold !important;\n  text-align: left !important;\n  width: auto;\n  padding: 0 1px;\n  border-bottom: none; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvbGF5b3V0L3Byb2ZpbGUvRDpcXE5ld1BhY2t3YXlzV2ViXFxkb3R3YXlzL3NyY1xcYXBwXFxsYXlvdXRcXHByb2ZpbGVcXHByb2ZpbGUuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxtQ0FBa0M7RUFDbEMsd0NBQXVDO0VBQ3ZDLCtCQUE4QjtFQUV0QixpQ0FBaUMsRUFDNUM7O0FBRUQ7RUFDSSw0QkFBMkI7RUFDM0IsNkJBQTRCO0VBQzVCLDRCQUEyQjtFQUMzQixZQUFVO0VBQ1YsZ0JBQWM7RUFDZCxvQkFBa0IsRUFDckI7O0FBRUQ7RUFDRSxtQ0FBa0M7RUFDbEMsd0NBQXVDO0VBQ3ZDLCtCQUE4QjtFQUV0QixpQ0FBaUMsRUFDMUM7O0FBRUQ7RUFDRSw0QkFBMkI7RUFDM0IsNkJBQTRCO0VBQzVCLDRCQUEyQjtFQUMzQixZQUFVO0VBQ1YsZUFBYTtFQUNiLG9CQUFrQixFQUNuQiIsImZpbGUiOiJzcmMvYXBwL2xheW91dC9wcm9maWxlL3Byb2ZpbGUuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyJmaWVsZHNldC5zY2hlZHVsZXItYm9yZGVyIHtcclxuICAgIGJvcmRlcjogMXB4IGdyb292ZSAjZGRkICFpbXBvcnRhbnQ7XHJcbiAgICBwYWRkaW5nOiAwIDEuNGVtIDEuNGVtIDEuNGVtICFpbXBvcnRhbnQ7XHJcbiAgICBtYXJnaW46IDAgMCAxLjVlbSAwICFpbXBvcnRhbnQ7XHJcbiAgICAtd2Via2l0LWJveC1zaGFkb3c6ICAwcHggMHB4IDBweCAwcHggIzAwMDtcclxuICAgICAgICAgICAgYm94LXNoYWRvdzogIDBweCAwcHggMHB4IDBweCAjMDAwO1xyXG59XHJcblxyXG5sZWdlbmQuc2NoZWR1bGVyLWJvcmRlciB7XHJcbiAgICBmb250LXNpemU6IDEuMmVtICFpbXBvcnRhbnQ7XHJcbiAgICBmb250LXdlaWdodDogYm9sZCAhaW1wb3J0YW50O1xyXG4gICAgdGV4dC1hbGlnbjogbGVmdCAhaW1wb3J0YW50O1xyXG4gICAgd2lkdGg6YXV0bztcclxuICAgIHBhZGRpbmc6MCAxMHB4O1xyXG4gICAgYm9yZGVyLWJvdHRvbTpub25lO1xyXG59XHJcblxyXG5maWVsZHNldC5zY2hlZHVsZXItYm9yZGVyLTEge1xyXG4gIGJvcmRlcjogMXB4IGdyb292ZSAjZGRkICFpbXBvcnRhbnQ7XHJcbiAgcGFkZGluZzogMCAwLjNlbSAwLjNlbSAwLjNlbSAhaW1wb3J0YW50O1xyXG4gIG1hcmdpbjogMCAwIDAuMmVtIDAgIWltcG9ydGFudDtcclxuICAtd2Via2l0LWJveC1zaGFkb3c6ICAwcHggMHB4IDBweCAwcHggIzAwMDtcclxuICAgICAgICAgIGJveC1zaGFkb3c6ICAwcHggMHB4IDBweCAwcHggIzAwMDtcclxufVxyXG5cclxubGVnZW5kLnNjaGVkdWxlci1ib3JkZXItMSB7XHJcbiAgZm9udC1zaXplOiAxLjBlbSAhaW1wb3J0YW50O1xyXG4gIGZvbnQtd2VpZ2h0OiBib2xkICFpbXBvcnRhbnQ7XHJcbiAgdGV4dC1hbGlnbjogbGVmdCAhaW1wb3J0YW50O1xyXG4gIHdpZHRoOmF1dG87XHJcbiAgcGFkZGluZzowIDFweDtcclxuICBib3JkZXItYm90dG9tOm5vbmU7XHJcbn0iXX0= */"
+module.exports = "fieldset.scheduler-border {\n  border: 1px groove #ddd !important;\n  padding: 0 1.4em 1.4em 1.4em !important;\n  margin: 0 0 1.5em 0 !important;\n  box-shadow: 0px 0px 0px 0px #000; }\n\nlegend.scheduler-border {\n  font-size: 1.2em !important;\n  font-weight: bold !important;\n  text-align: left !important;\n  width: auto;\n  padding: 0 10px;\n  border-bottom: none; }\n\nfieldset.scheduler-border-1 {\n  border: 1px groove #ddd !important;\n  padding: 0 0.3em 0.3em 0.3em !important;\n  margin: 0 0 0.2em 0 !important;\n  box-shadow: 0px 0px 0px 0px #000; }\n\nlegend.scheduler-border-1 {\n  font-size: 1.0em !important;\n  font-weight: bold !important;\n  text-align: left !important;\n  width: auto;\n  padding: 0 1px;\n  border-bottom: none; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvbGF5b3V0L3Byb2ZpbGUvQzpcXFVzZXJzXFxBQ0VSXFxEZXNrdG9wXFxwYWNrd2F5cy1mcm9udC9zcmNcXGFwcFxcbGF5b3V0XFxwcm9maWxlXFxwcm9maWxlLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksbUNBQWtDO0VBQ2xDLHdDQUF1QztFQUN2QywrQkFBOEI7RUFFdEIsaUNBQWlDLEVBQzVDOztBQUVEO0VBQ0ksNEJBQTJCO0VBQzNCLDZCQUE0QjtFQUM1Qiw0QkFBMkI7RUFDM0IsWUFBVTtFQUNWLGdCQUFjO0VBQ2Qsb0JBQWtCLEVBQ3JCOztBQUVEO0VBQ0UsbUNBQWtDO0VBQ2xDLHdDQUF1QztFQUN2QywrQkFBOEI7RUFFdEIsaUNBQWlDLEVBQzFDOztBQUVEO0VBQ0UsNEJBQTJCO0VBQzNCLDZCQUE0QjtFQUM1Qiw0QkFBMkI7RUFDM0IsWUFBVTtFQUNWLGVBQWE7RUFDYixvQkFBa0IsRUFDbkIiLCJmaWxlIjoic3JjL2FwcC9sYXlvdXQvcHJvZmlsZS9wcm9maWxlLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiZmllbGRzZXQuc2NoZWR1bGVyLWJvcmRlciB7XG4gICAgYm9yZGVyOiAxcHggZ3Jvb3ZlICNkZGQgIWltcG9ydGFudDtcbiAgICBwYWRkaW5nOiAwIDEuNGVtIDEuNGVtIDEuNGVtICFpbXBvcnRhbnQ7XG4gICAgbWFyZ2luOiAwIDAgMS41ZW0gMCAhaW1wb3J0YW50O1xuICAgIC13ZWJraXQtYm94LXNoYWRvdzogIDBweCAwcHggMHB4IDBweCAjMDAwO1xuICAgICAgICAgICAgYm94LXNoYWRvdzogIDBweCAwcHggMHB4IDBweCAjMDAwO1xufVxuXG5sZWdlbmQuc2NoZWR1bGVyLWJvcmRlciB7XG4gICAgZm9udC1zaXplOiAxLjJlbSAhaW1wb3J0YW50O1xuICAgIGZvbnQtd2VpZ2h0OiBib2xkICFpbXBvcnRhbnQ7XG4gICAgdGV4dC1hbGlnbjogbGVmdCAhaW1wb3J0YW50O1xuICAgIHdpZHRoOmF1dG87XG4gICAgcGFkZGluZzowIDEwcHg7XG4gICAgYm9yZGVyLWJvdHRvbTpub25lO1xufVxuXG5maWVsZHNldC5zY2hlZHVsZXItYm9yZGVyLTEge1xuICBib3JkZXI6IDFweCBncm9vdmUgI2RkZCAhaW1wb3J0YW50O1xuICBwYWRkaW5nOiAwIDAuM2VtIDAuM2VtIDAuM2VtICFpbXBvcnRhbnQ7XG4gIG1hcmdpbjogMCAwIDAuMmVtIDAgIWltcG9ydGFudDtcbiAgLXdlYmtpdC1ib3gtc2hhZG93OiAgMHB4IDBweCAwcHggMHB4ICMwMDA7XG4gICAgICAgICAgYm94LXNoYWRvdzogIDBweCAwcHggMHB4IDBweCAjMDAwO1xufVxuXG5sZWdlbmQuc2NoZWR1bGVyLWJvcmRlci0xIHtcbiAgZm9udC1zaXplOiAxLjBlbSAhaW1wb3J0YW50O1xuICBmb250LXdlaWdodDogYm9sZCAhaW1wb3J0YW50O1xuICB0ZXh0LWFsaWduOiBsZWZ0ICFpbXBvcnRhbnQ7XG4gIHdpZHRoOmF1dG87XG4gIHBhZGRpbmc6MCAxcHg7XG4gIGJvcmRlci1ib3R0b206bm9uZTtcbn0iXX0= */"
 
 /***/ }),
 
@@ -309,6 +309,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/http */ "./node_modules/@angular/http/fesm5/http.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../environments/environment */ "./src/environments/environment.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -322,18 +323,28 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 // import { HttpClient } from '@angular/common/http';
 
 
+
 var ProfileService = /** @class */ (function () {
     function ProfileService(http, httpc) {
         this.http = http;
         this.httpc = httpc;
-        this.url = 'http://147.135.136.78:8052/user/';
+        this.url = _environments_environment__WEBPACK_IMPORTED_MODULE_3__["environment"].serverUrl + '/user/';
+        this.jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+        this.headerOptions = new _angular_http__WEBPACK_IMPORTED_MODULE_1__["Headers"]({
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+            'Authorization': "Bearer " + this.jwt
+        });
     }
     ProfileService.prototype.updateUser = function (userdata, id) {
         var headers = new _angular_http__WEBPACK_IMPORTED_MODULE_1__["Headers"]();
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json');
         var options = new _angular_http__WEBPACK_IMPORTED_MODULE_1__["RequestOptions"]({ headers: headers });
-        return this.http.put(this.url + 'updateuser/' + id, userdata, options);
+        return this.http.put(this.url + 'updateuser/' + id, userdata, { headers: this.headerOptions });
         console.log("updated suscess");
     };
     ProfileService = __decorate([
