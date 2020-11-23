@@ -22,6 +22,7 @@ import {TripService} from '../trips/trips.service';
   //     libraries: ['places']
   //   }),
 @NgModule({
+    imports: [
     CommonModule,
     AddressRoutingModule,
     FormsModule,
