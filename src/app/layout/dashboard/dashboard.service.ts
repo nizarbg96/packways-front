@@ -56,7 +56,14 @@ export class DashboardService {
     return this.httpc.get(`${this.url}/cherchelivreur?id=` + id);
   }
   getTripParClient() {
-    return this.httpc.get(`${this.url}/statusparclient`, {headers: this.headerOptions});
+    return this.http.get(`${this.url}/statusparclient`, {headers: new  Headers({
+      'Content-Type':  'application/json',
+      'Access-Control-Allow-Credentials' : 'true',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+      'Authorization': `Bearer ${this.jwt}`
+    })});
       }
 
 
