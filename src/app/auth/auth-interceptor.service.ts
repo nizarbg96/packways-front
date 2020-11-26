@@ -16,7 +16,6 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (localStorage.getItem('isLoggedin') && localStorage.getItem('currentUser')) {
       console.log('cloning request');
       const jwt = JSON.parse(localStorage.getItem('currentUser')).token;
-      console.log('after cloning jwt = ' + jwt);
       const modifiedReq = req.clone({
         headers: new HttpHeaders({
           'Content-Type':  'application/json',

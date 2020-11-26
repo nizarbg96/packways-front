@@ -56,7 +56,7 @@ export class DashboardService {
     return this.httpc.get(`${this.url}/cherchelivreur?id=` + id);
   }
   getTripParClient() {
-    return this.httpc.get(`${this.url}/statusparclient`);
+    return this.httpc.get(`${this.url}/statusparclient`, {headers: this.headerOptions});
       }
 
 
