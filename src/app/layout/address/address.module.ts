@@ -19,10 +19,10 @@ import {TripService} from '../trips/trips.service';
 
 @NgModule({
   imports: [
-    AgmCoreModule.forRoot({
-      apiKey: environment.googleAPIKey,
-      libraries: ['places']
-    }),
+    // AgmCoreModule.forRoot({
+    //   apiKey: environment.googleAPIKey,
+    //   libraries: ['places']
+    // }),
     CommonModule,
     AddressRoutingModule,
     FormsModule,

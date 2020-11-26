@@ -3,7 +3,7 @@ import { ElementRef, NgZone, OnInit, ViewChild, Component } from '@angular/core'
 import { routerTransition } from '../../router.animations';
 import { FormControl } from '@angular/forms';
 // import { } from 'googlemaps';
-import { MapsAPILoader, MouseEvent } from '@agm/core';
+// import { MapsAPILoader, MouseEvent } from '@agm/core';
 import { MatSnackBar } from '@angular/material';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -133,7 +133,7 @@ export class AddressComponent implements OnInit {
   private dataUser: any;
 
   constructor(
-    private mapsAPILoader: MapsAPILoader,
+    // private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone,
     private snackBar: MatSnackBar,
     private modalService: NgbModal,
@@ -224,50 +224,50 @@ export class AddressComponent implements OnInit {
     this.setCurrentPosition();
 
     // load Places Autocomplete
-    this.mapsAPILoader.load().then(() => {
-      const options = {
-        types: ['(regions)'],
-        componentRestrictions: {country: 'tn'}
-      };
-      const searchTextFiel = document.getElementById('inputAdrModal');
-      const autocomplete = new google.maps.places.Autocomplete(searchTextFiel as HTMLInputElement, options);
-      // const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, options);
-      autocomplete.addListener('place_changed', () => {
-        this.ngZone.run(() => {
-          // get the place result
-          const place: google.maps.places.PlaceResult = autocomplete.getPlace();
+    // this.mapsAPILoader.load().then(() => {
+    //   const options = {
+    //     types: ['(regions)'],
+    //     componentRestrictions: {country: 'tn'}
+    //   };
+    //   const searchTextFiel = document.getElementById('inputAdrModal');
+    //   const autocomplete = new google.maps.places.Autocomplete(searchTextFiel as HTMLInputElement, options);
+    //   // const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, options);
+    //   autocomplete.addListener('place_changed', () => {
+    //     this.ngZone.run(() => {
+    //       // get the place result
+    //       const place: google.maps.places.PlaceResult = autocomplete.getPlace();
 
-          // verify result
-          if (place.geometry === undefined || place.geometry === null) {
-            return;
-          }
-          let address = '';
-           if (place.address_components) {
-             address = [
-               (place.address_components[0] && place.address_components[0].long_name || ''),
-               (place.address_components[1] && place.address_components[1].long_name || ''),
-               (place.address_components[2] && place.address_components[2].long_name || ''),
-               (place.address_components[3] && place.address_components[3].long_name || '')
-             ].join(' ');
-           }
-          console.log(address);
-          console.log(place.geometry);
+    //       // verify result
+    //       if (place.geometry === undefined || place.geometry === null) {
+    //         return;
+    //       }
+    //       let address = '';
+    //        if (place.address_components) {
+    //          address = [
+    //            (place.address_components[0] && place.address_components[0].long_name || ''),
+    //            (place.address_components[1] && place.address_components[1].long_name || ''),
+    //            (place.address_components[2] && place.address_components[2].long_name || ''),
+    //            (place.address_components[3] && place.address_components[3].long_name || '')
+    //          ].join(' ');
+    //        }
+    //       console.log(address);
+    //       console.log(place.geometry);
 
-          // set latitude, longitude and zoom
-          this.latitude = place.geometry.location.lat();
-          this.longitude = place.geometry.location.lng();
-          console.log(this.latitude);
-          console.log(this.longitude);
-          this.zoom = 12;
+    //       // set latitude, longitude and zoom
+    //       this.latitude = place.geometry.location.lat();
+    //       this.longitude = place.geometry.location.lng();
+    //       console.log(this.latitude);
+    //       console.log(this.longitude);
+    //       this.zoom = 12;
 
-          /* $('#latGlobalDest').val(this.latitude);
-          $('#lngGlobalDest').val(this.longitude); */
-          $('#latGlobalDest').val(this.latitude);
-          $('#lngGlobalDest').val(this.longitude);
-          $('#cityGlobalDest').val(address);
-        });
-      });
-    });
+    //       /* $('#latGlobalDest').val(this.latitude);
+    //       $('#lngGlobalDest').val(this.longitude); */
+    //       $('#latGlobalDest').val(this.latitude);
+    //       $('#lngGlobalDest').val(this.longitude);
+    //       $('#cityGlobalDest').val(address);
+    //     });
+    //   });
+    // });
   }
 
   open(content) {
@@ -323,26 +323,26 @@ export class AddressComponent implements OnInit {
     alert(`clicked the marker: ${label || index}`);
   }
 
-  mapClicked($event: MouseEvent) {
-    if (this.markers.length === 0) {
-      console.log('$event ', $event);
-      console.log('$event.coords ', $event.coords);
-      this.markers.push({
-        lat: $event.coords.lat,
-        lng: $event.coords.lng,
-        draggable: true
-      });
-      console.log('this.markers', this.markers);
-      this.getAddressFromLatLng($event.coords.lat, $event.coords.lng);
-    }
-  }
+  // mapClicked($event: MouseEvent) {
+  //   if (this.markers.length === 0) {
+  //     console.log('$event ', $event);
+  //     console.log('$event.coords ', $event.coords);
+  //     this.markers.push({
+  //       lat: $event.coords.lat,
+  //       lng: $event.coords.lng,
+  //       draggable: true
+  //     });
+  //     console.log('this.markers', this.markers);
+  //     this.getAddressFromLatLng($event.coords.lat, $event.coords.lng);
+  //   }
+  // }
 
-  markerDragEnd(m: marker, $event: MouseEvent) {
-    console.log('dragEnd', m, $event);
-    this.latitude = $event.coords.lat;
-    this.longitude = $event.coords.lng;
-    this.getAddressFromLatLng(this.latitude, this.longitude);
-  }
+  // markerDragEnd(m: marker, $event: MouseEvent) {
+  //   console.log('dragEnd', m, $event);
+  //   this.latitude = $event.coords.lat;
+  //   this.longitude = $event.coords.lng;
+  //   this.getAddressFromLatLng(this.latitude, this.longitude);
+  // }
 
   getAddressFromLatLng(lat, lng) {
   $('#latGlobalDest').val(lat);
@@ -456,7 +456,7 @@ addAdresse(model) {
     this.cityGlobalDest = this.cityGlobalDest + ' ' + this.zipCode;
   }
   let userId: string = null
- if (this.selecteduserExp){
+ if (this.selecteduserExp) {
    userId = this.selecteduserExp.idUser;
  } else {
    userId = this.currentUser.data[0].idUser;
