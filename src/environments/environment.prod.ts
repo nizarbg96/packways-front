@@ -1,4 +1,4 @@
-const REMOTE_URL = 'http://147.135.136.78:8052' ;
+const REMOTE_URL = 'http://5.39.65.18:8052' ;
 const LOCAL_URL = 'http://127.0.0.1:8052' ;
 export const environment = {
   production: true,
