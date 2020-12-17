@@ -5,7 +5,9 @@ import { Observable } from 'rxjs/Observable';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DashboardService {
   constructor(public http: Http, public httpc: HttpClient) { }
 

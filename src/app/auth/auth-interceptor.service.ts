@@ -6,6 +6,7 @@ import {
   HttpParams, HttpHeaders
 } from '@angular/common/http';
 import {Headers} from '@angular/http';
+import { timeout } from 'rxjs/operators';
 
 
 @Injectable()
@@ -14,7 +15,6 @@ export class AuthInterceptorService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     if (localStorage.getItem('isLoggedin') && localStorage.getItem('currentUser')) {
-      console.log('cloning request');
       const jwt = JSON.parse(localStorage.getItem('currentUser')).token;
       const modifiedReq = req.clone({
         headers: new HttpHeaders({
@@ -26,7 +26,7 @@ export class AuthInterceptorService implements HttpInterceptor {
           'Authorization': `Bearer ${jwt}`
         })
       });
-      return next.handle(modifiedReq);
+      return next.handle(modifiedReq).pipe(timeout(360000));
 
     } else {
       return next.handle(req);

@@ -1,7 +1,7 @@
 {
-  "/api/*": {
-    "target": "http://localhost:8052",
+  "/trip": {
+    "target": "http://5.39.65.18:8052",
     "secure": false,
-    "logLevel": "debug"
+    "timeout": 360000
   }
 }

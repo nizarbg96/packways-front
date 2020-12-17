@@ -1,0 +1,76 @@
+
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;" >
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Pickups'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Gestion des pickups</h5>
+        <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-10 Aligner">
+        <p><mat-form-field appearance="fill" class="ml-2">
+          <mat-label>REF</mat-label>
+          <input matInput placeholder="filtrer par réference">
+          <mat-icon matSuffix>keyboard</mat-icon>
+        </mat-form-field>
+        </p>
+      </div>
+      <div class="col-md-2 Aligner ">
+        <button mat-raised-button style="width:100%;" (click)="openDialog()" *ngIf="pickups_list.selectedOptions.selected.length === 0 " class="ml-2">Créer</button>
+        <button mat-raised-button style="width:50%;"  class="ml-2" (click)="dispatchPickUp()"
+                *ngIf="pickups_list.selectedOptions.selected.length>0 && checkedPickUpStatus==='confirmed'">Expédier</button>
+        <button mat-raised-button color="warn"  class="ml-2" [ngStyle]="{'width': checkedPickUpStatus==='draft'?'100%':'50%'}"
+                *ngIf="pickups_list.selectedOptions.selected.length>0 " (click)="deleteSelectedPickUp()">Annuler</button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+<div class="row">
+  <mat-spinner *ngIf="spinner" class="center"></mat-spinner>
+  <mat-selection-list style="width:100%"  #pickups_list>
+    <div *ngFor="let pickUp of pickUps">
+      <mat-list-option #pickup_option *ngIf="pickUp.deleted === false && (pickUp.status === 'draft' || pickUp.status ==='confirmed')" (click)="onAreaListControlChanged(pickup_option, pickUp)" >
+        <div class="row mt-1" >
+          <div class="col-md-9">
+            <p>pickup_Packways_{{pickUp.ref}} ({{getListColisLength(pickUp.listColis)}} colis)</p>
+            <p style="color: grey; font-style: italic;">
+              {{pickUp.status}} - Driver: <strong>
+              {{(!!pickUp.driver) ?  pickUp.driver.nameDriver+" "+
+              pickUp.driver.surnameDriver : "n'est pas assigné"}} </strong> - Entrepot Destination: <strong>
+              {{(!!pickUp.entrepot) ?  pickUp.entrepot.nom : "n'est pas assigné"}}
+            </strong> </p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-2">
+            <button style="z-index: 10;" type="button" class="mat-mini-fab mt-2" title="Modifier" > <!-- (click)="open(content)" -->
+              <i class="material-icons" [routerLink]="'/ramassage/edit/'+pickUp.id"> create </i>
+            </button>
+            <button type="button" style="z-index: 10;" class="mat-mini-fab ml-2 mt-2" title="Supprimer">
+              <i class="material-icons" (click)="deletePickUp(pickUp)" > delete </i>
+            </button>
+            <button *ngIf="pickUp.status === 'confirmed'" style="z-index: 10;" type="button" class="mat-mini-fab ml-2 mt-2" title="Imprimer">
+              <i class="material-icons" (click)="printPickUp()"> print </i>
+            </button>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+            <p style="color: grey; font-style: italic;" class="mt-2">{{ pickUp.createdDate | date:'dd/MM/yyyy'}}</p>
+            <p style="color: grey; font-style: italic;"
+               [ngClass]="{'text-success': calculateDiff(pickUp.createdDate) < 2 ,
+              'text-warning': calculateDiff(pickUp.createdDate) === 2, 'text-danger': calculateDiff(pickUp.createdDate) > 2}"
+               class="mt-2">
+              <strong>{{ calculateDiff(pickUp.createdDate)}} Jours</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+        </div>
+        <mat-divider ></mat-divider>
+      </mat-list-option>
+    </div>
+  </mat-selection-list>
+</div>

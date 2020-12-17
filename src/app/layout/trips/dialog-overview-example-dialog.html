@@ -1,7 +1,6 @@
 <h1 mat-dialog-title>{{data.length}} colis sont prêts à importer</h1>
-<p mat-dialog-title class="text-danger"> Veuillez vérifier la {{data.length + 2}} éme ligne dans votre fichier excel</p>
+<p mat-dialog-title class="text-success"> Analyse jusqu'à {{data.length + 2}} ligne dans votre fichier excel</p>
 <div mat-dialog-content>
-  <p>Liste des colis prêts à importer</p>
   <div class="row  border rounded" style="max-height:40vh;overflow-y:scroll">
     <div *ngFor="let trip of data"  style="width: 100%;">
       <p  style="display:block;" class="ml-2 pt-2">

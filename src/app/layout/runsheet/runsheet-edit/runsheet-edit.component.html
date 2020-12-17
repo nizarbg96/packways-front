@@ -1,0 +1,78 @@
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;" >
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Runsheets'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Editer la runsheet_Packways_{{!!runsheet?runsheet.ref:''}}</h5>
+        <p style="color: grey; font-style: italic;">veuillez utiliser la douchette pour scanner les colis à ajouter ou supprimer</p>
+        <p style="font-style: italic ;"><strong>Livreur:</strong> {{!!driver?(driver.nameDriver+ ' '+driver.surnameDriver):'-'}} | <strong>
+          matricule:</strong> {{!!affectedMatricule?affectedMatricule:'-'}} | <strong>Etat:</strong> {{!!runsheet?runsheet.status:'-'}}</p>
+      </div>
+
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-2 Aligner mt-3">
+          <mat-form-field appearance="fill" class="ml-2">
+            <mat-label>REF</mat-label>
+            <input matInput placeholder="ajouter/supprimer par réference">
+            <mat-icon matSuffix>keyboard</mat-icon>
+          </mat-form-field>
+      </div>
+      <div class="col-md-6 Aligner">
+        <fieldset class="scheduler-border-1">
+          <legend class="scheduler-border-1">Scan QR-Code</legend>
+          <form class="form-inline mr-auto">
+                  <input class="form-control" type="text" id="myInput" [(ngModel)]="searchTermscan" [ngModelOptions]="{standalone: true}" placeholder="Chercher" aria-label="Search" width="100%">
+                  <button class="btn btn-mdb-color btn-rounded btn-sm my-0 ml-sm-2" (click)="scanList()" type="submit" hidden><i class="fa fa-search"></i></button>
+          </form>
+  </fieldset>
+  <small class="form-text text-primary ml-3" style="font-size:12px !important;">Nombre des colis selectionnées:  <b>{{(!!runsheet) ? getListColisLength(runsheet.listColis) : 0}}</b></small>
+
+      </div>
+      <div class="col-md-4 Aligner ">
+        <button  mat-raised-button [ngStyle]="{'width': confirmed?'100%':'50%'}" (click)="openDialog()">
+          Modifier Infos</button>
+        <button *ngIf="!confirmed" mat-raised-button color="primary" style="width: 50%;"
+         class="ml-2" [disabled]="(ListScan.length === 0 || !driver)"
+         (click)="confirmRunsheet()">Confirmer</button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+<!-- table of scanned trips -->
+<div class="row">
+  <table class="table table-sm" id="contentToConvert" style="font-size:12px !important;">
+          <thead class="thead"  *ngIf="ListScan !== []" >
+                  <tr class="thead-light text-center">
+                  <th style="width:1%">Ref</th>
+                  <th style="width:1%">Status</th>
+                  <th style="width:1%">Expéditeur</th>
+                  <th style="width:1%">Destinataire</th>
+                  <th style="width:1%">Msg</th>
+                  <th style="width:1%">Action</th>
+                  </tr>
+          </thead>
+          <tbody style="font-size:14px !important;">
+                  <tr *ngFor="let trp of ListScan" class="table-active text-center" style="background-color: #ffffff;">
+                          <td style="background-color: #ffffff;">{{trp.refTrip}}</td>
+                          <td style="background-color: #ffffff; width:15%;">{{trp.statusTrip}}</td>
+                          <td style="background-color: #ffffff; width:15%;">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
+                          <td style="background-color: #ffffff; width:15%;" >{{trp.destTrip.contactAdr }}</td>
+                          <td  style="background-color: #ffffff;  width:50%;" *ngIf="trp.msgTrip && trp.msgTrip.length > 0">
+                                  <ul>
+                                          <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
+                                          <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg }}</li>
+                                  </ul>
+                          </td>
+                          <td style="background-color: #ffffff;" *ngIf="trp.msgTrip && trp.msgTrip.length === 0">-</td>
+                          <td style="background-color: #ffffff;">
+                                  <i class="material-icons" style="cursor:pointer;" (click)="deleteScanList(trp)" > delete </i>
+                          </td>
+                  </tr>
+          </tbody>
+  </table>
+</div>

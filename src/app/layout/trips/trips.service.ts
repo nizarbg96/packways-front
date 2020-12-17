@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
@@ -8,7 +8,9 @@ import { MatSnackBar } from '@angular/material';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Trip } from './Trip';
 import {environment} from '../../../environments/environment';
-Trip;
+import { Subject } from 'rxjs';
+type EntityResponseType = HttpResponse<Trip>;
+type EntityArrayResponseType = HttpResponse<Trip[]>;
 
 
 @Injectable()
@@ -25,7 +27,16 @@ export class TripService {
   urlU = environment.serverUrl + '/user';
   urlA = environment.serverUrl + '/admin';
   jwt = JSON.parse(localStorage.getItem('currentUser')).token;
+  savedSearch = new Subject<any[]>();
   headerOptions = new  Headers({
+    'Content-Type':  'application/json',
+    'Access-Control-Allow-Credentials' : 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+    'Authorization': `Bearer ${this.jwt}`
+  });
+  headerOptions2 = new  HttpHeaders({
     'Content-Type':  'application/json',
     'Access-Control-Allow-Credentials' : 'true',
     'Access-Control-Allow-Origin': '*',
@@ -55,6 +66,10 @@ export class TripService {
 
   getTrips(id, size): Observable<any> {
     return this.http.get(`${this.url}/sansdate2?id=` + id + `&size=` + size, {headers: this.headerOptions});
+  }
+
+  getListOfTips(tripsId: string[]): Observable<EntityArrayResponseType> {
+    return this.httpc.post<Trip[]>(`${this.url}/listOfTrips`, tripsId, {observe: 'response', headers: this.headerOptions2} );
   }
 
   getBS(id, data): Observable<any> {
@@ -103,6 +118,37 @@ export class TripService {
 
   updateTrip(tripdata, id) {
     return this.http.put(this.url + '/update/' + id, tripdata, {headers: this.headerOptions});
+  }
+  updateTripsStatus(status: string, trips: string[], userName: string, driverAffect: string ) {
+    return this.http.post(this.url + '/updatestatus' + '?status=' + status + '&driverAffect=' + driverAffect + '&name=' + userName, trips,
+      {headers: this.headerOptions});
+  }
+  updateTripsDriver(idDriver: string, trips: string[], userName: string) {
+    return this.http.post(this.url + '/updatedriver/' + idDriver + '?name=' + userName, trips , {headers: this.headerOptions});
+  }
+
+  updateTripsWhenDeleteRunsheet(tripsId: String[]): Observable<EntityArrayResponseType> {
+    return this.httpc.put<Trip[]>(this.url + '/updateRunsheetsToNull/', tripsId, {observe: 'response', headers: this.headerOptions2} );
+  }
+  updateTripsWhenDeleteMU(tripsId: String[]): Observable<EntityArrayResponseType> {
+    return this.httpc.put<Trip[]>(this.url + '/updateMUsToNull/', tripsId, {observe: 'response', headers: this.headerOptions2} );
+  }
+  updateTripsWhenDeletePickUp(tripsId: String[]): Observable<EntityArrayResponseType> {
+    return this.httpc.put<Trip[]>(this.url + '/updatePickUpsToNull/', tripsId, {observe: 'response', headers: this.headerOptions2} );
+  }
+
+
+  updateRunsheet(idTrip: string, idRunsheet: string) {
+    return this.http
+      .put(this.url + '/updateRunsheet/' + idTrip + '/' + idRunsheet, null, {headers: this.headerOptions});
+  }
+  updateMoveableUnit(idTrip: string, idMoveableUnit: string) {
+    return this.http
+      .put(this.url + '/updateMoveableUnit/' + idTrip + '/' + idMoveableUnit, null, {headers: this.headerOptions});
+  }
+  updatePickUp(idTrip: string, idPickUp: string) {
+    return this.http
+      .put(this.url + '/updatePickUp/' + idTrip + '/' + idPickUp, null, {headers: this.headerOptions});
   }
 
   getDrivers() {

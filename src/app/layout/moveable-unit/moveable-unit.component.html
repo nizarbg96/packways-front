@@ -1,0 +1,77 @@
+
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;" >
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Moveable Units'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Gestion des Moveable Units</h5>
+        <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-10 Aligner">
+        <p><mat-form-field appearance="fill" class="ml-2">
+          <mat-label>REF</mat-label>
+          <input matInput placeholder="filtrer par réference">
+          <mat-icon matSuffix>keyboard</mat-icon>
+        </mat-form-field>
+        </p>
+      </div>
+      <div class="col-md-2 Aligner">
+        <button mat-raised-button style="width:100%;" (click)="openDialog()" *ngIf="moveableunits_list.selectedOptions.selected.length === 0 " class="ml-2">Créer</button>
+        <button mat-raised-button style="width:50%;"  class="ml-2" (click)="dispatchMU()"
+                *ngIf="moveableunits_list.selectedOptions.selected.length>0 && checkedMUStatus==='confirmed'">Expédier</button>
+        <button mat-raised-button color="warn"  class="ml-2" [ngStyle]="{'width': checkedMUStatus==='draft'?'100%':'50%'}"
+                *ngIf="moveableunits_list.selectedOptions.selected.length>0 " (click)="deleteselectedMU()">Annuler</button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+<div class="row">
+  <mat-spinner *ngIf="spinner" class="center"></mat-spinner>
+  <mat-selection-list style="width:100%"  #moveableunits_list>
+    <div *ngFor="let mu of moveableUnits">
+      <mat-list-option #mu_option *ngIf="mu.deleted === false && (mu.status === 'draft' || mu.status ==='confirmed')" (click)="onAreaListControlChanged(mu_option, mu)" >
+        <div class="row mt-1" >
+          <div class="col-md-9">
+            <p>mu_Packways_{{mu.ref}} ({{getListColisLength(mu.listColis)}} colis)</p>
+            <p style="color: grey; font-style: italic;">
+              {{mu.status}} - Driver: <strong>
+              {{(!!mu.driver) ?  mu.driver.nameDriver+" "+
+              mu.driver.surnameDriver : "n'est pas assigné"}} </strong> - Entrepot Source: <strong>
+              {{(!!mu.entrepotSrc) ?  mu.entrepotSrc.nom : "n'est pas assigné"}} </strong> - Entrepot Destination: <strong>
+              {{(!!mu.entrepotDest) ?  mu.entrepotDest.nom : "n'est pas assigné"}}
+            </strong> </p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-2">
+            <button style="z-index: 10;" type="button" class="mat-mini-fab mt-2" title="Modifier" > <!-- (click)="open(content)" -->
+              <i class="material-icons" [routerLink]="'/mu/edit/'+mu.id"> create </i>
+            </button>
+            <button type="button" style="z-index: 10;" class="mat-mini-fab ml-2 mt-2" title="Supprimer">
+              <i class="material-icons" (click)="deleteMU(mu)" > delete </i>
+            </button>
+            <button *ngIf="mu.status === 'confirmed'" style="z-index: 10;" type="button" class="mat-mini-fab ml-2 mt-2" title="Imprimer">
+              <i class="material-icons" (click)="printmu()"> print </i>
+            </button>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+            <p style="color: grey; font-style: italic;" class="mt-2">{{ mu.createdDate | date:'dd/MM/yyyy'}}</p>
+            <p style="color: grey; font-style: italic;"
+               [ngClass]="{'text-success': calculateDiff(mu.createdDate) < 2 ,
+              'text-warning': calculateDiff(mu.createdDate) === 2, 'text-danger': calculateDiff(mu.createdDate) > 2}"
+               class="mt-2">
+              <strong>{{ calculateDiff(mu.createdDate)}} Jours</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+        </div>
+        <mat-divider ></mat-divider>
+      </mat-list-option>
+    </div>
+  </mat-selection-list>
+</div>

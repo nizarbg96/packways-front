@@ -133,8 +133,48 @@
                     <a class="dropdown-item" [routerLink]="['/login']" (click)="onLoggedout()">
                         <i class="fa fa-fw fa-power-off"></i> {{ 'Log Out' | translate }}
                     </a>
-                </div>
+                    <a class="dropdown-item" style="white-space: pre-line;"  (click)="open(content)">
+                  <i class="fa fa-fw fa-cog"></i> {{ 'Modfier paramètres de profil' | translate }}
+                </a>
+              </div>
             </li>
         </ul>
     </div>
 </nav>
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Editer profil:&nbsp; {{objUser.name}} </h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-12 text-xs-center">
+        <div class="form-group">
+          <label for="inputNomUser">Nom d'utilisateur</label>
+          <input type="text" class="form-control" id="inputNomUser" [(ngModel)]="objUser.name" name="inputNomUser">
+        </div>
+        <div class="form-group">
+          <label for="inputEmailUser">Email</label>
+          <input type="email" class="form-control" id="inputEmailUser" [(ngModel)]="objUser.email" name="inputEmailUser">
+        </div>
+        <div class="form-group">
+          <label for="inputPassUser">Mot de passe</label>
+          <input type="password" class="form-control" id="inputPassUser" [(ngModel)]="objUser.password" name="inputPassUser">
+        </div>
+        <div class="form-group">
+          <label for="entrepot">Entrepôt</label>
+          <select class="form-control" id="entrepot"  [(ngModel)]="objUser.entrepot">
+            <option *ngIf="!!objUser && !!objUser.entrepot" [ngValue]="objUser.entrepot">{{objUser.entrepot.nom}}</option>
+            <option *ngFor="let entrepotItem of entrepots" [ngValue]="entrepotItem">{{entrepotItem.nom}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="c('Close click')">Fermer</button>
+    <button type="button" class="btn btn-primary" (click)="Update();(c('Close click'))">Sauvegarder</button>
+  </div>
+</ng-template>

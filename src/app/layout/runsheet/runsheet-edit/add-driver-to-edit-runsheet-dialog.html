@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Veuillez entrer les informations de la Runsheet</h1>
+<div mat-dialog-content>
+  <ng2-completer [inputClass]="'form-control form-control-inline'" [datasource]="Listdriverauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
+                 [textNoResults]="'Pas trouvé.'" [placeholder]="'Livreur'" (selected)="getSelectedDriver($event)" [(ngModel)]="affectedDriverNgModel">
+  </ng2-completer>
+  <div class="input-group  mt-4 mb-3">
+    <input type="text" class="form-control" placeholder="Matricule de voiture"  aria-describedby="basic-addon1" [ngModel]="runsheetInfo?.matricule" (ngModelChange)="runsheetInfo.matricule = $event">
+  </div>
+</div>
+<div mat-dialog-actions class="mt-3">
+  <button  mat-raised-button color="primary" [mat-dialog-close]="runsheetInfo" [disabled]="runsheetService.runsheetConfirmed && (!affectedDriver || !runsheetInfo.matricule )">Continuer</button>
+  <button mat-raised-button (click)="onNoClick()" class="ml-2">Abandonner</button>
+</div>

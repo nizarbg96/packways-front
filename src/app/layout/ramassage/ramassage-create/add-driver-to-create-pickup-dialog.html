@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>Veuillez entrer les informations de Pick Up</h1>
+<div mat-dialog-content>
+  <ng2-completer [inputClass]="'form-control form-control-inline'" [datasource]="Listdriverauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
+                 [textNoResults]="'Pas trouvé.'" [placeholder]="'Livreur'" (selected)="getSelectedDriver($event)" [(ngModel)]="affectedDriverNgModel">
+  </ng2-completer>
+  <div class="input-group  mt-4 mb-3">
+    <input type="text" class="form-control" placeholder="Matricule de voiture"  aria-describedby="basic-addon1" [ngModel]="pickUpInfo?.matricule" (ngModelChange)="pickUpInfo.matricule = $event">
+  </div>
+</div>
+<mat-form-field appearance="fill" style="display: block; width: 100%">
+  <mat-label>Entrepôt Destination</mat-label>
+  <mat-select [formControl]="entrepot" required (selectionChange)="affectEntrepot($event.value)" [(ngModel)]="entrepotValue">
+    <mat-option>--</mat-option>
+    <mat-option *ngFor="let entrepotItem of entrepots" [value]="entrepotItem" >
+      {{entrepotItem.nom}}
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="entrepot.hasError('required')">Veuillez sélectionner un entrepôt</mat-error>
+  <mat-hint>{{entrepot.value?.sound}}</mat-hint>
+</mat-form-field>
+<div mat-dialog-actions class="mt-3">
+  <button  mat-raised-button color="primary" [mat-dialog-close]="pickUpInfo">Continuer</button>
+  <button mat-raised-button (click)="onNoClick()" class="ml-2">Abandonner</button>
+</div>

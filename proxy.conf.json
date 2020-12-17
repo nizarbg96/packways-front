@@ -1,0 +1,7 @@
+{
+  "/trip/*": {
+    "target": "http://5.39.65.18:8052",
+    "secure": false,
+    "timeout": 360000
+  }
+}

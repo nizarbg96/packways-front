@@ -16,7 +16,7 @@
     <hr>
     <div class="row">
         <div class="col-xl-3 col-lg-6">
-            <app-stat [bgClass]="'warning'" [icon]="'fa-plus-square'" [count]="postes" [label]="'Colis postés.'" ></app-stat> 
+            <app-stat [bgClass]="'warning'" [icon]="'fa-plus-square'" [count]="postes" [label]="'Colis postés.'" ></app-stat>
            <!-- <app-statdriver [bgClass]="'warning'" [icon]="'fa-plus-square'" [count]="postes" [label]="'Colis postés.'" ></app-statdriver> -->
         </div>
         <div class="col-xl-3 col-lg-6">
@@ -24,17 +24,17 @@
         </div>
         <div class="col-xl-3 col-lg-6">
             <app-stat [bgClass]="'success'" [icon]="'fa-truck'" [count]="Enchemin" [label]="'Livreur en chemin.'"></app-stat>
-        </div> 
+        </div>
         <div class="col-xl-3 col-lg-6">
             <app-stat [bgClass]="'dark'" [icon]="'fa-get-pocket'" [count]="Chezlivreur" [label]="'Colis chez livreur'"></app-stat>
-        </div>          
+        </div>
     </div>
-    <hr />  
+    <hr />
     <hr>
         <div class="row">
             <div class="col-xl-3 col-lg-6">
                 <app-stat [bgClass]="'secondary'" [icon]="'fa-play-circle'" [count]="Encours" [label]="'Colis en cours de livraison.'" ></app-stat>
-            </div> 
+            </div>
             <div class="col-xl-3 col-lg-6">
                 <app-stat [bgClass]="'primary'" [icon]="'fa-check'" [count]="livree" [label]="'Colis livrés.'" ></app-stat>
             </div>
@@ -44,7 +44,7 @@
             <div class="col-xl-3 col-lg-6">
                 <app-stat [bgClass]="'warning'" [icon]="'fa-minus-square'" [count]="Retournee" [label]="'Colis retournés.'" ></app-stat>
             </div>
-        </div>  
+        </div>
 
     <hr />
 
@@ -53,13 +53,13 @@
         <div class="col-xl-3 col-lg-6">
             <app-stat [bgClass]="'danger'" [icon]="'fa-ban'" [count]="annulee" [label]="'Colis annulés.'" ></app-stat>
         </div>
-        
+
         <!-- <div *ngIf="isVisible" class="col-xl-3 col-lg-6">
                 <app-stat [bgClass]="'success'" [icon]="'fa-truck'" [count]="driver" [label]="'Conducteurs actifs.'"></app-stat>
         </div> -->
     </div>
     <hr />
-    
+
     <!-- <ngb-alert [type]="alert.type" (close)="closeAlert(alert)" *ngFor="let alert of alerts">{{ alert.message }}</ngb-alert>
     <hr />
     <div class="row">
@@ -68,37 +68,37 @@
                 <div class="card-header">
                     <i class="fa fa-clock-o fa-fw"></i> Responsive Timeline
                 </div>
-                
+
                 <app-timeline></app-timeline>
-                
+
             </div>
-            
+
         </div>
-        
+
         <div class="col-lg-4">
             <div class="card card-default mb-3">
                 <div class="card-header">
                     <i class="fa fa-bell fa-fw"></i> Notifications card
                 </div>
-                
-                <app-notification></app-notification>
-                
-            </div>            
 
-            <app-chat></app-chat>            
+                <app-notification></app-notification>
+
+            </div>
+
+            <app-chat></app-chat>
         </div>
-        
+
     </div> -->
     <fieldset class="scheduler-border-1" *ngIf="isVisible" >
         <legend class="scheduler-border-1"><h2><b>Tableau par clients</b></h2></legend>
-        <div class="card-body table-responsive">                                                     
+        <div class="card-body table-responsive">
             <table class="table" [mfData]="items" #mf="mfDataTable"  id="myTable">
                     <thead>
                             <tr style="background-color: rgb(0, 153, 255)">
                                     <th style="width:3%">Client</th>
                                     <th style="width:4%">Nombre des colis postés</th>
                                     <th style="width:3%">Nombre des colis en chemin</th>
-                                    
+
                             </tr>
                     </thead>
                     <tbody>
@@ -106,7 +106,7 @@
                                     <td>{{ colis[0] }}</td>
                                     <td>{{ colis[1]}}</td>
                                     <td >{{ colis[2] }}</td>
-                                    
+
                             </tr>
                     </tbody>
                     <tfoot style="background-color: rgb(0, 153, 255)" >
@@ -114,8 +114,9 @@
                         <td><b>{{ sommeCH}}</b></td>
                         <td ><b>{{ sommeLC}}</b></td>
                     </tfoot>
-                    
+
             </table>
         </div>
     </fieldset>
 </div>
+

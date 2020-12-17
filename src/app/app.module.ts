@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './shared';
 import {AuthInterceptorService} from './auth/auth-interceptor.service';
+import {HttpModule} from '@angular/http';
 // import { BnNgIdleService } from 'bn-ng-idle';
 
 // AoT requires an exported function for factories
@@ -30,6 +31,7 @@ export const createTranslateLoader = (http: HttpClient) => {
         BrowserModule,
         BrowserAnimationsModule,
         HttpClientModule,
+      HttpModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

@@ -1,0 +1,107 @@
+
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;" >
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Pickups'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Pickups en cours</h5>
+        <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-10 Aligner">
+        <p><mat-form-field appearance="fill" class="ml-2">
+          <mat-label>REF</mat-label>
+          <input matInput placeholder="filtrer par réference">
+          <mat-icon matSuffix>keyboard</mat-icon>
+        </mat-form-field>
+        </p>
+      </div>
+      <div class="col-md-2 Aligner ">
+      </div>
+    </div>
+  </mat-card>
+</div>
+<div class="row">
+  <mat-spinner *ngIf="spinner" class="center"></mat-spinner>
+  <mat-selection-list style="width:100%"  #pickUp_list>
+    <div *ngFor="let pickUp of inProgressPickUps">
+      <mat-list-option #pickUp_option *ngIf="pickUp.pickUpObject.deleted === false && (pickUp.pickUpObject.status === 'dispached')"
+                       (click)="onAreaListControlChanged(pickUp_option, pickUp.pickUpObject)" >
+        <div class="row mt-1" >
+          <div class="col-md-10">
+            <p>pickUp_Packways_{{pickUp.pickUpObject.ref}} ({{getListColisLength(pickUp.pickUpObject.listColis)}} colis)</p>
+            <p style="color: grey; font-style: italic;">
+              {{pickUp.pickUpObject.status}} - Driver: <strong>
+              {{(!!pickUp.pickUpObject.driver) ?  pickUp.pickUpObject.driver.nameDriver+" "+
+              pickUp.pickUpObject.driver.surnameDriver : "n'est pas assigné"}} </strong> - Entrepot Destination: <strong>
+              {{(!!pickUp.pickUpObject.entrepot) ?  pickUp.pickUpObject.entrepot.nom : "n'est pas assigné"}}
+            </strong> </p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+            <div class="example-button-container">
+              <button mat-mini-fab color="basic" class="mt-3" style="z-index: 10" aria-label="liste des colis" (click)="showInProgressTrips(pickUp, contentInProgressTrips)">
+                <mat-icon>list</mat-icon>
+              </button>
+            </div>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+            <p style="color: grey; font-style: italic;" class="mt-2"><span style="display: block">Expédiée le </span>{{ pickUp.pickUpObject.createdDate | date:'dd/MM/yyyy'}}</p>
+            <p style="color: grey; font-style: italic;"
+               [ngClass]="{'text-success': calculateDiff(pickUp.pickUpObject.dispachedDate) < 2 ,
+              'text-warning': calculateDiff(pickUp.pickUpObject.dispachedDate) === 2, 'text-danger': calculateDiff(pickUp.pickUpObject.dispachedDate) > 2}"
+               class="mt-2">
+              <strong>{{ calculateDiff(pickUp.pickUpObject.dispachedDate)}} Jours</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+        </div>
+        <mat-divider ></mat-divider>
+      </mat-list-option>
+    </div>
+  </mat-selection-list>
+</div>
+<ng-template #contentInProgressTrips let-c="close" let-d="dismiss">
+  <div class="modal-body">
+    <div class="row justify-content-center">
+      <h6 style="color: #f01010;"><b>Liste des colis dans le PickUp en cours</b></h6>
+    </div>
+  </div>
+  <div class="modal-body">
+    <table class="table table-sm" id="contentToConvert" style="font-size:12px !important;">
+      <thead class="thead">
+      <tr class="thead-light text-center">
+        <th style="width:1%">Ref</th>
+        <th style="width:1%">Status</th>
+        <th style="width:1%">Expéditeur</th>
+        <th style="width:1%">Destinataire</th>
+        <th style="width:1%">Msg</th>
+      </tr>
+      </thead>
+      <tbody style="font-size:14px !important;">
+      <tr *ngFor="let trp of selectedInProgressTrips" class="table-active text-center" style="background-color: #ffffff;">
+        <td style="background-color: #ffffff;">{{trp.refTrip}}</td>
+        <td style="background-color: #ffffff;">{{trp.statusTrip }}</td>
+        <td style="background-color: #ffffff; width:15%;">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
+        <td style="background-color: #ffffff; width:15%;" >{{trp.destTrip.contactAdr }}</td>
+        <td  style="background-color: #ffffff;  width:50%;" *ngIf="trp.msgTrip && trp.msgTrip.length > 0">
+          <ul>
+            <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
+            <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg }}</li>
+          </ul>
+        </td>
+        <td style="background-color: #ffffff;" *ngIf="trp.msgTrip && trp.msgTrip.length === 0">-</td>
+
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="(c('Close click'))">D'accord</button>
+  </div>
+</ng-template>

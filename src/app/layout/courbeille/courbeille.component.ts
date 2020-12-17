@@ -15,7 +15,7 @@ import {  MatCardModule, MatTableModule, MatPaginatorModule, MatFormFieldModule,
 export class CourbeilleComponent implements OnInit {
 
     tripBl: any;
-    objTrip = new Trip();
+    objTrip : any;
     closeResult: string;
     obj: any;
     items: any = [];
@@ -33,7 +33,7 @@ export class CourbeilleComponent implements OnInit {
       this.items= [];
     this.tservice.getTrips().subscribe(data => {
      this.result = data['_body'];
-     //console.log(data['_body'])
+     // console.log(data['_body'])
      const jo = JSON.parse(this.result);
      const obj = Array.of(jo.data);
      this.jsonObj = obj[0];
@@ -120,7 +120,7 @@ infoTrip(content, trip) {
         this.objTrip.image = null;
     }
 
-    //console.log('this.objTrip.msgTrip: ', this.objTrip.msgTrip.length);
+    // console.log('this.objTrip.msgTrip: ', this.objTrip.msgTrip.length);
 
     this.open(content);
 }
@@ -142,7 +142,7 @@ private getDismissReason(reason: any): string {
         return  `with: ${reason}`;
     }
 }
-openBlModal2(content, trip) {        
+openBlModal2(content, trip) {
     this.tripBl = trip;
     this.open(content);
 }

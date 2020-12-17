@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 // import { HttpClient } from '@angular/common/http';
 import { Http, RequestOptions, Headers } from '@angular/http';
@@ -8,7 +9,7 @@ import {environment} from '../../../environments/environment';
 @Injectable()
 export class DriversService {
 
-    constructor(public http: Http) { }
+    constructor(public http: Http, private httpc: HttpClient) { }
     public url = environment.serverUrl + '/driver/';
     public urlTrip = environment.serverUrl + '/trip/';
     result: any;
@@ -29,11 +30,11 @@ export class DriversService {
         return this.http.get(`${this.url}/alls`, {headers: this.headerOptions});
       }
 
-      getTripsByDriverAndDate(idDriver, sDate, eDate){
+      getTripsByDriverAndDate(idDriver, sDate, eDate) {
         return this.http.get(`${this.urlTrip}bydatedriver?id=` + idDriver + `&d1=`  + sDate + `&d2=` + eDate, {headers: this.headerOptions});
       }
 
-      deleteDriver(idDriver,driverData) {
+      deleteDriver(idDriver, driverData) {
         const headers = new Headers();
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
@@ -50,11 +51,11 @@ export class DriversService {
         headers.append('Content-Type', 'application/json' );
         const options = new RequestOptions({ headers: headers });
         return this.http.put(this.url + '/update/' + id, driverData, {headers: this.headerOptions});
-        console.log("updated suscess")
+        console.log('updated suscess');
       }
 
 
-      BlockDriver(idDriver,driverData) {
+      BlockDriver(idDriver, driverData) {
         const headers = new Headers();
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
@@ -65,5 +66,11 @@ export class DriversService {
         });
 
       }
+      getDriver(idDriver: string) {
+        return this.http.get(this.url + 'one/' + idDriver, {headers: this.headerOptions});
+      }
+    getOneDriver(idDriver: string) {
+      return this.http.get(this.url + 'oneDriver/' + idDriver, {headers: this.headerOptions});
+    }
 
 }

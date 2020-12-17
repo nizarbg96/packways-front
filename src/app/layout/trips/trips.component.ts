@@ -96,8 +96,8 @@ export class TripsComponent implements OnInit {
     jsonObj: any;
     result: any;
     datas: any = null;
-    obj: Trip;
-    objTrip = new Trip();
+    obj: any;
+    objTrip= new Trip() ;
 
     checkedTrips = [];
     closedTrips = [];
@@ -294,7 +294,7 @@ export class TripsComponent implements OnInit {
 
 
     ngOnInit() {
-
+      this.dataUser = JSON.parse(localStorage.getItem('currentUser')).data[0];
 
         this.checkedTrips = [];
         this.NBchecked = 0;
@@ -522,7 +522,7 @@ export class TripsComponent implements OnInit {
         this.auth = localStorage.getItem('auth');
         console.log( 'login', this.auth);
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.dataUser = this.currentUser.data[0];
+        this.dataUser = JSON.parse(localStorage.getItem('currentUser')).data[0];
         console.log('datatudseruuu', this.dataUser);
         if (this.auth === 'admin') {
             this.id = 'admin';
@@ -648,19 +648,31 @@ export class TripsComponent implements OnInit {
 
     scanList() {
         // console.log("sanc: ",this.searchTermscan)
+        // vérif
         let verif = false;
         for (let index = 0; index < this.ListScan.length; index++) {
-            if (this.searchTermscan === this.ListScan[index].idTrip) {
+            if (this.searchTermscan === this.ListScan[index].idTrip || this.searchTermscan === this.ListScan[index].refTrip) {
                 verif = true;
             }
         }
+        //
         if (verif === false) {
             this.tservice.getTripscanList(this.searchTermscan).subscribe(data => {
                 this.result = data['_body'];
                 // console.log(data['_body'])
                 const jo = JSON.parse(this.result);
                 const obj = Array.of(jo.data);
-                this.ListScan.push(obj[0]);
+                let verif = false;
+                // vérif
+                for (let index = 0; index < this.ListScan.length; index++) {
+                    if (obj[0].idTrip === this.ListScan[index].idTrip ||  obj[0].refTip === this.ListScan[index].refTrip) {
+                        verif = true;
+                    }
+                }
+                if (verif === false) {
+                    this.ListScan.push(obj[0]);
+                }
+                //
             // console.log(this.ListScan)
             });
         } else {
@@ -876,18 +888,46 @@ export class TripsComponent implements OnInit {
         const options = new RequestOptions({ headers: headers });
         const urlCloseTrip = environment.serverUrl + '/trip/updateclosed';
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlCloseTrip + '?name=' + this.userName, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
+        this.http.post(urlCloseTrip + '?idAdmin=' + this.dataUser.idAdmin, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
             });
+          const result = data['_body'];
+          const jo = JSON.parse(result);
+          const obj = Array.of(jo.trips);
+          const trips:any[] = obj[0];
+          trips.forEach((trip,i)=>{
+            const filtredTrip = this.items.slice().filter((t)=> t.idTrip === trip.idTrip)[0];
+            const checkedTrip = this.checkedTrips.slice().filter((t)=> t.idTrip === trip.idTrip)[0];
+            console.log(filtredTrip);
+            if(filtredTrip !== null){
+              const index = this.items.indexOf(filtredTrip);
+              if (index>-1){
+                console.log(trip);
+                trip.selected = true;
+                this.items[index]=trip;
+                this.listScanId.push('REF'+trip.refTrip);
+              }
+            }
+            if(checkedTrip !== null){
+              const index = this.checkedTrips.indexOf(checkedTrip);
+              if (index>-1){
+                console.log(trip);
+                trip.selected = true;
+                this.checkedTrips[index]=trip;
+              }
+            }
+
+
+          })
         }, error => {
             console.log('error');
             this.snackBar.open('Echèc! Veuillez réessayer plus tard', 'Fermer', {
                 duration: 5000,
             });
         });
-        this.checkedTrips = [];
+        // this.checkedTrips = [];
 
     }
 
@@ -895,6 +935,12 @@ export class TripsComponent implements OnInit {
         this.closedTrips = [];
         for (let i = 0; i < this.checkedTrips.length; i++) {
             this.closedTrips.push(this.checkedTrips[i].idTrip);
+          if (this.checkedTrips[i].preRecolte !== true) {
+            this.snackBar.open('Immpossible de modifier le colis'+ this.checkedTrips[i].refTrip+', votre colis doit être pré-récolté ', 'Fermer', {
+              duration: 12000,
+            });
+            return;
+          }
             if ((this.checkedTrips[i].statusTrip !== 'Livree') && (this.checkedTrips[i].statusTrip !== 'Retournee')) {
                 this.snackBar.open('Immpossible de modifier le colis ' + this.checkedTrips[i].refTrip, 'Fermer', {
                     duration: 12000,
@@ -917,11 +963,39 @@ export class TripsComponent implements OnInit {
         const urlrecolterTrip = environment.serverUrl + '/trip/updaterecolter';
         console.log('idamdin' + this.idadmin);
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlrecolterTrip + '?name=' + this.idadmin, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
+        this.http.post(urlrecolterTrip + '?idAdmin=' + this.idadmin, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
             });
+          const result = data['_body'];
+          const jo = JSON.parse(result);
+          const obj = Array.of(jo.trips);
+          const trips:any[] = obj[0];
+          trips.forEach((trip,i)=>{
+            const filtredTrip = this.items.slice().filter((t)=> t.idTrip === trip.idTrip)[0];
+            const checkedTrip = this.checkedTrips.slice().filter((t)=> t.idTrip === trip.idTrip)[0];
+            console.log(filtredTrip);
+            if(filtredTrip !== null){
+              const index = this.items.indexOf(filtredTrip);
+              if (index>-1){
+                console.log(trip);
+                trip.selected = true;
+                this.items[index]=trip;
+                this.listScanId.push('REF'+trip.refTrip);
+              }
+            }
+            if(checkedTrip !== null){
+              const index = this.checkedTrips.indexOf(checkedTrip);
+              if (index>-1){
+                console.log(trip);
+                trip.selected = true;
+                this.checkedTrips[index]=trip;
+              }
+            }
+
+
+          })
         }, error => {
             console.log('error');
             this.snackBar.open('Echèc! Veuillez réessayer plus tard', 'Fermer', {
@@ -930,7 +1004,7 @@ export class TripsComponent implements OnInit {
         });
         const id = '5ca28097e4970623916b53e7';
         this.affectDriverStatus(id, this.closedTrips);
-        this.checkedTrips = [];
+        // this.checkedTrips = [];
         console.log('fin updaterecolté:');
 
     }
@@ -966,6 +1040,34 @@ export class TripsComponent implements OnInit {
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
             });
+          const result = data['_body'];
+          const jo = JSON.parse(result);
+          const obj = Array.of(jo.trips);
+          const trips:any[] = obj[0];
+          trips.forEach((trip,i)=>{
+            const filtredTrip = this.items.slice().filter((t)=> t.idTrip === trip.idTrip)[0];
+            const checkedTrip = this.checkedTrips.slice().filter((t)=> t.idTrip === trip.idTrip)[0];
+            console.log(filtredTrip);
+            if(filtredTrip !== null){
+              const index = this.items.indexOf(filtredTrip);
+              if (index>-1){
+                console.log(trip);
+                trip.selected = true;
+                this.items[index]=trip;
+                this.listScanId.push('REF'+trip.refTrip);
+              }
+            }
+            if(checkedTrip !== null){
+              const index = this.checkedTrips.indexOf(checkedTrip);
+              if (index>-1){
+                console.log(trip);
+                trip.selected = true;
+                this.checkedTrips[index]=trip;
+              }
+            }
+
+
+          });
         }, error => {
             console.log('error');
             this.snackBar.open('Echèc! Veuillez réessayer plus tard', 'Fermer', {
@@ -996,7 +1098,25 @@ export class TripsComponent implements OnInit {
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
             });
-            console.log('okokokokok');
+          const result = data['_body'];
+          const jo = JSON.parse(result);
+          const obj = Array.of(jo.trips);
+          const trips:any[] = obj[0];
+          trips.forEach((trip,i)=>{
+            const filtredTrip = this.items.slice().filter((t)=> t.idTrip === trip.idTrip)[0];
+            console.log(filtredTrip);
+            if(filtredTrip !== null){
+              const index = this.items.indexOf(filtredTrip);
+              if (index>-1){
+                console.log(trip);
+                trip.selected = true;
+                this.items[index]=trip;
+                this.listScanId.push('REF'+trip.refTrip);
+              }
+            }
+
+
+          })
         }, error => {
             console.log('error');
             this.snackBar.open('Echèc! Veuillez réessayer plus tard', 'Fermer', {
@@ -1040,11 +1160,39 @@ export class TripsComponent implements OnInit {
         const options = new RequestOptions({ headers: headers });
         const urlpayedTrip = environment.serverUrl + '/trip/updatepayed';
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlpayedTrip + '?name=' + this.userName, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
+        this.http.post(urlpayedTrip + '?idAdmin=' + this.dataUser.idAdmin, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
             });
+          const result = data['_body'];
+          const jo = JSON.parse(result);
+          const obj = Array.of(jo.trips);
+          const trips:any[] = obj[0];
+          trips.forEach((trip,i)=>{
+            const filtredTrip = this.items.slice().filter((t)=> t.idTrip === trip.idTrip)[0];
+            const checkedTrip = this.checkedTrips.slice().filter((t)=> t.idTrip === trip.idTrip)[0];
+            console.log(filtredTrip);
+            if(filtredTrip !== null){
+              const index = this.items.indexOf(filtredTrip);
+              if (index>-1){
+                console.log(trip);
+                trip.selected = true;
+                this.items[index]=trip;
+                this.listScanId.push('REF'+trip.refTrip);
+              }
+            }
+            if(checkedTrip !== null){
+              const index = this.checkedTrips.indexOf(checkedTrip);
+              if (index>-1){
+                console.log(trip);
+                trip.selected = true;
+                this.checkedTrips[index]=trip;
+              }
+            }
+
+
+          })
         }, error => {
             console.log('error');
             this.snackBar.open('Echèc! Veuillez réessayer plus tard', 'Fermer', {
@@ -1052,7 +1200,7 @@ export class TripsComponent implements OnInit {
             });
         });
 
-        this.checkedTrips = [];
+     //   this.checkedTrips = [];
     }
 
 
@@ -1688,7 +1836,7 @@ export class TripsComponent implements OnInit {
             });
         });
 
-        this.checkedTrips = [];
+        // this.checkedTrips = [];
     }
 
 
@@ -1698,6 +1846,16 @@ export class TripsComponent implements OnInit {
         this.closedTrips = [];
         this.closedTrips2 = [];
         for (let i = 0; i < this.checkedTrips.length; i++) {
+            if (this.itemStatus === 'Retour') {
+                if (this.checkedTrips[i].statusTrip === 'livraison en cours' || this.checkedTrips[i].statusTrip === 'Chez Livreur') {
+                  this.closedTrips.push(this.checkedTrips[i].idTrip);
+                } else {
+                  this.snackBar.open('Immpossible de modifier le colis ' + this.checkedTrips[i].refTrip + ' car le status n\'est pas : Chez Livreur ou livraison en cours ', 'Fermer', {
+                    duration: 12000,
+                  });
+                  return;
+                }
+              }
             if (this.itemStatus === 'En cours de retour') {
               if (this.checkedTrips[i].statusTrip === 'Retour') {
                 this.closedTrips.push(this.checkedTrips[i].idTrip);
@@ -1739,6 +1897,10 @@ export class TripsComponent implements OnInit {
           this.itemStatus = 'Chez Livreur';
           driverAffect = 'EntrepotSfax';
         }
+        else if (this.itemStatus === 'EntrepotGafsa') {
+            this.itemStatus = 'Chez Livreur';
+            driverAffect = 'EntrepotGafsa';
+        }
         const headers = new Headers();
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json' );
@@ -1746,10 +1908,56 @@ export class TripsComponent implements OnInit {
         const urlCloseTrip = environment.serverUrl + '/trip/updatestatus';
         // http://147.135.136.78:8052/trip/updateclosed
         this.http.post(urlCloseTrip + '?status=' + this.itemStatus + '&driverAffect=' + driverAffect + '&name=' + this.userName, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
-            console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
             });
+            const result = data['_body'];
+            const jo = JSON.parse(result);
+            const obj = Array.of(jo.trips);
+            const trips:any[] = obj[0];
+            trips.forEach((trip,i)=>{
+              const filtredTrip = this.items.slice().filter((t)=> t.idTrip === trip.idTrip)[0];
+              const checkedTrip = this.checkedTrips.slice().filter((t)=> t.idTrip === trip.idTrip)[0];
+              console.log(filtredTrip);
+              if(filtredTrip !== null){
+                const index = this.items.indexOf(filtredTrip);
+                if (index>-1){
+                  console.log(trip);
+                  trip.selected = true;
+                  this.items[index]=trip;
+                  this.listScanId.push('REF'+trip.refTrip);
+                }
+              }
+              if(checkedTrip !== null){
+                const index = this.checkedTrips.indexOf(checkedTrip);
+                if (index>-1){
+                  console.log(trip);
+                  trip.selected = true;
+                  this.checkedTrips[index]=trip;
+                }
+              }
+
+
+            })
+
+
+            // for ( let i = 0; i < obj[0].length; i++) {
+            //   console.log( 'index' + i);
+              // const index =  this.items.indexOf(obj[0][i]) ;
+              // console.log( 'index' + index);
+              // if (index > 0) {
+              //   this.items[index] = obj[0][i];
+              //   console.log( 'index' + index);
+              // }
+            // }
+            // itemsToUpdate.forEach((item) => {
+            //   const index = this.items.indexOf(item);
+            //   if (index > 0) {
+            //     this.items[index] = item;
+            //   }
+            // });
+            // get updated trips
+            // change selected items
         }, error => {
             console.log('error');
             this.snackBar.open('Echèc! Veuillez réessayer plus tard', 'Fermer', {
@@ -1772,8 +1980,8 @@ export class TripsComponent implements OnInit {
               }
         }*/
 
-          this.checkedTrips = [];
-          this.decocherListSelected(this.items);
+          /*this.checkedTrips = [];
+          this.decocherListSelected(this.items);*/
     }
 
     affectDriverStatus(id, list) {
@@ -1795,7 +2003,7 @@ export class TripsComponent implements OnInit {
                 duration: 5000,
             });
         });
-        this.checkedTrips = [];
+        // this.checkedTrips = [];
 
     }
 
@@ -2372,7 +2580,6 @@ export class TripsComponent implements OnInit {
       }
 
       setFilteredItems() {
-
         // this.items = [];
         /* if (this.items !== undefined) {
           this.items = this.itemsSearch;

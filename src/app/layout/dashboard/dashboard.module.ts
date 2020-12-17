@@ -16,6 +16,7 @@ import {
 import { StatModule } from '../../shared';
 import { DataTableModule } from 'angular-6-datatable';
 import { MatFormFieldModule } from '@angular/material';
+import {UserService} from '../users/users.service';
 
 @NgModule({
     imports: [
@@ -34,7 +35,6 @@ import { MatFormFieldModule } from '@angular/material';
         TimelineComponent,
         NotificationComponent,
         ChatComponent
-    ],
-    providers:[DashboardService]
+    ]
 })
 export class DashboardModule {}

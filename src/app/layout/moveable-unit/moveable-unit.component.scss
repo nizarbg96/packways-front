@@ -1,0 +1,25 @@
+.Aligner {
+  display: flex;
+  align-items: center;
+}
+
+.Aligner-item {
+  max-width: 100%;
+}
+
+.Aligner-item--top {
+  align-self: flex-start;
+}
+
+.Aligner-item--bottom {
+  align-self: flex-end;
+}
+.mat-list-base .mat-list-item, .mat-list-base .mat-list-option {
+  height: auto !important;
+}
+.center {
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 10%;
+  width: 50%;
+}

@@ -1,0 +1,80 @@
+<div class="row">
+  <div class="col-md-12">
+    <app-page-header [heading]="'Entrepôt'" [icon]="'fa-table'"></app-page-header>
+  </div>
+</div>
+<div>
+  <h2 id="page-heading" class="mt-2">
+    <button  class="btn btn-primary " [routerLink]="['/entrepot/create']">
+      <mat-icon>add_circle</mat-icon>
+      <span>Créer un nouveau entrepôt</span>
+    </button>
+  </h2>
+
+
+  <div class="alert alert-warning mt-3" id="no-result" *ngIf="entrepots?.length === 0">
+    <span>aucun entrepôt trouvé</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="entrepots && entrepots.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+      <tr>
+        <th scope="col" [hidden]="true"><span>ID</span></th>
+        <th scope="col" ><span>Nom</span></th>
+        <th scope="col" ><span>Address</span></th>
+        <th scope="col" ><span>Contact</span></th>
+        <th scope="col" ><span>Mobile Number</span></th>
+        <th scope="col" [hidden]="true" ><span>Created By</span></th>
+        <th scope="col" ><span>Date de création</span></th>
+        <th scope="col" [hidden]="true"><span>Updated By</span></th>
+        <th scope="col" [hidden]="true"><span>Updated Date</span></th>
+        <th scope="col" ><span>Deleted</span></th>
+        <th scope="col" [hidden]="true"><span>Deleted By</span></th>
+        <th scope="col" [hidden]="true"><span>Deleted Date</span></th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let entrepot of entrepots ;trackBy: trackId">
+        <td [hidden]="true"><a [routerLink]="['/entrepot', entrepot.id, 'view']">{{ entrepot.id }}</a></td>
+        <td>{{ entrepot.nom }}</td>
+        <td>{{ entrepot.address }}</td>
+        <td>{{ entrepot.contact }}</td>
+        <td>{{ entrepot.mobileNumber }}</td>
+        <td [hidden]="true">{{ entrepot.createdBy }}</td>
+        <td>{{ entrepot.createdDate | date:'mediumDate' }}</td>
+        <td [hidden]="true">{{ entrepot.updatedBy }}</td>
+        <td [hidden]="true">{{ entrepot.updatedDate | date:'mediumDate' }}</td>
+        <td>{{ entrepot.deleted }}</td>
+        <td [hidden]="true">{{ entrepot.deletedBy }}</td>
+        <td [hidden]="true">{{ entrepot.deletedDate | date:'mediumDate' }}</td>
+        <td class="text-right">
+          <div class="btn-group">
+            <button type="submit"
+                    [routerLink]="['/entrepot', entrepot.id, 'view']"
+                    class="btn btn-info btn-sm">
+              <mat-icon>visibility</mat-icon>
+              <span class="d-none d-md-inline">détails</span>
+            </button>
+
+            <button type="submit"
+                    [routerLink]="['/entrepot', entrepot.id, 'edit']"
+                    class="btn btn-primary btn-sm">
+              <mat-icon>create</mat-icon>
+              <span class="d-none d-md-inline">editer</span>
+            </button>
+
+            <button type="submit" (click)="delete(entrepot)"
+                    class="btn btn-danger btn-sm">
+              <mat-icon> delete</mat-icon>
+              <span class="d-none d-md-inline">supprimer</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+

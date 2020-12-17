@@ -5,10 +5,13 @@ import { Observable } from 'rxjs/Observable';
 import {environment} from '../../../environments/environment';
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class UserService {
 
   public url = environment.serverUrl + '/user/';
+  public urlAdmin = environment.serverUrl + '/admin/';
   public urlTrip = environment.serverUrl + '/trip/';
   result: any;
   jsonObj: any;
@@ -17,6 +20,7 @@ export class UserService {
   jwt = JSON.parse(localStorage.getItem('currentUser')).token;
   headerOptions = new  Headers({
     'Content-Type':  'application/json',
+    'Accept': 'application/json',
     'Access-Control-Allow-Credentials' : 'true',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
@@ -77,6 +81,9 @@ export class UserService {
     const options = new RequestOptions({ headers: headers });
     return this.http.put(this.url + '/update/' + id, userdata, {headers: this.headerOptions});
     console.log('updated suscess');
+  }
+  updateAdmin(adminData, idAdmin) {
+    return this.http.put(this.urlAdmin + 'update/' + idAdmin, adminData, {headers: this.headerOptions});
   }
   getActiveUsers(){
     return this.http.get(this.url + 'actives/', {headers: this.headerOptions});

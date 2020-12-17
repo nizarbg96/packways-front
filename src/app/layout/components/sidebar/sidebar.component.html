@@ -8,6 +8,31 @@
             <i class="fa fa-fw fa-table"></i>&nbsp;
             <span>{{ 'Gestion des colis' | translate }}</span>
         </a>
+        <a *ngIf="isVisible" [routerLink]="['/runsheet']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-files-o"></i>&nbsp;
+            <span>Runsheets </span>
+        </a>
+      <a *ngIf="isVisible" [routerLink]="['/runsheet-in-progress']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-files-o"></i>
+        <span style="white-space: pre-line;">Runsheets en cours </span>
+      </a>
+
+      <a *ngIf="isVisible" [routerLink]="['/mu']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-th-large"></i>&nbsp;
+        <span >Moveable Units </span>
+      </a>
+      <a *ngIf="isVisible" [routerLink]="['/mu-in-progress']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-th-large"></i>&nbsp;
+        <span style="white-space: pre-line;">Moveable Units en cours </span>
+      </a>
+      <a *ngIf="isVisible" [routerLink]="['/ramassage']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-truck"></i>&nbsp;
+        <span>Ramassage</span>
+      </a>
+      <a *ngIf="isVisible" [routerLink]="['/ramassage-in-progress']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-truck"></i>&nbsp;
+        <span style="white-space: pre-line;">Ramassage en cours</span>
+      </a>
         <!-- <a [routerLink]="['/adresses']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-address-card"></i>&nbsp;
             <span>{{ 'Adresses' | translate }}</span>
@@ -27,7 +52,11 @@
         <a *ngIf="isVisible" [routerLink]="['/pickup']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-exchange"></i>&nbsp;
             <span>PickUp</span>
-        </a>  
+        </a>
+        <a *ngIf="isVisible" [routerLink]="['/entrepot']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+          <i class="fa fa-building"></i>&nbsp;
+          <span>Entrepot</span>
+        </a>
         <a *ngIf="!isVisible" [routerLink]="['/profile']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-fw fa-user"></i>&nbsp;
             <span>Profil</span>
@@ -35,7 +64,7 @@
         <a *ngIf="isVisible" [routerLink]="['/courbeille']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-trash"></i>&nbsp;
             <span>Corbeille</span>
-        </a> 
+        </a>
         <a *ngIf="isVisible" [routerLink]="['/caisse']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-usd"></i>&nbsp;
             <span>Caisse</span>
@@ -56,7 +85,7 @@
        <!--  <a *ngIf="isVisible" [routerLink]="['/map-trips']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-map-marker"></i>&nbsp;
             <span>{{ 'MapTrips' | translate }}</span>
-        </a> -->       
+        </a> -->
         <!-- <a [routerLink]="['/charts']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-fw fa-bar-chart-o"></i>&nbsp;
             <span>{{ 'Charts' | translate }}</span>

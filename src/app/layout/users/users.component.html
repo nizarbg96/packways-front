@@ -15,7 +15,7 @@
                             <div class="col-xl-3 text-xs-center">
                                 <form>
                                     <input type="checkbox" name="Expéditeur" [(ngModel)]="keyExp" (change)="test()" > Expéditeur
-                                    <input type="checkbox" name="Déstinataire" [(ngModel)]="keyDes" (change)="test()"> Déstinataire 
+                                    <input type="checkbox" name="Déstinataire" [(ngModel)]="keyDes" (change)="test()"> Déstinataire
                                 </form>
                             </div>
                             <div class="col-xl-3 text-xs-center">
@@ -26,7 +26,7 @@
                                             <button align="right" type="button" class="btn btn-info" style="width: 100%;" (click)="generateRapportClient()">Exporter</button>
                                         </div>
                                     </div>
-        
+
                             </div>
                             <div class="col-xl-3 text-xs-center">
                                 <div class="row">
@@ -36,12 +36,12 @@
                                         <button align="right" type="button" class="btn btn-info" style="width: 50%;" (click)="open(content3)">Ajout</button>
                                     </div>
                                 </div>
-    
+
                             </div>
                         </div>
-    
+
                     </div>
-    
+
                     <div class="card-body table-responsive">
                         <table class="table" [mfData]="items.reverse()" #mf="mfDataTable" [mfRowsOnPage]="10">
                             <thead>
@@ -90,7 +90,7 @@
                                             <i class="material-icons" style="color:red"> block </i>
                                         </button>
                                     </td>
-    
+
                                 </tr>
                             </tbody>
                             <tfoot>
@@ -120,7 +120,7 @@
             </div>
         </div>
 </div>
-    
+
     <ng-template #content let-c="close" let-d="dismiss">
         <div class="modal-header">
             <h4 class="modal-title">Edit de l'utilisateur:&nbsp; {{objUser.nameUser}} {{objUser.surnameUser}}</h4>
@@ -136,15 +136,15 @@
                         <input type="text" class="form-control" id="inputNomUser" [(ngModel)]="objUser.nameUser" name="inputNomUser">
                     </div>
                     <div class="form-group">
-                        <label for="inputCityUser">Prènom</label>
+                        <label for="inputPrenomUser">Prènom</label>
                         <input type="text" class="form-control" id="inputPrenomUser" [(ngModel)]="objUser.surnameUser" name="inputPrernomUser">
                     </div>
                     <div class="form-group">
-                        <label for="inputContactUser">Telephone</label>
+                        <label for="inputTeltUser">Telephone</label>
                         <input type="tel" class="form-control" id="inputTeltUser" [(ngModel)]="objUser.mobileUser" name="inputTeltUser">
                     </div>
                     <div class="form-group">
-                        <label for="inputTelUser">Email</label>
+                        <label for="inputEmailUser">Email</label>
                         <input type="email" class="form-control" id="inputEmailUser" [(ngModel)]="objUser.emailUser" name="inputEmailUser">
                     </div>
                     <div class="form-group">
@@ -172,11 +172,11 @@
                 </div>
                 <div class="col-xl-6 text-xs-center">
                     <div class="form-group">
-                        <label for="inputTypeUser">Login</label>
+                        <label for="inputLoginUser">Login</label>
                         <input type="text" class="form-control" id="inputLoginUser" [(ngModel)]="objUser.login" name="inputLoginUser">
                     </div>
                     <div class="form-group">
-                        <label for="inputSharedUser">Mot de passe</label>
+                        <label for="inputPassUser">Mot de passe</label>
                         <input type="password" class="form-control" id="inputPassUser" [(ngModel)]="objUser.password" name="inputPassUser">
                     </div>
                 </div>
@@ -187,8 +187,8 @@
             <button type="button" class="btn btn-primary" (click)="Update()">Sauvegarder</button>
         </div>
     </ng-template>
-    
-    
+
+
     <ng-template #content3 let-c="close" let-d="dismiss">
         <div class="modal-header">
             <h4 class="modal-title">Ajout d'un nouveau utilisateur</h4>
@@ -232,7 +232,7 @@
                         <input type="file" (change)="onUploadChange($event)" accept=".png, .jpg, .jpeg, .pdf" id="InputImageUser" class="form-control-file" [(ngModel)]="imgUser" aria-describedby="fileHelp" />
                         <img *ngFor="let ite of base64textString" src={{ite}} alt="" id="img" style="width: 10%; height: 10%;">
                         <small id="fileHelp" class="form-text text-muted">Taille maximale d'image est 2Mo.</small>
-    
+
                     </div>
                     <div class="form-group">
                         <div class="row">
@@ -255,16 +255,16 @@
                     </div>
                 </div> -->
             </div>
-    
-    
+
+
         </div>
-    
+
         <div class="modal-footer">
             <button type="button" class="btn btn-danger" (click)="c('Close click')">Fermer</button>
             <button type="button" class="btn btn-primary" (click)="addUser()">Ajouter</button>
         </div>
     </ng-template>
-    
+
     <ng-template #content2 let-c="close" let-d="dismiss">
         <div class="modal-header">
             <h4 class="modal-title">Détails de l'utilisateur:&nbsp; {{objUser.nameUser}} {{objUser.surnameUser}} </h4>
@@ -300,17 +300,17 @@
                     <div class="form-group" *ngIf="objUser.imgUser">
                         <img [src]="objUser.imgUser" />
                     </div>
-    
+
                 </div>
             </div>
-    
+
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-danger" (click)="c('Close click')">Close</button>
         </div>
     </ng-template>
-    
-    
+
+
     <ng-template #content4 let-c="close" let-d="dismiss">
         <div class="modal-body">
             <div class="row">
@@ -329,14 +329,14 @@
                 <button type="button" class="close" aria-label="Close" (click)="modal.close('Save click')">
                 <span aria-hidden="true">&times;</span>
                 </button>
-        </div>  
+        </div>
         <div class="modal-body">
                 <div class="row">
                         <div class="col-xl-6 text-xs-center">
                                 <fieldset class="scheduler-border">
                                         <legend class="scheduler-border">Date début</legend>
                                         <div class="control-group">
-                                                <input id="startDate" type="date" class="form-control" name="startDate" [(ngModel)]="startDate">                                                                                                                             
+                                                <input id="startDate" type="date" class="form-control" name="startDate" [(ngModel)]="startDate">
                                         </div>
                                 </fieldset>
                         </div>
@@ -344,7 +344,7 @@
                                 <fieldset class="scheduler-border">
                                         <legend class="scheduler-border">Date fin</legend>
                                         <div class="control-group">
-                                                <input id="endDate" type="date" class="form-control" name="endDate" [(ngModel)]="endDate">                                                                                                                             
+                                                <input id="endDate" type="date" class="form-control" name="endDate" [(ngModel)]="endDate">
                                         </div>
                                 </fieldset>
                         </div>
@@ -354,27 +354,27 @@
                                 <fieldset class="scheduler-border">
                                         <legend class="scheduler-border">Status de colis</legend>
                                         <div class="control-group">
-                                                <select id="tripStatus" class="form-control" [(ngModel)]="tripStatus">                                                        
+                                                <select id="tripStatus" class="form-control" [(ngModel)]="tripStatus">
                                                         <option value="Livree" selected>Livree</option>
                                                         <option value="Retour">Retour</option>
                                                         <option value="Livree et retour">Livree et retour</option>
                                                         <option value="Tous">Tous</option>
-                                                </select>                                                                                                                             
+                                                </select>
                                         </div>
                                 </fieldset>
 
-                                <label class="container2" hidden> 
+                                <label class="container2" hidden>
                                     <input type="checkbox" [(ngModel)]="theCheckboxPayement"  data-md-icheck (change)="inPayementTripCheckbox($event)"/>
                                         Mettre les colis en cours de paiement.
                                     <span class="checkmark"></span>
                                 </label>
-                        </div>                        
+                        </div>
                 </div>
-                                
 
-        </div>      
-        
-        <div class="modal-footer">                                                
+
+        </div>
+
+        <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="modal.close('Save click')">Fermer</button>
                 <button type="button" class="btn btn-primary" (click)="generateExcel();modal.close('Save click')">Générer</button>
         </div>
@@ -385,10 +385,10 @@
             <div class="row">
                     <h5 *ngIf="objUser.accountActive===true" >Etes-vous sur de bien vouloir désactiver ce compte ?</h5>
                     <h5 *ngIf="objUser.accountActive===false">Etes-vous sur de bien vouloir activer ce compte ?</h5>
-            </div> 
+            </div>
     </div>
     <div class="modal-footer">
-            <button type="button" class="btn btn-danger" (click)="(c('Close click'))">Annuler</button>                
+            <button type="button" class="btn btn-danger" (click)="(c('Close click'))">Annuler</button>
             <button type="button" class="btn btn-primary" (click)="OnBlock(objUser);(c('Close click'))" *ngIf="objUser.accountActive===true" >Bloquer</button>
             <button type="button" class="btn btn-primary" (click)="OnDeBlock(objUser);(c('Close click'))" *ngIf="objUser.accountActive===false">Débloquer</button>
 
@@ -399,10 +399,10 @@
     <div class="modal-body">
             <div class="row">
                     <h5>Etes-vous sur de bien vouloir supprimer ce compte ?</h5>
-            </div> 
+            </div>
     </div>
     <div class="modal-footer">
-            <button type="button" class="btn btn-danger" (click)="(c('Close click'))">Annuler</button>                
+            <button type="button" class="btn btn-danger" (click)="(c('Close click'))">Annuler</button>
             <button type="button" class="btn btn-primary" (click)="deleteUser(objUser);(c('Close click'))">Supprimer</button>
     </div>
 </ng-template>
