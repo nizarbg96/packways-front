@@ -16,8 +16,18 @@ import {Ng2CompleterModule} from 'ng2-completer';
 import {MaterialLibModule} from '../material/material.module';
 import {TripService} from '../trips/trips.service';
 import {DriversService} from '../drivers/drivers.service';
-import {DialogAddDriverToCreateMUComponent, MoveableUnitCreateComponent} from './moveable-unit-create/moveable-unit-create.component';
-import {DialogAddDriverToEditMUComponent, MoveableUnitEditComponent} from './moveable-unit-edit/moveable-unit-edit.component';
+import {
+  DialogAddDriverToCreateMUComponent,
+  MoveableUnitCreateComponent,
+  NgbdModalCreateForceRetourMu
+} from './moveable-unit-create/moveable-unit-create.component';
+import {
+  DialogAddDriverToEditMUComponent,
+  MoveableUnitEditComponent,
+  NgbdModalEditForceRetourMu
+} from './moveable-unit-edit/moveable-unit-edit.component';
+import {PopUpDeleteModule} from '../shared/pop-up-delete/pop-up-delete.module';
+import {PopUpDeleteComponent} from '../shared/pop-up-delete/pop-up-delete.component';
 
 @NgModule({
   declarations: [
@@ -26,8 +36,9 @@ import {DialogAddDriverToEditMUComponent, MoveableUnitEditComponent} from './mov
     MoveableUnitCreateComponent,
     DialogAddDriverToCreateMUComponent,
     MoveableUnitEditComponent,
-    DialogAddDriverToEditMUComponent],
-  entryComponents: [DialogAddDriverToMUComponent, DialogAddDriverToCreateMUComponent, DialogAddDriverToEditMUComponent],
+    DialogAddDriverToEditMUComponent, NgbdModalCreateForceRetourMu, NgbdModalEditForceRetourMu],
+  entryComponents: [DialogAddDriverToMUComponent, DialogAddDriverToCreateMUComponent, DialogAddDriverToEditMUComponent,
+    NgbdModalCreateForceRetourMu, NgbdModalEditForceRetourMu, PopUpDeleteComponent],
   imports: [
     CommonModule,
     MoveableUnitRoutingModule,
@@ -36,7 +47,7 @@ import {DialogAddDriverToEditMUComponent, MoveableUnitEditComponent} from './mov
     PageHeaderModule, NgbModule, HttpModule,
     HttpClientModule, DataTableModule, FormsModule, MatCardModule, NgxQRCodeModule,
     MatTableModule, MatPaginatorModule, MatFormFieldModule, UiSwitchModule,
-    NgxSpinnerModule, MatSnackBarModule, Ng2CompleterModule, MaterialLibModule
+    NgxSpinnerModule, MatSnackBarModule, Ng2CompleterModule, MaterialLibModule, PopUpDeleteModule
   ],
   providers: [TripService, DriversService]
 })

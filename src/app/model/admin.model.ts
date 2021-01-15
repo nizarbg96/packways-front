@@ -8,6 +8,7 @@ export interface IAdmin {
     image?: string;
     entrepot?: Entrepot;
     financier?: boolean;
+    role?: string;
 
 }
 
@@ -19,8 +20,9 @@ export class Admin implements IAdmin{
     public password?: string,
     public image?: string,
     public entrepot?: Entrepot,
-    public financier?: boolean
-  ) {
+    public financier?: boolean,
+    public role?: string
+) {
     this.financier = this.financier || false;
   }
 }

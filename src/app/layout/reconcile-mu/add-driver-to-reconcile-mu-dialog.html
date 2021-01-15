@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Veuillez entrer le nom de livreur</h1>
+<div mat-dialog-content>
+  <ng2-completer [inputClass]="'form-control form-control-inline'" [datasource]="Listdriverauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
+                 [textNoResults]="'Pas trouvé.'" [placeholder]="'Livreur'" (selected)="getSelectedDriver($event)" [(ngModel)]="affectedDriverNgModel">
+  </ng2-completer>
+</div>
+<div mat-dialog-actions class="mt-3">
+  <button  mat-raised-button color="primary" [mat-dialog-close]="affectedDriver" >Continuer</button>
+  <button mat-raised-button (click)="onNoClick()" class="ml-2">Abandonner</button>
+</div>

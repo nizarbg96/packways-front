@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, Type, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatListOption, MatSelectionList} from '@angular/material';
 import {Router} from '@angular/router';
 import {TripService} from '../trips/trips.service';
@@ -10,6 +10,10 @@ import {Entrepot} from '../../model/entrepot.model';
 import {FormControl, Validators} from '@angular/forms';
 import {EntrepotService} from '../entrepot/entrepot.service';
 import {DriversService} from '../drivers/drivers.service';
+import {Runsheet} from '../../model/runsheet.model';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {PopUpDeleteComponent} from '../shared/pop-up-delete/pop-up-delete.component';
+import {PopUpDeleteService} from '../shared/pop-up-delete/pop-up-delete.service';
 @Component({
   selector: 'app-moveable-unit',
   templateUrl: './moveable-unit.component.html',
@@ -22,6 +26,7 @@ export class MoveableUnitComponent implements OnInit {
   nbSelectedMU = 0;
   affectedDriver: any = null;
   moveableUnits: MoveableUnit[] = [];
+  filtredMoveableUnits: MoveableUnit[] = [];
   spinner = false;
   user: any;
   private checkedMUStatus: string;
@@ -32,7 +37,8 @@ export class MoveableUnitComponent implements OnInit {
   private affectedEntrepotSrc: Entrepot;
   private affectedEntrepotDest: Entrepot;
 
-  constructor(public dialog: MatDialog, private muService: MoveableUnitService, private router: Router, private tripService: TripService) { }
+  constructor(public dialog: MatDialog, private muService: MoveableUnitService, private router: Router, private tripService: TripService,
+              private modalService: NgbModal, private popUpDeleteService: PopUpDeleteService) { }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
@@ -66,20 +72,33 @@ export class MoveableUnitComponent implements OnInit {
       this.moveableUnits = res.body;
       this.moveableUnits = this.moveableUnits.filter((mu: MoveableUnit) =>
         ((mu.status === 'draft' || mu.status === 'confirmed') && mu.deleted === false) );
+      if(this.user.role !== 'superAdmin'){
+        this.moveableUnits = this.moveableUnits.filter((mu: MoveableUnit) => mu.entrepotSrc.id === this.user.entrepot.id ||
+          mu.entrepotDest.id === this.user.entrepot.id || mu.createdBy === this.user.idAdmin);
+      }
       this.moveableUnits = this.moveableUnits.sort((a, b) => (a.createdDate > b.createdDate) ? 1 : 0);
       this.spinner = false;
+      this.filtredMoveableUnits = this.moveableUnits;
     });
   }
   deleteMU(mu: MoveableUnit) {
-    const index = this.moveableUnits.indexOf(mu);
-    mu.deleted = true;
-    mu.deletedDate = new Date();
-    mu.deletedBy = this.user.idAdmin;
-    this.muService.update(mu).subscribe();
-    this.moveableUnits[index] = mu;
-    const listTripsToUpdate = mu.listColis.slice()
-      .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
-    this.tripService.updateTripsWhenDeleteMU(listTripsToUpdate).subscribe();
+    this.popUpDeleteService.activityName = 'Moveable Unit';
+    this.popUpDeleteService.activity = mu;
+    this.modalService.open(MODALS['deletePopUp']).result.then(
+      (result) => {
+        const index = this.moveableUnits.indexOf(mu);
+        mu.deleted = true;
+        mu.deletedDate = new Date();
+        mu.deletedBy = this.user.idAdmin;
+        this.muService.update(mu).subscribe();
+        this.moveableUnits[index] = mu;
+        const listTripsToUpdate = mu.listColis.slice()
+          .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
+        this.tripService.updateTripsWhenDeleteMU(listTripsToUpdate).subscribe();
+      }, (reason) => {
+      }
+    );
+
   }
   calculateDiff(data) {
     const date = new Date(data);
@@ -115,21 +134,35 @@ export class MoveableUnitComponent implements OnInit {
         .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map((colis) => colis.idTrip);
       console.log(this.user);
       this.tripService.updateTripsDriver(this.selectedMU.driver.idDriver, listTrips, this.user.name).subscribe(() => {
-        // this.tripService.updateTripsStatus('livraison en cours', listTrips,  this.user.name, '').subscribe();
+        this.tripService.updateTripsStatus('transit', listTrips,  this.user.name, '').subscribe();
       });
     });
-
   }
 
   deleteselectedMU() {
-    const index = this.moveableUnits.indexOf(this.selectedMU);
-    this.selectedMU.deleted = true;
-    this.selectedMU.deletedDate = new Date();
-    this.selectedMU.deletedBy = this.user.idAdmin;
-    this.muService.update(this.selectedMU).subscribe();
-    const listTripsToUpdate = this.selectedMU.listColis.slice()
-      .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
-    this.tripService.updateTripsWhenDeleteMU(listTripsToUpdate).subscribe();
+    this.popUpDeleteService.activityName = 'Moveable Unit';
+    this.popUpDeleteService.activity = this.selectedMU;
+    this.modalService.open(MODALS['deletePopUp']).result.then(
+      (result) => {
+        const index = this.moveableUnits.indexOf(this.selectedMU);
+        this.selectedMU.deleted = true;
+        this.selectedMU.deletedDate = new Date();
+        this.selectedMU.deletedBy = this.user.idAdmin;
+        this.moveableUnits[index] = this.selectedMU;
+        this.muService.update(this.selectedMU).subscribe();
+        const listTripsToUpdate = this.selectedMU.listColis.slice()
+          .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
+        this.tripService.updateTripsWhenDeleteMU(listTripsToUpdate).subscribe();
+      }, (reason) => {})
+  }
+  applyFilter(filterValue: any) {
+    const filterValueUpper = filterValue.toUpperCase();
+    if(filterValue === '' ) {
+      this.filtredMoveableUnits = this.moveableUnits;
+    }
+    else {
+      this.filtredMoveableUnits = this.moveableUnits.slice().filter((item) => item.ref.includes(filterValueUpper));
+    }
   }
 }
 @Component({
@@ -208,3 +241,6 @@ export interface MuInfo {
   entrepotSrc: Entrepot;
   entrepotDest: Entrepot;
 }
+const MODALS: { [name: string]: Type<any> } = {
+  deletePopUp: PopUpDeleteComponent
+};

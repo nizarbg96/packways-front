@@ -1,7 +1,7 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-const REMOTE_URL = 'http://147.135.136.78:8052' ;
+const REMOTE_URL = 'http://147.135.136.78:8096' ;
 const LOCAL_URL = 'http://127.0.0.1:8052' ;
 export const environment = {
   production: false,

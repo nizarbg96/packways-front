@@ -29,6 +29,7 @@ export class RamassageInProgressComponent implements OnInit {
   affectedDriver: any = null;
   pickUps: PickUp[] = [];
   inProgressPickUps: InProgressPickUp[] = [];
+  filtredInProgressPickUps: InProgressPickUp[] = [];
   spinner = false;
   user: any;
   private checkedPickUpsStatus: string;
@@ -76,6 +77,16 @@ export class RamassageInProgressComponent implements OnInit {
       this.pickUps = res.body;
       this.pickUps = this.pickUps.filter((runsheet: Runsheet) =>
         ((runsheet.status === 'dispached') && runsheet.deleted === false) );
+      if(this.user.role !== 'superAdmin'){
+        this.pickUps = this.pickUps.filter((pickup: PickUp) => {
+          if(!!pickup.entrepot){
+            return (pickup.entrepot.id === this.user.entrepot.id ||
+              pickup.createdBy === this.user.idAdmin)
+          } else {
+            return false;
+          }
+        });
+      }
       this.pickUps = this.pickUps.sort((a, b) => (a.dispachedDate > b.dispachedDate) ? 1 : 0);
       this.pickUps.forEach((pickUp) =>{
         const list = pickUp.listColis.slice().filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined))
@@ -88,6 +99,7 @@ export class RamassageInProgressComponent implements OnInit {
         });
       })
       this.spinner = false;
+      this.filtredInProgressPickUps = this.inProgressPickUps;
     });
   }
   calculateDiff(data) {
@@ -106,9 +118,7 @@ export class RamassageInProgressComponent implements OnInit {
   }
 
 
-  printRunsheet() {
-
-  }
+  printRunsheet() {}
 
   onAreaListControlChanged(pickUp_option: MatListOption, pickUp: PickUp) {
     if (pickUp_option.selected){
@@ -166,6 +176,15 @@ export class RamassageInProgressComponent implements OnInit {
       return 'by clicking on a backdrop';
     } else {
       return  `with: ${reason}`;
+    }
+  }
+  applyFilter(filterValue: any) {
+    const filterValueUpper = filterValue.toUpperCase();
+    if(filterValue === '' ) {
+      this.filtredInProgressPickUps = this.inProgressPickUps;
+    }
+    else {
+      this.filtredInProgressPickUps = this.inProgressPickUps.slice().filter((item) => item.pickUpObject.ref.includes(filterValueUpper));
     }
   }
 }

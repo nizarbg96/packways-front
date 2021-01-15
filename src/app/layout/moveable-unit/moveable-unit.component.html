@@ -16,7 +16,7 @@
       <div class="col-md-10 Aligner">
         <p><mat-form-field appearance="fill" class="ml-2">
           <mat-label>REF</mat-label>
-          <input matInput placeholder="filtrer par réference">
+          <input matInput placeholder="filtrer par réference" (keyup)="applyFilter($event.target.value)">
           <mat-icon matSuffix>keyboard</mat-icon>
         </mat-form-field>
         </p>
@@ -34,7 +34,7 @@
 <div class="row">
   <mat-spinner *ngIf="spinner" class="center"></mat-spinner>
   <mat-selection-list style="width:100%"  #moveableunits_list>
-    <div *ngFor="let mu of moveableUnits">
+    <div *ngFor="let mu of filtredMoveableUnits">
       <mat-list-option #mu_option *ngIf="mu.deleted === false && (mu.status === 'draft' || mu.status ==='confirmed')" (click)="onAreaListControlChanged(mu_option, mu)" >
         <div class="row mt-1" >
           <div class="col-md-9">

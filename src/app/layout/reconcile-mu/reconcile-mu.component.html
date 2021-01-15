@@ -1,0 +1,92 @@
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;">
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Activité Moveable Unit'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Réconcilier une Activité</h5>
+        <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-10 Aligner">
+        <p><mat-form-field appearance="fill" class="ml-2">
+          <mat-label>REF</mat-label>
+          <input matInput placeholder="filtrer par réference" (keyup)="applyFilter($event.target.value)">
+          <mat-icon matSuffix>keyboard</mat-icon>
+        </mat-form-field>
+        </p>
+      </div>
+      <div class="col-md-2 Aligner ">
+        <button mat-raised-button *ngIf="activityMoveableUnit_list.selectedOptions.selected.length === 0 "
+                style="width:100%;" color="primary" (click)="openDialog()" class="ml-2">Reconcilier une activité
+        </button>
+        <button mat-raised-button color="warn" class="ml-2"
+                style="width: 100%"
+                *ngIf="activityMoveableUnit_list.selectedOptions.selected.length>0 && checkedActivityMuStatus === 'draft' " (click)="deleteSelectedActivityMu()">
+          Annuler
+        </button>
+        <button mat-raised-button  class="ml-2"
+                style="width: 100%; background-color: #00aa88; color: white;"
+                *ngIf="activityMoveableUnit_list.selectedOptions.selected.length>0 && checkedActivityMuStatus === 'confirmed' " (click)="printRunsheet()">
+          imprimer
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+<div class="row">
+  <mat-spinner *ngIf="spinner" class="center"></mat-spinner>
+  <mat-selection-list style="width:100%" #activityMoveableUnit_list>
+    <div *ngFor="let activityMoveableUnit of filtredActivitiesMoveableUnit">
+      <mat-list-option #activityMoveableUnit_option
+                       *ngIf="(activityMoveableUnit.deleted === false) && (activityMoveableUnit.status === 'draft' || activityMoveableUnit.status ==='confirmed')"
+                       (click)="onAreaListControlChanged(activityMoveableUnit_option, activityMoveableUnit)">
+        <div class="row mt-1">
+          <div class="col-md-9">
+            <p>activityMoveableUnit_Packways_{{activityMoveableUnit.ref}}</p>
+            <p style="color: grey; font-style: italic;">
+              {{activityMoveableUnit.status}} - Driver: <strong>
+              {{(!!activityMoveableUnit.driver) ? activityMoveableUnit.driver.nameDriver + " " + activityMoveableUnit.driver.surnameDriver : "n'est pas assigné"}}
+            </strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-2">
+            <button style="z-index: 10;" *ngIf="activityMoveableUnit.status === 'draft'" type="button" class="mat-mini-fab mt-2" title="Modifier"
+                    (click)="editActivityMu(activityMoveableUnit)"> <!-- (click)="open(content)" -->
+              <i class="material-icons"> create </i>
+            </button>
+            <button style="z-index: 10;" *ngIf="activityMoveableUnit.status === 'confirmed'" type="button" class="mat-mini-fab mt-2" title="détails"
+                    (click)="editActivityMu(activityMoveableUnit)"> <!-- (click)="open(content)" -->
+              <i class="material-icons"> visibility </i>
+            </button>
+            <button type="button" *ngIf="activityMoveableUnit.status === 'draft'" style="z-index: 10;" class="mat-mini-fab ml-2 mt-2" title="Supprimer">
+              <i class="material-icons" (click)="deleteActivityMu(activityMoveableUnit)"> delete </i>
+            </button>
+            <button *ngIf="activityMoveableUnit.status === 'confirmed'" style="z-index: 10;" type="button"
+                    class="mat-mini-fab ml-2 mt-2" title="Imprimer">
+              <i class="material-icons" (click)="printRunsheet()"> print </i>
+            </button>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+            <p style="color: grey; font-style: italic;"
+               class="mt-2">{{ activityMoveableUnit.createdDate | date:'dd/MM/yyyy'}}</p>
+            <p style="color: grey; font-style: italic;"
+               [ngClass]="{'text-success': calculateDiff(activityMoveableUnit.createdDate) < 2 ,
+              'text-warning': calculateDiff(activityMoveableUnit.createdDate) === 2, 'text-danger': calculateDiff(activityMoveableUnit.createdDate) > 2}"
+               class="mt-2">
+              <strong>{{ calculateDiff(activityMoveableUnit.createdDate)}} Jours</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+      </mat-list-option>
+    </div>
+  </mat-selection-list>
+</div>
+
+

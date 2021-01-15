@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, Type, ViewChild} from '@angular/core';
 import {Runsheet} from '../../model/runsheet.model';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatListOption, MatSelectionList} from '@angular/material';
 import {Router} from '@angular/router';
@@ -12,6 +12,11 @@ import {FormControl, Validators} from '@angular/forms';
 import {MoveableUnitService} from '../moveable-unit/moveable-unit.service';
 import {EntrepotService} from '../entrepot/entrepot.service';
 import {DriversService} from '../drivers/drivers.service';
+import {MoveableUnit} from '../../model/moveable-unit.model';
+import {PopUpDeleteService} from '../shared/pop-up-delete/pop-up-delete.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgbdModalDeleteRunsheet} from '../runsheet/runsheet.component';
+import {PopUpDeleteComponent} from '../shared/pop-up-delete/pop-up-delete.component';
 
 @Component({
   selector: 'app-ramassage',
@@ -25,6 +30,7 @@ export class RamassageComponent implements OnInit {
   nbSelectedPickUp = 0;
   affectedDriver: any = null;
   pickUps: PickUp[] = [];
+  filtredPickUps: PickUp[] = [];
   spinner = false;
   user: any;
   private checkedPickUpStatus: string;
@@ -34,7 +40,8 @@ export class RamassageComponent implements OnInit {
   private affectedMatricule: string;
   private affectedEntrepot: Entrepot;
 
-  constructor(public dialog: MatDialog, private ramassageService: RamassageService, private router: Router, private tripService: TripService) { }
+  constructor(public dialog: MatDialog, private ramassageService: RamassageService, private router: Router, private tripService: TripService,
+              private popUpDeleteService: PopUpDeleteService, private modalService: NgbModal) { }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
@@ -67,21 +74,38 @@ export class RamassageComponent implements OnInit {
       this.pickUps = res.body;
       this.pickUps = this.pickUps.filter((pickup: PickUp) =>
         ((pickup.status === 'draft' || pickup.status === 'confirmed') && pickup.deleted === false) );
+      if(this.user.role !== 'superAdmin'){
+        this.pickUps = this.pickUps.filter((pickup: PickUp) => {
+          if(!!pickup.entrepot){
+            return (pickup.entrepot.id === this.user.entrepot.id ||
+              pickup.createdBy === this.user.idAdmin)
+          }else{
+            return (pickup.createdBy === this.user.idAdmin)}
+        }) ;
+      }
       this.pickUps = this.pickUps.sort((a, b) => (a.createdDate > b.createdDate) ? 1 : 0);
-
+      this.filtredPickUps = this.pickUps;
       this.spinner = false;
     });
   }
   deletePickUp(pickUp: PickUp) {
-    const index = this.pickUps.indexOf(pickUp);
-    pickUp.deleted = true;
-    pickUp.deletedDate = new Date();
-    pickUp.deletedBy = this.user.idAdmin;
-    this.ramassageService.update(pickUp).subscribe();
-    this.pickUps[index] = pickUp;
-    const listTripsToUpdate = pickUp.listColis.slice()
-      .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
-    this.tripService.updateTripsWhenDeleteRunsheet(listTripsToUpdate).subscribe();
+    this.popUpDeleteService.activityName = 'Pick Up';
+    this.popUpDeleteService.activity = pickUp;
+    this.modalService.open(MODALS['deletePickUp']).result.then(
+      (result) => {
+        const index = this.pickUps.indexOf(pickUp);
+        pickUp.deleted = true;
+        pickUp.deletedDate = new Date();
+        pickUp.deletedBy = this.user.idAdmin;
+        this.ramassageService.update(pickUp).subscribe();
+        this.pickUps[index] = pickUp;
+        const listTripsToUpdate = pickUp.listColis.slice()
+          .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
+        this.tripService.updateTripsWhenDeleteRunsheet(listTripsToUpdate).subscribe();
+      }, (reason) => {
+      }
+    );
+
   }
   calculateDiff(data) {
     const date = new Date(data);
@@ -115,21 +139,39 @@ export class RamassageComponent implements OnInit {
         .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map((colis) => colis.idTrip);
       console.log(this.user);
       this.tripService.updateTripsDriver(this.selectedPickUp.driver.idDriver, listTrips, this.user.name).subscribe(() =>{
-      //  this.tripService.updateTripsStatus('livraison en cours', listTrips,  this.user.name, '').subscribe();
+      this.tripService.updateTripsStatus('ramassage en cours', listTrips,  this.user.name, '').subscribe();
       });
     });
 
   }
 
   deleteSelectedPickUp() {
-    const index = this.pickUps.indexOf(this.selectedPickUp);
-    this.selectedPickUp.deleted = true;
-    this.selectedPickUp.deletedDate = new Date();
-    this.selectedPickUp.deletedBy = this.user.idAdmin;
-    this.ramassageService.update(this.selectedPickUp).subscribe();
-    const listTripsToUpdate = this.selectedPickUp.listColis.slice()
-      .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
-    this.tripService.updateTripsWhenDeletePickUp(listTripsToUpdate).subscribe();
+      this.popUpDeleteService.activityName = 'Pick Up';
+      this.popUpDeleteService.activity = this.selectedPickUp;
+    this.modalService.open(MODALS['deletePickUp']).result.then(
+      (result) => {
+        const index = this.pickUps.indexOf(this.selectedPickUp);
+        this.selectedPickUp.deleted = true;
+        this.selectedPickUp.deletedDate = new Date();
+        this.selectedPickUp.deletedBy = this.user.idAdmin;
+        this.pickUps[index] = this.selectedPickUp;
+        this.ramassageService.update(this.selectedPickUp).subscribe();
+        const listTripsToUpdate = this.selectedPickUp.listColis.slice()
+          .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
+        this.tripService.updateTripsWhenDeletePickUp(listTripsToUpdate).subscribe();
+      }, (reason) => {
+      }
+    );
+
+  }
+  applyFilter(filterValue: any) {
+    const filterValueUpper = filterValue.toUpperCase();
+    if(filterValue === '' ) {
+      this.filtredPickUps = this.pickUps;
+    }
+    else {
+      this.filtredPickUps = this.pickUps.slice().filter((item) => item.ref.includes(filterValueUpper));
+    }
   }
 }
 @Component({
@@ -202,3 +244,6 @@ export interface PickUpInfo {
   matricule: string;
   entrepot: Entrepot;
 }
+const MODALS: { [name: string]: Type<any> } = {
+  deletePickUp: PopUpDeleteComponent
+};

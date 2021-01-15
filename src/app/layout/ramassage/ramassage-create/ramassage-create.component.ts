@@ -11,6 +11,13 @@ import {Entrepot} from '../../../model/entrepot.model';
 import {FormControl, Validators} from '@angular/forms';
 import {EntrepotService} from '../../entrepot/entrepot.service';
 import {MuInfo} from '../../moveable-unit/moveable-unit.component';
+import {PickUpHistory} from '../../../model/pickUp-history.model';
+import {HistoriqueScan} from '../../../model/historique-scan.model';
+import {RunsheetService} from '../../runsheet/runsheet.service';
+import {MoveableUnitService} from '../../moveable-unit/moveable-unit.service';
+import {Conflit} from '../../../model/conflit.model';
+import {UserService} from '../../users/users.service';
+import {ConflitService} from '../../conflict-trips/conflit.service';
 
 @Component({
   selector: 'app-ramassage-create',
@@ -21,7 +28,8 @@ export class RamassageCreateComponent implements OnInit, OnDestroy {
 
   constructor(private tservice: TripService, private snackBar: MatSnackBar, private ramassageService: RamassageService,
               private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,
-              public dialog: MatDialog) { }
+              public dialog: MatDialog, private runsheetService: RunsheetService, private moveableUnitService: MoveableUnitService,
+              private userService: UserService, private conflitService: ConflitService) { }
 
   date: Date;
   nbSelectedPickUp = 0;
@@ -90,36 +98,88 @@ export class RamassageCreateComponent implements OnInit, OnDestroy {
     }
     //
     if (verif === false) {
-      this.tservice.getTripscanList(this.searchTermscan).subscribe(data => {
-        const obj = Array.of(JSON.parse(data['_body']).data);
+      this.tservice.getTripscanListById(this.searchTermscan).subscribe(data => {
+        const obj = data.body;
         let verif = false;
         // vérif
         for (let index = 0; index < this.ListScan.length; index++) {
-          if (obj[0].idTrip === this.ListScan[index].idTrip ||  obj[0].refTip === this.ListScan[index].refTrip) {
+          if (obj.idTrip === this.ListScan[index].idTrip ||  obj.refTrip === this.ListScan[index].refTrip) {
             verif = true;
           }
         }
         if (verif === false) {
-          if ((obj[0].currentPickUpId !== null) && (obj[0].currentPickUpId !== 'null') ) {
-            console.log('currentPickUpId ' + obj[0].currentPickUpId + '--');
-            this.ramassageService.find(obj[0].currentPickUpId).subscribe((res) => {
-              this.snackBar.open('impossible de scanner le colis! ce colis existe dans le Pick Up ' +
-                'de Réference: ' + res.body.ref + ', Etat: ' + res.body.status , 'Fermer', {
-                duration: 8000,
+          if ((obj.currentRunsheetId !== null) && (obj.currentRunsheetId !== 'null') && (obj.currentRunsheetId !== undefined) ) {
+            this.runsheetService.find(obj.currentRunsheetId).subscribe((res) => {
+              const msg = 'impossible de scanner le colis! ce colis existe dans la runsheet' +
+                ' de Réference: ' + res.body.ref + ', Etat: ' + res.body.status;
+              this.snackBar.open( msg, 'Fermer', {duration: 8000,});
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name,new Date(),'Ajout dans le pick up: '+this.pickUp.ref,
+                'Exception : ' +msg));
+              this.tservice.updateOneTrip(obj).subscribe();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser)=>{
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Pick Up creation',  this.pickUp.ref);
+                this.conflitService.create(conflit).subscribe();
+              });
+            });
+          } else if ((obj.currentMUId !== null) && (obj.currentMUId !== 'null') && (obj.currentMUId !== undefined) ) {
+            this.moveableUnitService.find(obj.currentMUId).subscribe((res) => {
+              const msg = 'impossible de scanner le colis! ce colis existe dans la moveable unit' +
+                ' de Réference: ' + res.body.ref + ', Etat: ' + res.body.status;
+              this.snackBar.open( msg, 'Fermer', {duration: 8000,});
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name,new Date(),'Ajout dans la  pick up: '+this.pickUp.ref,
+                'Exception : '+msg));
+              this.tservice.updateOneTrip(obj).subscribe();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser)=>{
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Pick Up creation',  this.pickUp.ref);
+                this.conflitService.create(conflit).subscribe();
+              });
+            });
+          } else if ((obj.currentPickUpId !== null) && (obj.currentPickUpId !== 'null') && (obj.currentPickUpId !== undefined) ) {
+            this.ramassageService.find(obj.currentPickUpId).subscribe((res) => {
+              const msg = 'impossible de scanner le colis! ce colis existe dans le pick up' +
+                ' de Réference: ' + res.body.ref + ', Etat: ' + res.body.status;
+              this.snackBar.open( msg, 'Fermer', {duration: 8000,});
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name,new Date(),'Ajout dans la  pick up: '+this.pickUp.ref,
+                'Exception : '+msg));
+              this.tservice.updateOneTrip(obj).subscribe();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser)=>{
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Pick Up creation',  this.pickUp.ref);
+                this.conflitService.create(conflit).subscribe();
               });
             });
           } else {
-            if (obj[0].statusTrip === 'cherche un livreur') {
-              this.ListScan.push(obj[0]);
-              // code to add colisRunsheet to listColis of pickup
-              this.pickUp.listColis.push(new ColisRunsheet(obj[0].idTrip, false, this.user.idAdmin,
-                new Date(), false));
-              this.tservice.updatePickUp(obj[0].idTrip, this.pickUp.id).subscribe(() => {
-                this.ramassageService.update(this.pickUp).subscribe();
+            if (obj.statusTrip === 'cherche un livreur') {
+              this.ListScan.push(obj);
+              this.playSuccessAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name,new Date(),'Ajout dans le pick up: '+this.pickUp.ref,
+                'Success'));
+              this.tservice.updateOneTrip(obj).subscribe((res) => {
+                this.pickUp.listColis.push(new ColisRunsheet(obj.idTrip, false, this.user.idAdmin,
+                  new Date(), false));
+                this.tservice.updatePickUp(obj.idTrip, new PickUpHistory(this.pickUp.id, this.user.idAdmin, new Date())).subscribe(() => {
+                  this.ramassageService.update(this.pickUp).subscribe();
+                });
               });
+
             } else {
-              this.snackBar.open('Le statut de colis doit être "cherche un livreur" ! . Statut de colis scanné : ' + obj[0].statusTrip, 'Fermer', {
+              const msg = 'Le statut de colis doit être "cherche un livreur" ! . Statut de colis scanné : ' + obj.statusTrip;
+              this.snackBar.open(msg, 'Fermer', {
                 duration: 8000,
+              });
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name,new Date(),'Ajout dans le pick up: '+this.pickUp.ref,
+                'Exception : '+ msg));
+              this.tservice.updateOneTrip(obj).subscribe();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser)=>{
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Pick Up creation',  this.pickUp.ref);
+                this.conflitService.create(conflit).subscribe();
               });
             }
           }
@@ -128,12 +188,14 @@ export class RamassageCreateComponent implements OnInit, OnDestroy {
           this.snackBar.open('Ce colis a été scanné', 'Fermer', {
             duration: 8000,
           });
+          this.playFailureAudio();
         }
       });
     } else {
       this.snackBar.open('Ce colis a été scanné', 'Fermer', {
         duration: 8000,
       });
+      this.playFailureAudio();
     }
     this.searchTermscan = '';
     this.ListScanNB = this.ListScan.length + 1;
@@ -152,7 +214,7 @@ export class RamassageCreateComponent implements OnInit, OnDestroy {
     this.pickUp.listColis[index].removed = true;
     this.pickUp.listColis[index].removedBy =  this.user.idAdmin;
     this.pickUp.listColis[index].removedDate =  new Date() ;
-    this.tservice.updatePickUp(trip.idTrip, null).subscribe(() => {
+    this.tservice.updatePickUp(trip.idTrip, new PickUpHistory(null, this.user.idAdmin, new Date())).subscribe(() => {
       this.ramassageService.update(this.pickUp).subscribe();
     });
   }
@@ -183,6 +245,18 @@ export class RamassageCreateComponent implements OnInit, OnDestroy {
   getListColisLength(listColis: ColisRunsheet[]): number {
     return listColis.slice()
       .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).length ;
+  }
+  playSuccessAudio(){
+    const audio = new Audio();
+    audio.src = '../../../../assets/audio/zapsplat_public_places_supermarket_checkout_beep_002_44357.wav';
+    audio.load();
+    audio.play();
+  }
+  playFailureAudio(){
+    const audio = new Audio();
+    audio.src = '../../../../assets/audio/zapsplat_multimedia_game_sound_error_incorrect_001_30721.wav';
+    audio.load();
+    audio.play();
   }
 
   ngOnDestroy(): void {

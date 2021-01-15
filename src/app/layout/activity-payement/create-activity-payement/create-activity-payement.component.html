@@ -1,0 +1,357 @@
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;" >
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Activité Payements'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Activité payement de client : {{!!activityPayement?activityPayement.clientName :'-'}}</h5>
+        <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-10">
+        <div class="row" *ngIf="firstStep">
+          <div class="col-md-2">
+          <p><mat-form-field appearance="fill" class="ml-2">
+            <mat-label>REF</mat-label>
+            <input matInput placeholder="filtrer par réference" (keyup)="applyFilter($event.target.value)">
+            <mat-icon matSuffix>keyboard</mat-icon>
+          </mat-form-field>
+          </p>
+        </div>
+          <div class="col-md-2">
+            <p><mat-form-field appearance="fill" style="display: block; width: 100%">
+              <mat-label>Entrepôt</mat-label>
+              <mat-select  required (selectionChange)="affectEntrepotSrc($event.value)">
+                <mat-option>--</mat-option>
+                <mat-option *ngFor="let entrepot of entrepots" [value]="entrepot" >
+                  {{entrepot.nom}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            </p>
+          </div>
+          <div class="col-md-3">
+            <fieldset class="scheduler-border">
+              <legend class="scheduler-border text-center"><h6>Montant Totale</h6></legend>
+              <div class="control-group">
+                <label class="text-center font-weight-light">{{!!totalAmount?totalAmount:'-'}}</label>
+              </div>
+            </fieldset>
+          </div>
+          <div class="col-md-3">
+            <fieldset class="scheduler-border">
+              <legend class="scheduler-border text-center"><h6>Frais de livraison</h6></legend>
+              <div class="control-group">
+                <label class="text-center font-weight-light">{{!!shippingCosts?shippingCosts:'-'}}</label>
+              </div>
+            </fieldset>
+          </div>
+          <div class="col-md-2">
+            <fieldset class="scheduler-border">
+              <legend class="scheduler-border text-center"><h6>Montant Net</h6></legend>
+              <div class="control-group">
+                <label class="text-center font-weight-light">{{!!amountToPay?amountToPay:'-'}}</label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2 Aligner ">
+        <button mat-button mat-raised-button color="primary" *ngIf="finalStep && activityPayement.status === 'draft' "   (click)="goBack(stepper)" >Précédent</button>
+        <button mat-button mat-raised-button color="primary" *ngIf="finalStep && activityPayement.status === 'confirmed'"  style="width: 50%"  (click)="goBack(stepper)" >Précédent</button>
+        <button mat-button mat-raised-button color="primary" *ngIf="finalStep && activityPayement.status === 'closed'"  style="width: 100%"  (click)="goBack(stepper)" >Précédent</button>
+        <button mat-button mat-raised-button *ngIf="finalStep && activityPayement.status === 'confirmed'"  style="width: 50%;background-color:#00aa88;color:white;" class="ml-2"  (click)="closeActivite('confirmActivity')" >Clôturer</button>
+        <button mat-button mat-raised-button *ngIf="!finalStep" [ngStyle]="{'width': firstStep === true ?'100%':'50%', 'background-color':'#00aa88', 'color': 'white'}"class="ml-2" (click)="goForward(stepper)">Suivant</button>
+        <button mat-button mat-raised-button  *ngIf="finalStep && activityPayement.status === 'draft'" style="width:50%;background-color:#00aa88;color:white;" class="ml-2" (click)="conirmeActivite('confirmActivity')" [disabled]="listColisToPay.length === 0" >Confirmer</button>
+      </div>
+    </div>
+    <div class="row" *ngIf="firstStep && activityPayement.status === 'draft'">
+      <div class="col-md-3">
+        <p><mat-form-field appearance="fill" style="display: block; width: 100%">
+          <mat-label>Frais de colis livré</mat-label>
+          <mat-select  required (selectionChange)="fraisColisLivree($event.value)">
+            <mat-option [value]="'gratuit'">
+              Gratuit
+            </mat-option>
+            <mat-option [value]="'standard'" >
+              Standard
+            </mat-option>
+            <mat-option [value]="'personnalisé'" >
+              Personnalisé
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        </p>
+      </div>
+      <div class="col-md-3">
+        <p><mat-form-field appearance="fill" style="display: block; width: 100%">
+          <mat-label>Frais de colis retourné</mat-label>
+          <mat-select  required (selectionChange)="fraisColisRetournee($event.value)">
+            <mat-option [value]="'standard'">
+              Standard
+            </mat-option>
+            <mat-option [value]="1" >
+              1
+            </mat-option>
+            <mat-option [value]="2" >
+              2
+            </mat-option>
+            <mat-option [value]="3" >
+              3
+            </mat-option>
+            <mat-option [value]="4" >
+              4
+            </mat-option>
+            <mat-option [value]="5" >
+              5
+            </mat-option>
+            <mat-option [value]="6" >
+              6
+            </mat-option>
+            <mat-option [value]="7" >
+              7
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        </p>
+      </div>
+      <div class="col-md-3">
+        <mat-slide-toggle class="mt-4" [(ngModel)]="billedIsChecked" color="primary" (change)="billdeChanged()">Retourné catégorie 2 : {{billedIsChecked?'Activé':'Désactivé'}}</mat-slide-toggle>
+      </div>
+    </div>
+  </mat-card>
+</div>
+<div class="row">
+  <mat-horizontal-stepper [linear]="false" #stepper style="width:100%;">
+    <mat-step>
+      <ng-template matStepLabel>Liste des colis récoltés</ng-template>
+      <div class="row">
+        <div class="card-body table-responsive">
+          <div class="row" *ngIf="activityPayement.status === 'draft'">
+            <div class="col-xl-3 text-xs-center"><input type="checkbox" [(ngModel)]="selectedAll" (change)="selectAll($event);"/> Sélectionner tout</div>
+            <!--
+            <div class="col-xl-3 text-xs-center" hidden>
+                    <a [hidden]="prvBtnDisabled" (click)="getFiltredTripsOnPrevious()" class="previous">&laquo; Précédent</a>
+                    <a [hidden]="nxtBtnDisabled" (click)="getFiltredTripsOnNext()" class="next">Suivant &raquo;</a>
+            </div>  -->
+            <small class="form-text text-primary" style="font-size:12px !important;">Nombre des colis selectionnées:  <b>{{NBchecked}}</b></small>
+          </div>
+
+          <table class="table" [mfData]="filtredRecoltedTrips.reverse()" #mf="mfDataTable" [mfRowsOnPage]="50" id="myTable">
+            <thead>
+            <tr>
+              <th style="width:1%">#</th>
+              <th style="width:2%">REF</th>
+              <th style="width:10%">Source</th>
+              <th style="width:10%">Déstination</th>
+              <th style="width:10%"><mfDefaultSorter by="statusTrip">Status</mfDefaultSorter></th>
+              <th style="width:6%"><mfDefaultSorter by="userTrip.nameUser">Expéditeur</mfDefaultSorter></th>
+              <th style="width:10%">Postulation</th>
+              <th style="width:2%">Frais</th>
+              <th style="width:3%">Prix</th>
+              <th style="width:4%">E.financier</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr *ngFor="let trip of mf.data" id="trip-row-{{trip.idTrip}}" >
+              <!-- <td scope="row"><input class="form-check-input" type="checkbox" id="checked-trip-{{trip.idTrip}}" value="option1" (click)="checkedTrip(trip)"></td> -->
+              <td scope="row"><input *ngIf="activityPayement.status === 'draft'" class="form-check-input" type="checkbox" id="checked-trip-{{trip.idTrip}}"
+                                     value="option1" [(ngModel)]="trip.selected"  (change)="onCheckboxChange(trip,$event)"></td>
+              <!-- <td *ngIf="showStatusTrip(trip) === true && showStatusTrip2(trip) === true" [ngStyle]="{'color': varcolor}">{{trip.refTrip}}</td>
+              <td *ngIf="showStatusTrip(trip) === true && showStatusTrip2(trip) === false" style="background-color: rgb(216, 23, 23)">{{trip.refTrip}}</td> -->
+              <td *ngIf="isVisible && trip.statusTrip === 'cherche un livreur'" style="background-color: rgb(255, 255, 255)">{{trip.refTrip}}</td>
+              <td *ngIf="isVisible && trip.statusTrip === 'Livreur en chemin' && showStatusTrip(trip) === true" style="background-color: rgb(201, 99, 40)">{{trip.refTrip}}</td>
+              <td *ngIf="isVisible && trip.statusTrip === 'Livreur en chemin' && showStatusTrip(trip) === false" style="background-color: rgb(255, 255, 255)">{{trip.refTrip}}</td>
+              <td *ngIf="isVisible && trip.statusTrip === 'Chez Livreur' && showStatusTrip(trip) === true" style="background-color: rgb(216, 23, 23)">{{trip.refTrip}}</td>
+              <td *ngIf="isVisible && trip.statusTrip === 'Chez Livreur' && showStatusTrip(trip) === false" style="background-color: rgb(255, 255, 255)">{{trip.refTrip}}</td>
+              <td *ngIf="isVisible && trip.statusTrip === 'livraison en cours' && showStatusTrip(trip) === true" style="background-color: rgb(57, 132, 194)">{{trip.refTrip}}</td>
+              <td *ngIf="isVisible && trip.statusTrip === 'livraison en cours' && showStatusTrip(trip) === false" style="background-color: rgb(255, 255, 255)">{{trip.refTrip}}</td>
+              <td *ngIf="isVisible && trip.statusTrip === 'Livree'" style="background-color: rgb(255, 255, 255)">{{trip.refTrip}}</td>
+              <td *ngIf="isVisible && trip.statusTrip === 'Retour'" style="background-color: rgb(255, 255, 255)">{{trip.refTrip}}</td>
+              <td *ngIf="isVisible && trip.statusTrip === 'Annulée'" style="background-color: rgb(255, 255, 255)">{{trip.refTrip}}</td>
+              <td *ngIf="isVisible && trip.statusTrip === 'En cours de retour'" style="background-color: rgb(255, 255, 255)">{{trip.refTrip}}</td>
+              <td *ngIf="isVisible && trip.statusTrip === 'Retournee'" style="background-color: rgb(255, 255, 255)">{{trip.refTrip}}</td>
+              <td *ngIf="!isVisible">{{trip.refTrip}}</td>
+              <td>{{trip.sourceTrip.cityAdr}}</td>
+              <td>{{trip.destTrip.cityAdr}}</td>
+              <td>{{trip.statusTrip}}</td>
+              <td>{{ trip.userTrip.nameUser }}</td>
+              <td>{{changeDateFormat(trip.createdday)}}</td>
+              <td *ngIf="trip.modeTrip === 'Payer par expéditeur'" style="background-color: rgb(127, 231, 41)">{{ trip.costTrip }}</td>
+              <td *ngIf="trip.modeTrip !== 'Payer par expéditeur'" >{{ trip.costTrip }}</td>
+              <td>{{ trip.packageTrip.valPackage }}</td>
+              <td>{{ showFinancialStatus(trip) }}</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+              <td align="right" colspan="8">
+                <mfBootstrapPaginator [rowsOnPageSet]="[]"></mfBootstrapPaginator>
+                <!--
+                 <a [hidden]="prvBtnDisabled" (click)="getFiltredTripsOnPrevious()" class="previous">&laquo; Précédent</a>
+                 <a [hidden]="nxtBtnDisabled" (click)="getFiltredTripsOnNext()" class="next">Suivant &raquo;</a> -->
+                <!-- <a [hidden]="!prvBtnDisabled" (click)="getTripsOnPrevious(pDate)" class="previous">&laquo; Précédent</a>
+                <a [hidden]="!nxtBtnDisabled" (click)="getTripsOnNext(nDate)" class="next">Suivant &raquo;</a> -->
+              </td>
+            </tr>
+            </tfoot>
+          </table>
+
+        </div>
+
+
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Résumé</ng-template>
+      <div class="row">
+        <div class="col-md-2" *ngIf="activityPayement.status === 'confirmed'">
+          <mat-card [class.mat-elevation-z8] = "true" class="mt-2">
+            <div class="form-group">
+              <label for="file">Choose File</label>
+              <input type="file"
+                     id="file"
+                     (change)="handleFileInput($event.target.files)">
+            </div>
+          </mat-card>
+        </div>
+        <div class="col-md-2">
+          <button mat-raised-button class="mt-2" (click) = "generateExcelReportForClient()"><i class="material-icons">library_books</i> imprimer rapport</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-card [class.mat-elevation-z8] = "true" class="mt-2">
+            <div class="row">
+              <div class="col-md-12">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Client</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{!!activityPayement?activityPayement.clientName:'-'}}</label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Nombre totale de colis récolté</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{(!!recoltedTrips)?recoltedTrips.length:'-'}} colis</label>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Nombre de colis traité</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{!!listColisToPay?listColisToPay.length:'-'}} colis</label>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Nombre de colis non traité</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{(!!listColisToPay && !!recoltedTrips)?recoltedTrips.length - listColisToPay.length:'-'}} colis</label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Nombre totale de colis récoltés et livrés</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{(!!recoltedTrips)?getColisLivree(recoltedTrips):'-'}} colis</label>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-6">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Nombre de colis livrés à facturer </h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{!!listColisToPay?getColisLivreeAPayer(listColisToPay):'-'}} colis</label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Nombre totale de colis récoltés et retournés</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{(!!recoltedTrips)?getColisRetournee(recoltedTrips):'-'}} colis</label>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-6">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Nombre de colis retournés à facturer </h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{!!listColisToPay?getColisRetourneeAPayer(listColisToPay):'-'}} colis</label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Montant Totale</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light"><strong>{{!!totalAmount?totalAmount:'-'}} TND</strong></label>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Frais de livraison</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light"><strong>{{!!shippingCosts?shippingCosts:'-'}} TND</strong></label>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Montant Net</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light"><strong>{{!!amountToPay?amountToPay:'-'}} TND</strong></label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+  <ng-template #colisLivreePersonnalisee let-modal id="contentMsg">
+    <div class="modal-header">
+      <button type="button" class="close" aria-label="Close" (click)="modal.close('Save click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-xl-12 text-xs-center">
+          <fieldset class="scheduler-border">
+            <legend class="scheduler-border">Frais de colis livré</legend>
+            <div class="control-group">
+              <div class="form-group"><input type="number" class="form-control" id="inputCusMessageToClient" name="inputCusMessageToClient" [(ngModel)]="inputLivreePerso" placeholder="Frais personnalisé"></div>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" (click)="modal.close('Save click')">Annuler</button>
+      <button type="button" class="btn btn-primary" [disabled]="!inputLivreePerso" (click)="modal.close('Save click');">Affecter</button>
+    </div>
+  </ng-template>
+
+</div>

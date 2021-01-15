@@ -16,12 +16,17 @@
       <div class="col-md-10 Aligner">
         <p><mat-form-field appearance="fill" class="ml-2">
           <mat-label>REF</mat-label>
-          <input matInput placeholder="filtrer par réference">
+          <input matInput placeholder="filtrer par réference" (keyup)="applyFilter($event.target.value)">
           <mat-icon matSuffix>keyboard</mat-icon>
         </mat-form-field>
         </p>
       </div>
       <div class="col-md-2 Aligner ">
+        <button mat-raised-button  class="ml-2"
+                style="width: 100%; background-color: #00aa88; color: white;"
+                *ngIf="runsheets_list.selectedOptions.selected.length>0 " (click)="imprimerRunsheet(selectedRunsheet)">
+          imprimer
+        </button>
       </div>
     </div>
   </mat-card>
@@ -29,16 +34,17 @@
 <div class="row">
   <mat-spinner *ngIf="spinner" class="center"></mat-spinner>
   <mat-selection-list style="width:100%"  #runsheets_list>
-    <div *ngFor="let runsheet of inProgressRunsheets">
+    <div *ngFor="let runsheet of filtredInProgressRunsheet">
       <mat-list-option #runsheet_option *ngIf="runsheet.runsheetObject.deleted === false && (runsheet.runsheetObject.status === 'dispached')"
                        (click)="onAreaListControlChanged(runsheet_option, runsheet.runsheetObject)" >
         <div class="row mt-1" >
           <div class="col-md-10">
-            <p>runsheet_Packways_{{runsheet.runsheetObject.ref}} ({{runsheet.nbTreatedTrips}}/{{getListColisLength(runsheet.runsheetObject.listColis)}} colis)</p>
+            <p>runsheet_Packways_{{runsheet.runsheetObject.ref}} ({{runsheet.nbTreatedTrips}} non traité/{{getListColisLength(runsheet.runsheetObject.listColis)}} nb colis totale) </p>
+            <p>Livrés: {{runsheet.nbColisLivree}} | Retour: {{runsheet.nbColisRetour}} | En cours: {{runsheet.nbColisEnCours}}</p>
             <p style="color: grey; font-style: italic;">
               {{runsheet.runsheetObject.status}} - Driver: <strong>
               {{(!!runsheet.runsheetObject.driver) ?  runsheet.runsheetObject.driver.nameDriver+" "+runsheet.runsheetObject.driver.surnameDriver : "n'est pas assigné"}}
-            </strong></p>
+            </strong> - Type: <strong>{{runsheet.runsheetObject.type}}</strong></p>
             <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
           </div>
           <div class="col-md-1">

@@ -1,0 +1,154 @@
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;" >
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Inventaire'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Création d'inventaire: {{!!inventaire?inventaire.ref:'-'}}</h5>
+        <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-10 Aligner">
+        <fieldset *ngIf="inventaireStepper && inventaire.status === 'draft'" class="scheduler-border-1">
+          <legend class="scheduler-border-1">Scan QR-Code</legend>
+          <form class="form-inline mr-auto">
+            <input class="form-control" type="text" id="myInput" [(ngModel)]="searchtermInventaire" [ngModelOptions]="{standalone: true}" placeholder="Chercher" aria-label="Search" width="100%">
+            <button class="btn btn-mdb-color btn-rounded btn-sm my-0 ml-sm-2" (click)="scanListInventaire()" type="submit" hidden><i class="fa fa-search"></i></button>
+          </form>
+        </fieldset>
+        <!--        <small class="form-text text-primary ml-3" style="font-size:12px !important;">Nombre des colis selectionnées:  <b>{{(!!pickUp) ? getListColisLength(pickUp.listColis) : 0}}</b></small>-->
+      </div>
+      <div class="col-md-2 Aligner ">
+        <button mat-button mat-raised-button color="primary" *ngIf="!firstStep && !(inventaire.status === 'confirmed' && finalStep) "  [ngStyle]="{'width': firstStep === true ?'0%':'50%'}"  (click)="goBack(stepper)" >Précédent</button>
+        <button mat-button mat-raised-button color="primary" *ngIf="finalStep && inventaire.status === 'confirmed'"  style="width: 100%"  (click)="goBack(stepper)" >Précédent</button>
+        <button mat-button mat-raised-button *ngIf="!finalStep" [ngStyle]="{'width': firstStep === true ?'100%':'50%', 'background-color':'#00aa88', 'color': 'white'}"class="ml-2" (click)="goForward(stepper)">Suivant</button>
+        <button mat-button mat-raised-button  *ngIf="finalStep && inventaire.status === 'draft'" style="width:50%;background-color:#00aa88;color:white;" class="ml-2" (click)="conirmeActivite('confirmInventaire')">Confirmer</button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+<div class="row">
+  <mat-horizontal-stepper [linear]="false" #stepper style="width:100%;">
+    <mat-step>
+      <ng-template matStepLabel>colis inventaire</ng-template>
+      <div class="row">
+        <table class="table table-sm" id="contentToConvert" style="font-size:12px !important;">
+          <thead class="thead"  *ngIf="ListScanInventaire !== []" >
+          <tr class="thead-light text-center">
+            <th style="width:1%">Ref</th>
+            <th style="width:1%">Status</th>
+            <th style="width:1%">Expéditeur</th>
+            <th style="width:1%">Destinataire</th>
+            <th>Adresse Destinataire</th>
+            <th style="width:1%">Msg</th>
+            <th style="width:1%" *ngIf="inventaire.status === 'draft'">Action</th>
+          </tr>
+          </thead>
+          <tbody style="font-size:14px !important;">
+          <tr *ngFor="let trp of ListScanInventaire" class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff;">{{trp.refTrip}}</td>
+            <td style="background-color: #ffffff; width:15%;">{{trp.statusTrip}}</td>
+            <td style="background-color: #ffffff; width:15%;">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
+            <td style="background-color: #ffffff; width:15%;" >{{trp.destTrip.contactAdr }}</td>
+            <td>{{trp.destTrip.cityAdr}}</td>
+            <td  style="background-color: #ffffff;  width:50%;" *ngIf="trp.msgTrip && trp.msgTrip.length > 0">
+              <ul>
+                <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
+                <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg }}</li>
+              </ul>
+            </td>
+            <td style="background-color: #ffffff;" *ngIf="trp.msgTrip && trp.msgTrip.length === 0">-</td>
+            <td style="background-color: #ffffff;" *ngIf="inventaire.status === 'draft'">
+              <i class="material-icons" style="cursor:pointer;" (click)="deleteScanListInventaire(trp)" > delete </i>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>colis non traités</ng-template>
+      <div class="row">
+        <table class="table table-sm" id="contentToConvert" style="font-size:12px !important;">
+          <thead class="thead"  >
+          <tr class="thead-light text-center">
+            <th style="width:1%">Ref</th>
+            <th style="width:1%">Status</th>
+            <th style="width:1%">Expéditeur</th>
+            <th style="width:1%">Destinataire</th>
+            <th>Adresse Destinataire</th>
+            <th style="width:1%">Msg</th>
+          </tr>
+          </thead>
+          <tbody style="font-size:14px !important;">
+          <tr *ngFor="let trp of listColisNonTreated" class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff;">{{trp.refTrip}}</td>
+            <td style="background-color: #ffffff; width:25%;">{{trp.statusTrip}}</td>
+            <td style="background-color: #ffffff; width:25%;">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
+            <td style="background-color: #ffffff; width:25%;" >{{trp.destTrip.contactAdr }}</td>
+            <td>{{trp.destTrip.cityAdr}}</td>
+            <td  style="background-color: #ffffff;  width:25%;" *ngIf="trp.msgTrip && trp.msgTrip.length > 0">
+              <ul>
+                <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
+                <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg }}</li>
+              </ul>
+            </td>
+            <td style="background-color: #ffffff;" *ngIf="trp.msgTrip && trp.msgTrip.length === 0">-</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </mat-step>
+
+    <mat-step>
+      <ng-template matStepLabel>Résumé</ng-template>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-card [class.mat-elevation-z8] = "true" class="mt-2">
+            <div class="row">
+              <div class="col-md-12">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Entrepot</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{!!inventaire?inventaire.entrepot.nom :'-'}}</label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Nombre de colis totale</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{(!!ListScanInventaire  && !!listColisNonTreated)?ListScanInventaire.length+listColisNonTreated.length:'-'}} colis</label>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Nombre de colis traités</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{!!ListScanInventaire?ListScanInventaire.length:'-'}} colis</label>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Nombre de colis non traités</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{!!listColisNonTreated?listColisNonTreated.length:'-'}} colis</label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+
+</div>

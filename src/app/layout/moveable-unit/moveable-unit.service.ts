@@ -6,6 +6,7 @@ import {Observable, Subject} from 'rxjs';
 import {createRequestOption} from '../../shared/util/request-util';
 import {IRunsheet} from '../../model/runsheet.model';
 import {MuInfo} from './moveable-unit.component';
+import {Trip} from '../trips/Trip';
 
 type EntityResponseType = HttpResponse<IMoveableUnit>;
 type EntityArrayResponseType = HttpResponse<IMoveableUnit[]>;
@@ -16,6 +17,7 @@ export class MoveableUnitService {
   public muInfo: MuInfo;
   public muConfirmed: boolean;
   affectedDriverSubject = new Subject<any>();
+  scannedTrip: Trip = null;
 
   constructor(protected http: HttpClient) {}
 
@@ -27,6 +29,10 @@ export class MoveableUnitService {
   update(moveableUnit: IMoveableUnit): Observable<EntityResponseType> {
     return this.http
       .put<IMoveableUnit>(this.resourceUrl, moveableUnit, { observe: 'response' });
+  }
+  updateList(moveableUnits: IMoveableUnit[]): Observable<EntityArrayResponseType> {
+    return this.http
+      .put<IMoveableUnit[]>(this.resourceUrl+ '/updateList', moveableUnits, { observe: 'response' });
   }
 
   updateDriver(moveableUnit: IMoveableUnit, idDriver: string): Observable<EntityResponseType> {

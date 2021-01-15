@@ -85,6 +85,14 @@ export class UserService {
   updateAdmin(adminData, idAdmin) {
     return this.http.put(this.urlAdmin + 'update/' + idAdmin, adminData, {headers: this.headerOptions});
   }
+  getAdminById(idAdmin: string ){
+    return this.http.get(this.urlAdmin + 'oneAdmin/' + idAdmin, {headers: this.headerOptions});
+
+  }
+  getUserById(idUser: string ){
+    return this.http.get(this.url + 'userId/' + idUser, {headers: this.headerOptions});
+
+  }
   getActiveUsers(){
     return this.http.get(this.url + 'actives/', {headers: this.headerOptions});
   }

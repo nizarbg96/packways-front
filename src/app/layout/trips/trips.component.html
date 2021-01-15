@@ -57,6 +57,10 @@
                                                                         sms</i>
                                                                 </button>
                                                         </div>
+                                                      <div *ngIf="isVisible" align="right" class="col-xl-1 text-xs-center">
+                                                        <button type="button" class="btn btn-warning btn-sm" title="Action d'envoi sms." (click)="testFunction()">TEST
+                                                        </button>
+                                                      </div>
                                                         <div class="col-xl-1 text-xs-center" *ngIf="isVisible">
                                                                         <div class="dropdown">
                                                                                         <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" title="Actions Financière">
@@ -1011,6 +1015,39 @@
                         </div>
                 </div>
         </div>
+  <div class="row">
+    <div class="col-md-12">
+      <fieldset class="scheduler-border">
+        <legend class="scheduler-border"><h6>Historique des Runsheets</h6></legend>
+        <div class="control-group">
+          <ul *ngFor="let runsheet of runsheetPrintHistory">
+            <li>Runsheet Ref : {{runsheet.runsheetRef}}
+              <ul>
+                <li> Ajouté par : {{runsheet.runsheetHistory.addedBy}}</li>
+                <li> Date d'ajout : {{runsheet.runsheetHistory.addedDate | date}}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </fieldset>
+    </div>
+    <div class="col-md-12">
+      <fieldset class="scheduler-border">
+        <legend class="scheduler-border"><h6>Historique des scans</h6></legend>
+        <div class="control-group">
+          <ul *ngFor="let historique of historiqueScan">
+            <li>Contexte de Scan : {{historique.scanScope}}
+              <ul>
+                <li>Scanné par : {{historique.scannedBy}}</li>
+                <li>Date de scan : {{historique.scannedDate}}</li>
+                <li>Message de scan : {{historique.scanMsg}}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </fieldset>
+    </div>
+  </div>
 
 
             <div class="modal-footer">

@@ -10,6 +10,7 @@ import {Entrepot, IEntrepot} from '../../../model/entrepot.model';
 import {UserService} from '../../users/users.service';
 import {MatSnackBar} from '@angular/material';
 import {Admin} from '../../../model/admin.model';
+import {LoginService} from '../../../login/login.service';
 
 @Component({
     selector: 'app-header',
@@ -34,7 +35,7 @@ export class HeaderComponent implements OnInit {
   private entrepots: IEntrepot[] = [];
     constructor(private translate: TranslateService, public router: Router, private idle: Idle, private keepalive: Keepalive,
                 private modalService: NgbModal, private entrepotService: EntrepotService, private userService: UserService,
-                private snackBar: MatSnackBar) {
+                private snackBar: MatSnackBar, private loginservice: LoginService) {
 
         this.translate.addLangs(['en', 'fr', 'ur', 'es', 'it', 'fa', 'de', 'zh-CHS']);
         this.translate.setDefaultLang('en');
@@ -187,6 +188,7 @@ export class HeaderComponent implements OnInit {
       const dataAdmin = new Admin(this.objUser.idAdmin,this.objUser.name,this.objUser.email,this.objUser.password,this.objUser.image,
         this.objUser.entrepot, this.objUser.financier)
     this.userService.updateAdmin(dataAdmin, this.objUser.idAdmin).subscribe(() => {
+
       this.snackBar.open('Modifications faites avec succès', 'Fermer', {
         duration: 5000,
       });
@@ -194,6 +196,6 @@ export class HeaderComponent implements OnInit {
       this.snackBar.open('Echec de modification!', 'Fermer', {
         duration: 5000,
       });
-    })
+    });
   }
 }

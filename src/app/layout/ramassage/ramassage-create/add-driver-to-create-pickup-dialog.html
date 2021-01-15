@@ -19,6 +19,6 @@
   <mat-hint>{{entrepot.value?.sound}}</mat-hint>
 </mat-form-field>
 <div mat-dialog-actions class="mt-3">
-  <button  mat-raised-button color="primary" [mat-dialog-close]="pickUpInfo">Continuer</button>
+  <button  mat-raised-button color="primary" [mat-dialog-close]="pickUpInfo" [disabled]="ramassageService.pickUpConfirmed && (!affectedDriver || !entrepotValue || !pickUpInfo.matricule )">Continuer</button>
   <button mat-raised-button (click)="onNoClick()" class="ml-2">Abandonner</button>
 </div>

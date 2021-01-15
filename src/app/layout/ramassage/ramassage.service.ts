@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
-import {IPickUp} from '../../model/pickup.model';
+import {IPickUp, PickUp} from '../../model/pickup.model';
 import {environment} from '../../../environments/environment';
 import {Observable, Subject} from 'rxjs';
 import {createRequestOption} from '../../shared/util/request-util';
 import {PickUpInfo} from './ramassage.component';
+import {IRunsheet} from '../../model/runsheet.model';
 
 type EntityResponseType = HttpResponse<IPickUp>;
 type EntityArrayResponseType = HttpResponse<IPickUp[]>;
@@ -34,10 +35,18 @@ export class RamassageService {
     return this.http
       .put<IPickUp>(`${this.resourceUrl}/updateDriver/${idDriver}`, pickup, { observe: 'response' });
   }
+  updateList(pickUps: IPickUp[]): Observable<EntityArrayResponseType> {
+    return this.http
+      .put<IPickUp[]>(this.resourceUrl + '/updateList', pickUps, { observe: 'response' });
+  }
 
   find(id: string): Observable<EntityResponseType> {
     return this.http
       .get<IPickUp>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+  findAllByStatus(status: string): Observable<EntityArrayResponseType> {
+    return this.http
+      .get<IPickUp[]>(`${this.resourceUrl}/status/${status}`, { observe: 'response' });
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {

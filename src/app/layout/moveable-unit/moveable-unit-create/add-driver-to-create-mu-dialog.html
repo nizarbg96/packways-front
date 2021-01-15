@@ -22,9 +22,9 @@
   <mat-label>Entrepôt Destination</mat-label>
   <mat-select [formControl]="entrepotDest" required (selectionChange)="affectEntrepotDest($event.value)">
     <mat-option>--</mat-option>
-    <mat-option *ngFor="let entrepot of entrepots" [value]="entrepot" >
-      {{entrepot.nom}}
-    </mat-option>
+  <mat-option *ngFor="let entrepot of entrepots" [value]="entrepot" >
+    {{entrepot.nom}}
+  </mat-option>
   </mat-select>
   <mat-error *ngIf="entrepotDest.hasError('required')">Veuillez sélectionner un entrepôt</mat-error>
   <mat-hint>{{entrepotSrc.value?.sound}}</mat-hint>

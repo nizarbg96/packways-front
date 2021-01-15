@@ -1,5 +1,6 @@
 import { IActivity } from './activity.model';
 import { IColisRunsheet } from './colis-runsheet.model';
+import {Entrepot} from './entrepot.model';
 
 
 export interface IRunsheet {
@@ -28,6 +29,8 @@ export interface IRunsheet {
   runsheetsIdHistory?: string[];
   currentRunsheetId?: string;
   matricule?: string;
+  entrepot?: Entrepot;
+  type?: string;
 }
 
 export class Runsheet implements IRunsheet {
@@ -57,7 +60,9 @@ export class Runsheet implements IRunsheet {
     public activity?: IActivity,
     public runsheetsIdHistory?: string[],
 	  public currentRunsheetId?: string,
-    public matricule?: string
+    public matricule?: string,
+    public entrepot?: Entrepot,
+    public type?: string
   ) {
     this.deleted = this.deleted || false;
   }

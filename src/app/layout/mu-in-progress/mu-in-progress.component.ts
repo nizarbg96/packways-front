@@ -29,6 +29,7 @@ export class MuInProgressComponent implements OnInit {
   affectedDriver: any = null;
   moveableUnits: MoveableUnit[] = [];
   inProgressMoveableUnits: InProgressMoveableUnit[] = [];
+  filtredInProgressMoveableUnits: InProgressMoveableUnit[] = [];
   spinner = false;
   user: any;
   private checkedMoveableUnitStatus: string;
@@ -76,6 +77,10 @@ export class MuInProgressComponent implements OnInit {
       this.moveableUnits = res.body;
       this.moveableUnits = this.moveableUnits.filter((moveableUnit: MoveableUnit) =>
         ((moveableUnit.status === 'dispached') && moveableUnit.deleted === false) );
+      if(this.user.role !== 'superAdmin'){
+        this.moveableUnits = this.moveableUnits.filter((mu: MoveableUnit) => mu.entrepotSrc.id === this.user.entrepot.id ||
+          mu.entrepotDest.id === this.user.entrepot.id || mu.createdBy === this.user.idAdmin);
+      }
       this.moveableUnits = this.moveableUnits.sort((a, b) => (new Date(a.dispachedDate).getTime() - new Date(b.dispachedDate).getTime()));
       this.moveableUnits.forEach((moveableUnit) =>{
         const list = moveableUnit.listColis.slice().filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined))
@@ -88,6 +93,7 @@ export class MuInProgressComponent implements OnInit {
         });
       })
       this.spinner = false;
+      this.filtredInProgressMoveableUnits = this.inProgressMoveableUnits;
     });
   }
   calculateDiff(data) {
@@ -167,6 +173,15 @@ export class MuInProgressComponent implements OnInit {
       return 'by clicking on a backdrop';
     } else {
       return  `with: ${reason}`;
+    }
+  }
+  applyFilter(filterValue: any) {
+    const filterValueUpper = filterValue.toUpperCase();
+    if(filterValue === '' ) {
+      this.filtredInProgressMoveableUnits = this.inProgressMoveableUnits;
+    }
+    else {
+      this.filtredInProgressMoveableUnits = this.inProgressMoveableUnits.slice().filter((item) => item.moveableUnitObject.ref.includes(filterValueUpper));
     }
   }
 }

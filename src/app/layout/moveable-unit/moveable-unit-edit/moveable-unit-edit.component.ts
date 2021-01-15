@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, Type} from '@angular/core';
 import {Runsheet} from '../../../model/runsheet.model';
 import {Subscription} from 'rxjs';
 import {TripService} from '../../trips/trips.service';
@@ -13,6 +13,14 @@ import {Entrepot} from '../../../model/entrepot.model';
 import {FormControl, Validators} from '@angular/forms';
 import {MuInfo} from '../moveable-unit.component';
 import {EntrepotService} from '../../entrepot/entrepot.service';
+import {MoveableUnitHistory} from '../../../model/moveableUnit-history.model';
+import {HistoriqueScan} from '../../../model/historique-scan.model';
+import {Trip} from '../../trips/Trip';
+import {ModalDismissReasons, NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {RamassageService} from '../../ramassage/ramassage.service';
+import {Conflit} from '../../../model/conflit.model';
+import {UserService} from '../../users/users.service';
+import {ConflitService} from '../../conflict-trips/conflit.service';
 
 @Component({
   selector: 'app-moveable-unit-edit',
@@ -40,10 +48,12 @@ export class MoveableUnitEditComponent implements OnInit, OnDestroy {
   private affectedMatricule: string;
   private affectedEntrepotSrc: Entrepot;
   private affectedEntrepotDest: Entrepot;
+  private closeResult: string;
 
   constructor(private tservice: TripService, private snackBar: MatSnackBar, private moveableUnitService: MoveableUnitService,
               private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,
-              public dialog: MatDialog) { }
+              public dialog: MatDialog, private modalService: NgbModal, private runsheetService: RunsheetService, private ramassageService: RamassageService,
+              private userService: UserService, private conflitService: ConflitService) { }
 
 
   ngOnInit() {
@@ -114,50 +124,112 @@ export class MoveableUnitEditComponent implements OnInit, OnDestroy {
     }
     //
     if (verif === false) {
-      this.tservice.getTripscanList(this.searchTermscan).subscribe(data => {
-        const obj = Array.of(JSON.parse(data['_body']).data);
+      this.tservice.getTripscanListById(this.searchTermscan).subscribe(data => {
+        const obj = data.body;
         let verif = false;
         // vérif
         for (let index = 0; index < this.ListScan.length; index++) {
-          if (obj[0].idTrip === this.ListScan[index].idTrip ||  obj[0].refTip === this.ListScan[index].refTrip) {
+          if (obj.idTrip === this.ListScan[index].idTrip ||  obj.refTrip === this.ListScan[index].refTrip) {
             verif = true;
           }
         }
         if (verif === false) {
-          if ((obj[0].currentMUId !== null) && (obj[0].currentMUId !== 'null') ) {
-            console.log('idMU' + obj[0].currentMUId + '--');
-            this.moveableUnitService.find(obj[0].currentMUId).subscribe((res) => {
-              this.snackBar.open('impossible de scanner le colis! ce colis existe dans la MU ' +
-                'de Réference: ' + res.body.ref + ', Etat: ' + res.body.status , 'Fermer', {
-                duration: 8000,
+          if ((obj.currentRunsheetId !== null) && (obj.currentRunsheetId !== 'null') && (obj.currentRunsheetId !== undefined) ) {
+            this.runsheetService.find(obj.currentRunsheetId).subscribe((res) => {
+              const msg = 'impossible de scanner le colis! ce colis existe dans la runsheet' +
+                ' de Réference: ' + res.body.ref + ', Etat: ' + res.body.status;
+              this.snackBar.open( msg, 'Fermer', {duration: 8000, });
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  moveable unit: ' + this.moveableUnit.ref,
+                'Exception : ' + msg));
+              this.tservice.updateOneTrip(obj).subscribe();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation',  this.moveableUnit.ref);
+                this.conflitService.create(conflit).subscribe();
+              });
+            });
+          } else if ((obj.currentMUId !== null) && (obj.currentMUId !== 'null') && (obj.currentMUId !== undefined) ) {
+            this.moveableUnitService.find(obj.currentMUId).subscribe((res) => {
+              const msg = 'impossible de scanner le colis! ce colis existe dans la moveable unit' +
+                ' de Réference: ' + res.body.ref + ', Etat: ' + res.body.status;
+              this.snackBar.open( msg, 'Fermer', {duration: 8000, });
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  moveable unit: ' + this.moveableUnit.ref,
+                'Exception : ' + msg));
+              this.tservice.updateOneTrip(obj).subscribe();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation',  this.moveableUnit.ref);
+                this.conflitService.create(conflit).subscribe();
+              });
+            });
+          } else if ((obj.currentPickUpId !== null) && (obj.currentPickUpId !== 'null') && (obj.currentPickUpId !== undefined) ) {
+            this.ramassageService.find(obj.currentPickUpId).subscribe((res) => {
+              const msg = 'impossible de scanner le colis! ce colis existe dans le pick up' +
+                ' de Réference: ' + res.body.ref + ', Etat: ' + res.body.status;
+              this.snackBar.open( msg, 'Fermer', {duration: 8000, });
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  moveable unit: ' + this.moveableUnit.ref,
+                'Exception : ' + msg));
+              this.tservice.updateOneTrip(obj).subscribe();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation',  this.moveableUnit.ref);
+                this.conflitService.create(conflit).subscribe();
               });
             });
           } else {
-            if (obj[0].statusTrip === 'Chez Livreur') {
-              this.ListScan.push(obj[0]);
-              // code to add colisRunsheet to listColis of mu
-              this.moveableUnit.listColis.push(new ColisRunsheet(obj[0].idTrip, false, this.user.idAdmin,
-                new Date(), false));
-              this.tservice.updateMoveableUnit(obj[0].idTrip, this.moveableUnit.id).subscribe(() => {
-                this.moveableUnitService.update(this.moveableUnit).subscribe();
+            if (obj.statusTrip === 'Chez Livreur') {
+              this.ListScan.push(obj);
+              this.playSuccessAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la moveable unit: ' + this.moveableUnit.ref,
+                'Success'));
+              this.tservice.updateOneTrip(obj).subscribe((resTrip) => {
+                const trip = resTrip.body;
+                // code to add colisRunsheet to listColis of mu
+                this.moveableUnit.listColis.push(new ColisRunsheet(obj.idTrip, false, this.user.idAdmin,
+                  new Date(), false));
+                this.tservice.updateMoveableUnit(obj.idTrip, new MoveableUnitHistory(this.moveableUnit.id, this.user.idAdmin, new Date())).subscribe(() => {
+                  this.moveableUnitService.update(this.moveableUnit).subscribe();
+                });
               });
             } else {
-              this.snackBar.open('Le colis doit être chez livrer ! . Statut de colis scanné : ' + obj[0].statusTrip, 'Fermer', {
+              const msg = 'Le colis doit être chez livrer ! . Statut de colis scanné : ' + obj.statusTrip;
+              this.snackBar.open(msg, 'Fermer', {
                 duration: 8000,
+              });
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la moveable unit: ' + this.moveableUnit.ref,
+                'Exception : ' + msg));
+              this.tservice.updateOneTrip(obj).subscribe((res) => {
+                if (res.body.statusTrip === 'Retour') {
+                  this.moveableUnitService.scannedTrip = res.body;
+                  this.openForceStatusRetour('forceRetour');
+                }
+                else {
+                  this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                    const admin = resUser.json();
+                    const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation',  this.moveableUnit.ref);
+                    this.conflitService.create(conflit).subscribe();
+                  });
+                }
               });
             }
           }
-
         } else {
-          this.snackBar.open('Ce colis a été scanné', 'Fermer', {
+          const msg = 'Ce colis a été scanné';
+          this.snackBar.open(msg, 'Fermer', {
             duration: 8000,
           });
+          this.playFailureAudio();
         }
       });
     } else {
       this.snackBar.open('Ce colis a été scanné', 'Fermer', {
         duration: 8000,
       });
+      this.playFailureAudio();
     }
     this.searchTermscan = '';
     this.ListScanNB = this.ListScan.length + 1;
@@ -176,7 +248,7 @@ export class MoveableUnitEditComponent implements OnInit, OnDestroy {
     this.moveableUnit.listColis[index].removed = true;
     this.moveableUnit.listColis[index].removedBy =  this.user.idAdmin;
     this.moveableUnit.listColis[index].removedDate =  new Date() ;
-    this.tservice.updateMoveableUnit(trip.idTrip, null).subscribe(() => {
+    this.tservice.updateMoveableUnit(trip.idTrip, new MoveableUnitHistory(null, this.user.idAdmin, new Date())).subscribe(() => {
       this.moveableUnitService.update(this.moveableUnit).subscribe();
     });
   }
@@ -200,6 +272,57 @@ export class MoveableUnitEditComponent implements OnInit, OnDestroy {
   getListColisLength(listColis: ColisRunsheet[]): number {
     return listColis.slice()
       .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).length ;
+  }
+  openForceStatusRetour(name: string) {
+    this.modalService.open(MODALS[name]).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+      const trip = this.moveableUnitService.scannedTrip;
+      this.moveableUnit.listColis.push(new ColisRunsheet(trip.idTrip, false, this.user.idAdmin,
+        new Date(), false));
+      const listTrips = [trip.refTrip];
+      this.tservice.updateTripsStatus('Chez Livreur', listTrips, this.user.name, '').subscribe(() => {
+          this.tservice.getTripscanListById(trip.idTrip).subscribe((resTrip) => {
+            const trip2  = resTrip.body;
+            this.ListScan.push(trip2);
+            this.playSuccessAudio();
+            this.tservice.updateMoveableUnit(trip2.idTrip, new MoveableUnitHistory(this.moveableUnit.id, this.user.idAdmin, new Date)).subscribe(() => {
+              this.tservice.getTripscanListById(trip2.idTrip).subscribe((resTrp) => {
+                const trip3  = resTrp.body;
+                this.moveableUnitService.update(this.moveableUnit).subscribe(() => {
+                  trip3.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  moveable unit: ' + this.moveableUnit.ref, 'Success : forced status'));
+                  this.tservice.updateOneTrip(trip3).subscribe();
+                });
+              });
+            });
+          });
+        }
+      );
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      console.log(this.closeResult);
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+  playSuccessAudio(){
+    const audio = new Audio();
+    audio.src = '../../../../assets/audio/zapsplat_public_places_supermarket_checkout_beep_002_44357.wav';
+    audio.load();
+    audio.play();
+  }
+  playFailureAudio(){
+    const audio = new Audio();
+    audio.src = '../../../../assets/audio/zapsplat_multimedia_game_sound_error_incorrect_001_30721.wav';
+    audio.load();
+    audio.play();
   }
 
   ngOnDestroy(): void {
@@ -300,3 +423,24 @@ export class DialogAddDriverToEditMUComponent implements OnInit {
 
 
 }
+@Component({
+  selector: 'edit-force-etat-retour-mu',
+  templateUrl: './edit-force-etat-retour.html',
+  styleUrls: ['./moveable-unit-edit.component.scss']
+
+})
+export class NgbdModalEditForceRetourMu implements OnInit {
+  trip: Trip = null;
+
+  constructor(private modal: NgbActiveModal, private moveableUnitService: MoveableUnitService) {
+  }
+
+  ngOnInit() {
+    this.trip = this.moveableUnitService.scannedTrip;
+  }
+
+}
+
+const MODALS: { [name: string]: Type<any> } = {
+  forceRetour: NgbdModalEditForceRetourMu
+};

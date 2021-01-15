@@ -9,6 +9,10 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Trip } from './Trip';
 import {environment} from '../../../environments/environment';
 import { Subject } from 'rxjs';
+import {RunsheetHistory} from '../../model/runsheet-history.model';
+import {MoveableUnitHistory} from '../../model/moveableUnit-history.model';
+import {PickUpHistory} from '../../model/pickUp-history.model';
+import {Entrepot} from '../../model/entrepot.model';
 type EntityResponseType = HttpResponse<Trip>;
 type EntityArrayResponseType = HttpResponse<Trip[]>;
 
@@ -68,8 +72,25 @@ export class TripService {
     return this.http.get(`${this.url}/sansdate2?id=` + id + `&size=` + size, {headers: this.headerOptions});
   }
 
+
   getListOfTips(tripsId: string[]): Observable<EntityArrayResponseType> {
     return this.httpc.post<Trip[]>(`${this.url}/listOfTrips`, tripsId, {observe: 'response', headers: this.headerOptions2} );
+  }
+  getTripsByEntrepot(entrepot: Entrepot): Observable<EntityArrayResponseType> {
+    return this.httpc.post<Trip[]>(`${this.url}/tripsByEntrepot`, entrepot, {observe: 'response', headers: this.headerOptions2} );
+  }
+
+  updateListOfTips(trips: Trip[]): Observable<EntityArrayResponseType> {
+    return this.httpc.put<Trip[]>(`${this.url}/listOfTrips`, trips, {observe: 'response', headers: this.headerOptions2} );
+  }
+  updateOneTrip(trip: Trip): Observable<EntityResponseType> {
+    return this.httpc.put<Trip>(`${this.url}/updateOneTrip`, trip, {observe: 'response', headers: this.headerOptions2} );
+  }
+  updateEncoursDePayement(tripsId: string[], idAdmin: string){
+    return this.http.post(`${this.url}/updatepayed` + '?idAdmin=' + idAdmin, tripsId , {headers: this.headerOptions});
+  }
+  updatePayed(tripsId: string[], idAdmin: string){
+    return this.http.post(`${this.url}/updateclosed` + '?idAdmin=' + idAdmin, tripsId , {headers: this.headerOptions})
   }
 
   getBS(id, data): Observable<any> {
@@ -115,6 +136,12 @@ export class TripService {
   getTripscanList(id) {
     return this.http.get(`${this.url}/one/` + id, {headers: this.headerOptions} );
   }
+  getTripscanListById(id): Observable<EntityResponseType> {
+    return this.httpc.get<Trip>(`${this.url}/oneId/` + id, {headers: this.headerOptions2, observe: 'response'} );
+  }
+  getTripscanListByRef(id): Observable<EntityResponseType> {
+    return this.httpc.get<Trip>(`${this.url}/oneRef/` + id, {headers: this.headerOptions2, observe: 'response'} );
+  }
 
   updateTrip(tripdata, id) {
     return this.http.put(this.url + '/update/' + id, tripdata, {headers: this.headerOptions});
@@ -122,6 +149,12 @@ export class TripService {
   updateTripsStatus(status: string, trips: string[], userName: string, driverAffect: string ) {
     return this.http.post(this.url + '/updatestatus' + '?status=' + status + '&driverAffect=' + driverAffect + '&name=' + userName, trips,
       {headers: this.headerOptions});
+  }
+  updateTripsPreRecolte(trips: string[], idAdmin: string){
+    return   this.http.post(this.url + '/updatepresrecolte' + '?name=' + idAdmin, trips , {headers: this.headerOptions});
+  }
+  updateTripsRecolted(trips: string[], idAdmin: string){
+    return this.http.post(this.url + '/updaterecolter' + '?idAdmin=' + idAdmin, trips , {headers: this.headerOptions});
   }
   updateTripsDriver(idDriver: string, trips: string[], userName: string) {
     return this.http.post(this.url + '/updatedriver/' + idDriver + '?name=' + userName, trips , {headers: this.headerOptions});
@@ -138,17 +171,17 @@ export class TripService {
   }
 
 
-  updateRunsheet(idTrip: string, idRunsheet: string) {
+  updateRunsheet(idTrip: string, runsheetHistory: RunsheetHistory) {
     return this.http
-      .put(this.url + '/updateRunsheet/' + idTrip + '/' + idRunsheet, null, {headers: this.headerOptions});
+      .put(this.url + '/updateRunsheet/' + idTrip , runsheetHistory, {headers: this.headerOptions});
   }
-  updateMoveableUnit(idTrip: string, idMoveableUnit: string) {
+  updateMoveableUnit(idTrip: string, moveableUnitHistory: MoveableUnitHistory) {
     return this.http
-      .put(this.url + '/updateMoveableUnit/' + idTrip + '/' + idMoveableUnit, null, {headers: this.headerOptions});
+      .put(this.url + '/updateMoveableUnit/' + idTrip , moveableUnitHistory,  {headers: this.headerOptions});
   }
-  updatePickUp(idTrip: string, idPickUp: string) {
+  updatePickUp(idTrip: string, pickUpHistory: PickUpHistory) {
     return this.http
-      .put(this.url + '/updatePickUp/' + idTrip + '/' + idPickUp, null, {headers: this.headerOptions});
+      .put(this.url + '/updatePickUp/' + idTrip , pickUpHistory, {headers: this.headerOptions});
   }
 
   getDrivers() {

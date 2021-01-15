@@ -1,0 +1,92 @@
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;">
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Activité Runsheet'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Réconcilier une Activité</h5>
+        <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-10 Aligner">
+        <p><mat-form-field appearance="fill" class="ml-2">
+          <mat-label>REF</mat-label>
+          <input matInput placeholder="filtrer par réference" (keyup)="applyFilter($event.target.value)">
+          <mat-icon matSuffix>keyboard</mat-icon>
+        </mat-form-field>
+        </p>
+      </div>
+      <div class="col-md-2 Aligner ">
+        <button mat-raised-button *ngIf="activityRunsheet_list.selectedOptions.selected.length === 0 "
+                style="width:100%;" color="primary" (click)="openDialog()" class="ml-2">Reconcilier une activité
+        </button>
+        <button mat-raised-button color="warn" class="ml-2"
+                style="width: 100%"
+                *ngIf="activityRunsheet_list.selectedOptions.selected.length>0 && checkedActivityStatus === 'draft' " (click)="deleteSelectedActivity()">
+          Annuler
+        </button>
+        <button mat-raised-button  class="ml-2"
+                style="width: 100%; background-color: #00aa88; color: white;"
+                *ngIf="activityRunsheet_list.selectedOptions.selected.length>0 && checkedActivityStatus === 'confirmed' " (click)="printRunsheet(selectedActivity)">
+          imprimer
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+<div class="row">
+  <mat-spinner *ngIf="spinner" class="center"></mat-spinner>
+  <mat-selection-list style="width:100%" #activityRunsheet_list>
+    <div *ngFor="let activityRunsheet of filtredActivitiesRunsheet">
+      <mat-list-option #activityRunsheet_option
+                       *ngIf="(activityRunsheet.deleted === false) && (activityRunsheet.status === 'draft' || activityRunsheet.status ==='confirmed')"
+                       (click)="onAreaListControlChanged(activityRunsheet_option, activityRunsheet)">
+        <div class="row mt-1">
+          <div class="col-md-9">
+            <p>activityRunsheet_Packways_{{activityRunsheet.ref}}</p>
+            <p style="color: grey; font-style: italic;">
+              {{activityRunsheet.status}} - Driver: <strong>
+              {{(!!activityRunsheet.driver) ? activityRunsheet.driver.nameDriver + " " + activityRunsheet.driver.surnameDriver : "n'est pas assigné"}}
+            </strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-2">
+            <button style="z-index: 10;" *ngIf="activityRunsheet.status === 'draft'" type="button" class="mat-mini-fab mt-2" title="Modifier"
+                    (click)="editActivity(activityRunsheet)"> <!-- (click)="open(content)" -->
+              <i class="material-icons"> create </i>
+            </button>
+            <button style="z-index: 10;" *ngIf="activityRunsheet.status === 'confirmed'" type="button" class="mat-mini-fab mt-2" title="détails"
+                    (click)="editActivity(activityRunsheet)"> <!-- (click)="open(content)" -->
+              <i class="material-icons"> visibility </i>
+            </button>
+            <button type="button" *ngIf="activityRunsheet.status === 'draft'" style="z-index: 10;" class="mat-mini-fab ml-2 mt-2" title="Supprimer">
+              <i class="material-icons" (click)="deleteActivity(activityRunsheet)"> delete </i>
+            </button>
+            <button *ngIf="activityRunsheet.status === 'confirmed'" style="z-index: 10;" type="button"
+                    class="mat-mini-fab ml-2 mt-2" title="Imprimer">
+              <i class="material-icons" (click)="printRunsheet(activityRunsheet)"> print </i>
+            </button>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+            <p style="color: grey; font-style: italic;"
+               class="mt-2">{{ activityRunsheet.createdDate | date:'dd/MM/yyyy'}}</p>
+            <p style="color: grey; font-style: italic;"
+               [ngClass]="{'text-success': calculateDiff(activityRunsheet.createdDate) < 2 ,
+              'text-warning': calculateDiff(activityRunsheet.createdDate) === 2, 'text-danger': calculateDiff(activityRunsheet.createdDate) > 2}"
+               class="mt-2">
+              <strong>{{ calculateDiff(activityRunsheet.createdDate)}} Jours</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+      </mat-list-option>
+    </div>
+  </mat-selection-list>
+</div>
+
+

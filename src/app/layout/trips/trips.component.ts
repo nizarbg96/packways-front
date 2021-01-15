@@ -36,6 +36,10 @@ import { TripExcelService } from './excel-trip.service';
 import {NgxImageCompressService} from 'ngx-image-compress';
 import {environment} from '../../../environments/environment';
 import { map } from 'rxjs/operators';
+import {RunsheetService} from '../runsheet/runsheet.service';
+import {IRunsheet} from '../../model/runsheet.model';
+import {IHistoriqueScan} from '../../model/historique-scan.model';
+import {UserService} from '../users/users.service';
 
 declare var angular: any;
 declare var UIkit: any;
@@ -262,13 +266,17 @@ export class TripsComponent implements OnInit {
   });
   scanId = '';
   listScanId: string[] = [];
+  runsheetsHistory: IRunsheet[] = [];
+  runsheetPrintHistory: any[] = [];
+  historiqueScan: IHistoriqueScan[] = [];
 
 
 
 
     constructor( public dialog: MatDialog, private imageCompress: NgxImageCompressService,  private modalService: NgbModal, public adressService: AdresseService, private tservice: TripService,
          public loginService: LoginService, public http: Http, public sanitizer: DomSanitizer, public router: Router,
-         private spinner: NgxSpinnerService, private snackBar: MatSnackBar, private tripExcelService: TripExcelService) {
+         private spinner: NgxSpinnerService, private snackBar: MatSnackBar, private tripExcelService: TripExcelService,
+                 private runsheetService: RunsheetService, private userService: UserService) {
             this.auth = localStorage.getItem('auth');
             if (this.auth === 'admin') {
                 this.isVisible = true;
@@ -1403,6 +1411,15 @@ export class TripsComponent implements OnInit {
         }
 
         console.log('this.objTrip.msgTrip: ', this.objTrip.msgTrip.length);
+
+        this.runsheetService.getList(trip.runsheetsHistory.map(runsheetHistory => runsheetHistory.runsheetId)).subscribe((res) => {
+          this.runsheetsHistory = res.body;
+          for(let i = 0; i < this.runsheetsHistory.length; i++){
+            this.runsheetPrintHistory.push({runsheetRef: this.runsheetsHistory[i].ref, runsheetHistory: trip.runsheetsHistory[i]});
+          }
+          this.historiqueScan = trip.historiqueScans;
+        });
+
 
         this.open(content);
     }
@@ -3644,6 +3661,35 @@ export class TripsComponent implements OnInit {
 
   checkScanId(refTrip: any) {
       if (this.listScanId.slice().filter((ref) => ref === refTrip).length > 0) { return true; } else { return false; }
+  }
+
+  testFunction() {
+      let check = true ;
+      this.checkedTrips.forEach((trip) => {
+        if(!(trip.statusTrip === 'Retour' || trip.statusTrip === 'Chez Livreur')){
+          this.snackBar.open('ERROR check TRIP with REF : '+ trip.refTrip, 'Fermer', {duration: 5000});
+          check = false;
+          return;
+      }});
+      if(check){
+        this.tservice.getListOfTips(this.checkedTrips.map(trip => trip.idTrip)).subscribe((resTrip) => {
+          const tripsRes = resTrip.body;
+          const tripsToUpdate: Trip[] = [];
+          this.userService.getAdminById(this.dataUser.idAdmin).subscribe((resUser => {
+            const admin = resUser.json();
+            tripsRes.forEach((trip) => {
+              trip.entrepot = admin.entrepot
+              trip.driverTrip = null ;
+              tripsToUpdate.push(trip);
+            });
+            this.tservice.updateListOfTips(tripsToUpdate).subscribe(() => {
+              this.snackBar.open('Success : Trips.entrepot = User.entrepot & trips.driver = null', 'Fermer', {duration: 5000});
+            });
+          }));
+        });
+
+      }
+
   }
 }
 @Component({

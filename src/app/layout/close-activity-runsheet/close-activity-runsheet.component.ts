@@ -1,0 +1,141 @@
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Runsheet} from '../../model/runsheet.model';
+import {Activity} from '../../model/activity.model';
+import {MatDialog, MatListOption, MatSelectionList, MatSnackBar} from '@angular/material';
+import {RunsheetService} from '../runsheet/runsheet.service';
+import {Router} from '@angular/router';
+import {TripService} from '../trips/trips.service';
+import {ActivityRunsheetService} from '../reconcile-runsheet/activity-runsheet.service';
+import {SelectionModel} from '@angular/cdk/collections';
+import {ColisRunsheet} from '../../model/colis-runsheet.model';
+import {ActivityRunsheetInfo, DialogAddDriverToReconcileRunsheetComponent} from '../reconcile-runsheet/reconcile-runsheet.component';
+import {MoveableUnit} from '../../model/moveable-unit.model';
+
+@Component({
+  selector: 'app-close-activity-runsheet',
+  templateUrl: './close-activity-runsheet.component.html',
+  styleUrls: ['./close-activity-runsheet.component.scss']
+})
+export class CloseActivityRunsheetComponent implements OnInit {
+  date = new Date();
+  private driver: any;
+  private runsheets: Runsheet[] = [];
+  spinner = false;
+  activityRunsheetInfo: ActivityRunsheetInfo  = {driver: null, runsheets: null};
+  activitiesRunsheet: Activity[] = [];
+  @ViewChild(MatSelectionList)
+  selectionList: MatSelectionList;
+  selectedActivity: Activity;
+  checkedActivityStatus: string;
+  user: any;
+
+
+
+  constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private router: Router, private tripService: TripService,
+              private activityRunsheetService: ActivityRunsheetService, private snackBar: MatSnackBar) { }
+
+  ngOnInit() {
+    this.selectionList.selectedOptions = new SelectionModel<MatListOption>(false);
+    this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
+    this.activityRunsheetService.activityToEdit = null;
+    this.getActivities();
+  }
+
+  getActivities() {
+    this.spinner = true;
+    this.activityRunsheetService.query().subscribe((resActivity) => {
+      this.activitiesRunsheet = resActivity.body.filter((activity) => ((activity.deleted === false) && (activity.status === 'confirmed' || activity.status === 'closed')));
+      if(this.user.role !== 'superAdmin'){
+        this.activitiesRunsheet = this.activitiesRunsheet.filter((activity) => activity.entrepot.id === this.user.entrepot.id ||
+          activity.closedBy === this.user.idAdmin);
+      }
+      this.spinner = false;
+    });
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogAddDriverToReconcileRunsheetComponent, {
+      width: '60%',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      if ( !!result ) {
+        this.driver = result;
+        console.log(this.driver.idDriver);
+        const driverActivity = this.activitiesRunsheet.filter((activity) => (activity.driver.idDriver === this.driver.idDriver) && activity.deleted === false && activity.status === 'draft')
+        if (driverActivity.length > 0){
+          this.snackBar.open('Le livreur a déja une activité-runsheet à l\'état " draft ": ', 'Fermer', {
+            duration: 8000,
+          });
+          return;
+        }
+        this.runsheetService.findAllByStatus('dispached').subscribe((res) => {
+          // !!!!! FILTER BY ENTREPOT TOO
+          const runsheetsToReconcile = res.body
+            .filter((runsheet) => (runsheet.deleted === false && runsheet.driver.idDriver === this.driver.idDriver));
+          if(runsheetsToReconcile.length === 0) {
+            this.snackBar.open('Le livreur n\'a pas des runsheets en cours ', 'Fermer', {
+              duration: 8000,
+            });
+            return;
+          }
+          this.activityRunsheetInfo.driver = this.driver;
+          this.activityRunsheetInfo.runsheets = runsheetsToReconcile;
+          this.activityRunsheetService.activityRunsheetInfo = this.activityRunsheetInfo;
+          // !!! BEFORE REDIRECTING CHECK IF DRIVER GOT DRAFT ACTIVITY
+          this.router.navigate(['/reconcile-runsheet/create']);
+        });
+      } else {
+        // do nothing
+      }
+    });
+  }
+
+  deleteActivity(activity: Activity) {
+    const index = this.activitiesRunsheet.indexOf(activity);
+    activity.deleted = true;
+    activity.deletedDate = new Date();
+    activity.deletedBy = this.user.idAdmin;
+    this.activityRunsheetService.update(activity).subscribe();
+    this.activitiesRunsheet[index] = activity;
+
+  }
+
+  calculateDiff(data) {
+    const date = new Date(data);
+    const currentDate = new Date();
+    const days = Math.floor((currentDate.getTime() - date.getTime()) / 1000 / 60 / 60 / 24);
+    return days;
+  }
+
+  getListColisLength(listColis: ColisRunsheet[]): number {
+    return listColis.slice()
+      .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).length ;
+  }
+  printRunsheet() {
+
+  }
+  onAreaListControlChanged(activityRunsheet_option: MatListOption, activityRunsheet: Activity) {
+    if (activityRunsheet_option.selected) {
+      this.checkedActivityStatus = activityRunsheet.status;
+      this.selectedActivity = activityRunsheet;
+    } else {
+      this.selectedActivity = null;
+    }
+  }
+  deleteSelectedActivity() {
+    const index = this.activitiesRunsheet.indexOf(this.selectedActivity);
+    this.selectedActivity.deleted = true;
+    this.selectedActivity.deletedDate = new Date();
+    this.selectedActivity.deletedBy = this.user.idAdmin;
+    this.activitiesRunsheet[index] = this.selectedActivity;
+    this.activityRunsheetService.update(this.selectedActivity).subscribe();
+  }
+
+  editActivity(activityRunsheet: Activity) {
+    this.activityRunsheetService.activityRunsheetInfo = {runsheets: activityRunsheet.listRunsheets, driver: activityRunsheet.driver};
+    this.activityRunsheetService.activityToEdit = activityRunsheet;
+    this.router.navigate(['/close-activity-runsheet/create']);
+  }
+
+}

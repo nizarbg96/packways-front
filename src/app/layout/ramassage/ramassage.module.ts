@@ -18,6 +18,8 @@ import {Ng2CompleterModule} from 'ng2-completer';
 import {MaterialLibModule} from '../material/material.module';
 import {TripService} from '../trips/trips.service';
 import {DriversService} from '../drivers/drivers.service';
+import {PopUpDeleteModule} from '../shared/pop-up-delete/pop-up-delete.module';
+import {PopUpDeleteComponent} from '../shared/pop-up-delete/pop-up-delete.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import {DriversService} from '../drivers/drivers.service';
     DialogAddDriverToCreatePickUpComponent,
     DialogAddDriverToEditPickUpComponent
   ],
-  entryComponents: [DialogAddDriverToPickUpComponent, DialogAddDriverToCreatePickUpComponent, DialogAddDriverToEditPickUpComponent],
+  entryComponents: [DialogAddDriverToPickUpComponent, DialogAddDriverToCreatePickUpComponent, DialogAddDriverToEditPickUpComponent,
+  PopUpDeleteComponent],
   imports: [
     CommonModule,
     RamassageRoutingModule,
@@ -37,7 +40,8 @@ import {DriversService} from '../drivers/drivers.service';
     PageHeaderModule, NgbModule, HttpModule,
     HttpClientModule, DataTableModule, FormsModule, MatCardModule, NgxQRCodeModule,
     MatTableModule, MatPaginatorModule, MatFormFieldModule, UiSwitchModule,
-    NgxSpinnerModule, MatSnackBarModule, Ng2CompleterModule, MaterialLibModule
+    NgxSpinnerModule, MatSnackBarModule, Ng2CompleterModule, MaterialLibModule,
+    PopUpDeleteModule
   ],
   providers: [TripService, DriversService]
 })

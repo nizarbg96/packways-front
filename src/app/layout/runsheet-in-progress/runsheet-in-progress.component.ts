@@ -9,9 +9,15 @@ import {ColisRunsheet} from '../../model/colis-runsheet.model';
 import {DialogAddDriverToRunsheetComponent} from '../runsheet/runsheet.component';
 import {Trip} from '../trips/Trip';
 import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {environment} from '../../../environments/environment';
+import {ResponseContentType} from '@angular/http';
+import {map} from 'rxjs/operators';
 export interface InProgressRunsheet {
    runsheetObject: Runsheet;
    nbTreatedTrips: number;
+   nbColisLivree: number;
+   nbColisRetour: number;
+   nbColisEnCours: number;
 }
 
 @Component({
@@ -36,6 +42,7 @@ export class RunsheetInProgressComponent implements OnInit {
   //for modal
   closeResult: string;
   private selectedInProgressTrips: Trip[] = [];
+  private filtredInProgressRunsheet: InProgressRunsheet[] = [];
 
 
 
@@ -55,7 +62,6 @@ export class RunsheetInProgressComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogAddDriverToRunsheetComponent, {
       width: '60%',
-      // data: {name: 'this.name', animal: 'this.animal'}
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
@@ -74,17 +80,25 @@ export class RunsheetInProgressComponent implements OnInit {
       this.runsheets = res.body;
       this.runsheets = this.runsheets.filter((runsheet: Runsheet) =>
         ((runsheet.status === 'dispached') && runsheet.deleted === false) );
+      if(this.user.role !== 'superAdmin'){
+        this.runsheets = this.runsheets.filter((runsheet: Runsheet) => runsheet.entrepot.id === this.user.entrepot.id ||
+          runsheet.createdBy === this.user.idAdmin);
+      }
       this.runsheets = this.runsheets.sort((a, b) => (a.dispachedDate > b.dispachedDate) ? 1 : 0);
       this.runsheets.forEach((runsheet) =>{
-        const list = runsheet.listColis.slice().filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined))
+        const list = runsheet.listColis.slice().filter((colis) => (colis.removed === false || colis.removed == null || false))
           .map((colis) => colis.idTrip) ;
         this.tripService.getListOfTips(list).subscribe((resTrips) => {
           const trips = resTrips.body;
-          const nbColisLivree = trips.filter((trip) => trip.statusTrip === 'Livree' || trip.statusTrip === 'Retour' || trip.statusTrip === 'En cours de retour'
-              || trip.statusTrip === 'Retournee').length;
-          this.inProgressRunsheets.push({runsheetObject: runsheet, nbTreatedTrips: nbColisLivree});
+          const nbTreatedColis = runsheet.listColis.slice().filter(colis => (colis.treated === true) && (colis.removed === false)).length;
+          const nbColisLivree = trips.filter((trip) => trip.statusTrip === 'Livree').length;
+          const nbColisRetour = trips.filter((trip) => trip.statusTrip === 'Retour').length;
+          const nbColisEnCours = trips.filter((trip) => trip.statusTrip === 'livraison en cours' || trip.statusTrip === 'En cours de retour').length;
+          this.inProgressRunsheets.push({runsheetObject: runsheet, nbTreatedTrips: nbTreatedColis, nbColisLivree: nbColisLivree, nbColisRetour: nbColisRetour,
+          nbColisEnCours: nbColisEnCours});
         });
-      })
+      });
+      this.filtredInProgressRunsheet = this.inProgressRunsheets;
       this.spinner = false;
     });
   }
@@ -143,7 +157,6 @@ export class RunsheetInProgressComponent implements OnInit {
     this.tripService.updateTripsWhenDeleteRunsheet(listTripsToUpdate).subscribe();
   }
   showInProgressTrips(item: InProgressRunsheet, content: any) {
-    console.log('hiii');
     const list = item.runsheetObject.listColis.slice().filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined))
       .map((colis) => colis.idTrip) ;
     this.tripService.getListOfTips(list).subscribe((resTrips) => {
@@ -166,5 +179,34 @@ export class RunsheetInProgressComponent implements OnInit {
     } else {
       return  `with: ${reason}`;
     }
+  }
+
+  applyFilter(filterValue: any) {
+    const filterValueUpper = filterValue.toUpperCase();
+    if(filterValue === '' ) {
+      this.filtredInProgressRunsheet = this.inProgressRunsheets;
+    }
+    else {
+      this.filtredInProgressRunsheet = this.inProgressRunsheets.slice().filter((item) => item.runsheetObject.ref.includes(filterValueUpper));
+    }
+  }
+  BSFromServer(runsheet: Runsheet) {
+    const listIdTrips = runsheet.listColis.filter(colis => (colis.removed === false)).map((colis => colis.idTrip ));
+    this.tripService.getBS(runsheet.driver.idDriver, listIdTrips).subscribe(data => {
+      const path = data['_body'];
+      this.downloadBS(path);
+    });
+  }
+  downloadBS(path: string) {
+    const index: number = path.indexOf('Bon') - 1;
+    path = path.substring(index);
+    this.runsheetService.downloadPDF(environment.serverUrl + '/trip/downloadBS/' + path).subscribe(res => {
+      const fileURL = URL.createObjectURL(res);
+      window.open( fileURL, '_blank');
+    });
+  }
+
+  imprimerRunsheet(selectedRunsheet: Runsheet) {
+    this.BSFromServer(selectedRunsheet);
   }
 }

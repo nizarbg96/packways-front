@@ -1,0 +1,63 @@
+
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;" >
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Conflits'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Colis de conflit</h5>
+        <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-10 Aligner">
+        <p><mat-form-field appearance="fill" class="ml-2">
+          <mat-label>REF</mat-label>
+          <input matInput placeholder="filtrer par réference" (keyup)="applyFilter($event.target.value)">
+          <mat-icon matSuffix>keyboard</mat-icon>
+        </mat-form-field>
+        </p>
+      </div>
+      <div class="col-md-2 Aligner ">
+      </div>
+    </div>
+  </mat-card>
+</div>
+<div class="row">
+  <mat-spinner *ngIf="spinner" class="center"></mat-spinner>
+  <mat-selection-list style="width:100%"  #conflitTrips_list>
+    <div *ngFor="let conflitTrip of conflitTrips">
+      <mat-list-option #conflitTrip_option *ngIf="conflitTrip.conflit.closed === false"
+                       (click)="onAreaListControlChanged(conflitTrip_option, conflitTrip)" >
+        <div class="row mt-1" >
+          <div class="col-md-10">
+            <p><strong>Type de conflit: </strong> {{conflitTrip.conflit.conflitType}}  - <strong>Trip Ref: </strong> {{conflitTrip.trip.refTrip}} - <strong>Activity Ref:
+            </strong> {{conflitTrip.conflit.activityId}}</p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+<!--            <div class="example-button-container">-->
+<!--              <button mat-mini-fab color="basic" class="mt-3" style="z-index: 10" aria-label="liste des colis" (click)="showInProgressTrips(conflitTrip.trip, contentInProgressTrips)">-->
+<!--                <mat-icon>list</mat-icon>-->
+<!--              </button>-->
+<!--            </div>-->
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+            <p style="color: grey; font-style: italic;" class="mt-2"><span style="display: block">Crée le </span>{{ conflitTrip.conflit.createdDate | date:'dd/MM/yyyy'}}</p>
+            <p style="color: grey; font-style: italic;"
+               [ngClass]="{'text-success': calculateDiff(conflitTrip.conflit.createdDate) < 2 ,
+              'text-warning': calculateDiff(conflitTrip.conflit.createdDate) === 2, 'text-danger': calculateDiff(conflitTrip.conflit.createdDate) > 2}"
+               class="mt-2">
+              <strong>{{ calculateDiff(conflitTrip.conflit.createdDate)}} Jours</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+        </div>
+        <mat-divider ></mat-divider>
+      </mat-list-option>
+    </div>
+  </mat-selection-list>
+</div>

@@ -1,3 +1,5 @@
+import {Entrepot, IEntrepot} from '../../model/entrepot.model';
+import {HistoriqueScan, IHistoriqueScan} from '../../model/historique-scan.model';
 
 export class Trip {
   idTrip?: string;
@@ -78,13 +80,19 @@ export class Trip {
   inReturnBy?: any;
   returnedBy?: any;
   image?: any;
+  entrepot?: IEntrepot;
+  pickedUpDate?: Date;
+  historiqueScans?: IHistoriqueScan[];
 
   // runsheets properties
-  runsheetsIdHistory?: any[];
+  runsheetsHistory?: any[];
   currentRunsheetId?: any;
   // mu properties
-  muIdHistory?: any[];
+  muHistory?: any[];
   currentMUId?: any;
+  // pickUp propreties
+  currentPickUpId?: string;
+  pickUpHistory?: string;
    constructor(
       idTrip?: string,
       userTrip?: any,
@@ -164,8 +172,10 @@ export class Trip {
       inReturnBy?: any,
       returnedBy?: any,
       image?: any,
+      entrepot?: IEntrepot,
+      pickedUpDate?: Date,
 
-   // runsheets properties
+  // runsheets properties
      runsheetsIdHistory?: any[],
      currentRunsheetId?: any,
       // mu properties

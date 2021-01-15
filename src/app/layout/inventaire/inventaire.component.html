@@ -1,0 +1,88 @@
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;">
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Inventaire'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Inventaire</h5>
+        <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-10 Aligner">
+      </div>
+      <div class="col-md-2 Aligner ">
+        <button mat-raised-button *ngIf="inventaire_List.selectedOptions.selected.length === 0 "
+                style="width:100%;" color="primary" (click)="createInventaire()" class="ml-2">Créer un inventaire
+        </button>
+        <button mat-raised-button color="warn" class="ml-2"
+                style="width: 100%"
+                *ngIf="inventaire_List.selectedOptions.selected.length>0 && checkedInventaireStatus === 'draft' " (click)="deleteSelectedActivity()">
+          Annuler
+        </button>
+        <button mat-raised-button  class="ml-2"
+                style="width: 100%; background-color: #00aa88; color: white;"
+                *ngIf="inventaire_List.selectedOptions.selected.length>0 && checkedInventaireStatus === 'confirmed' " (click)="printRunsheet()">
+          imprimer
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+<div class="row">
+  <mat-spinner *ngIf="spinner" class="center"></mat-spinner>
+  <mat-selection-list style="width:100%" #inventaire_List>
+    <div *ngFor="let inventaire of inventaires">
+      <mat-list-option #inventaire_option
+                       *ngIf="(inventaire.deleted === false) && (inventaire.status === 'draft' || inventaire.status ==='confirmed')"
+                       (click)="onAreaListControlChanged(inventaire_option, inventaire)">
+        <div class="row mt-1">
+          <div class="col-md-9">
+            <p>inventaire_Packways_{{inventaire.ref}}</p>
+            <p style="color: grey; font-style: italic;">
+              {{inventaire.status}} - Entrepot: <strong>
+              {{(!!inventaire.entrepot) ? inventaire.entrepot.nom : "n'est pas assigné"}}
+            </strong> - Crée par: <strong>
+              {{(!!inventaire.createdByName) ? inventaire.createdByName : "n'est pas assigné"}}
+            </strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-2">
+            <button style="z-index: 10;" *ngIf="inventaire.status === 'draft'" type="button" class="mat-mini-fab mt-2" title="Modifier"
+                    (click)="editActivity(inventaire)"> <!-- (click)="open(content)" -->
+              <i class="material-icons"> create </i>
+            </button>
+            <button style="z-index: 10;" *ngIf="inventaire.status === 'confirmed'" type="button" class="mat-mini-fab mt-2" title="détails"
+                    (click)="editActivity(inventaire)"> <!-- (click)="open(content)" -->
+              <i class="material-icons"> visibility </i>
+            </button>
+            <button type="button" *ngIf="inventaire.status === 'draft'" style="z-index: 10;" class="mat-mini-fab ml-2 mt-2" title="Supprimer">
+              <i class="material-icons" (click)="deleteActivity(inventaire)"> delete </i>
+            </button>
+            <button *ngIf="inventaire.status === 'confirmed'" style="z-index: 10;" type="button"
+                    class="mat-mini-fab ml-2 mt-2" title="Imprimer">
+              <i class="material-icons" (click)="printRunsheet()"> print </i>
+            </button>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+            <p style="color: grey; font-style: italic;"
+               class="mt-2">{{ inventaire.createdDate | date:'dd/MM/yyyy'}}</p>
+            <p style="color: grey; font-style: italic;"
+               [ngClass]="{'text-success': calculateDiff(inventaire.createdDate) < 2 ,
+              'text-warning': calculateDiff(inventaire.createdDate) === 2, 'text-danger': calculateDiff(inventaire.createdDate) > 2}"
+               class="mt-2">
+              <strong>{{ calculateDiff(inventaire.createdDate)}} Jours</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+      </mat-list-option>
+    </div>
+  </mat-selection-list>
+</div>
+
+

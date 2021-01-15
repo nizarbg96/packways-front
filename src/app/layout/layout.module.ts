@@ -11,6 +11,9 @@ import { SmartTableComponent } from './smart-table/smart-table.component';
 import {FormsModule} from '@angular/forms';
 import {UserService} from './users/users.service';
 import {MaterialLibModule} from './material/material.module';
+import { PopUpDeleteComponent } from './shared/pop-up-delete/pop-up-delete.component';
+import {PopUpDeleteModule} from './shared/pop-up-delete/pop-up-delete.module';
+import {LoginService} from '../login/login.service';
 
 
 
@@ -22,8 +25,10 @@ import {MaterialLibModule} from './material/material.module';
         NgbDropdownModule,
         FormsModule,
       NgbModule,
-      MaterialLibModule
+      MaterialLibModule,
+      PopUpDeleteModule
     ],
-    declarations: [LayoutComponent, SidebarComponent, HeaderComponent, SmartTableComponent]
+    declarations: [LayoutComponent, SidebarComponent, HeaderComponent, SmartTableComponent],
+  providers: [LoginService]
 })
 export class LayoutModule {}
