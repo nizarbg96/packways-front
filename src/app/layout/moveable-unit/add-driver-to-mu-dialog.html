@@ -7,17 +7,17 @@
     <input type="text" class="form-control" placeholder="Matricule de voiture"  aria-describedby="basic-addon1" [ngModel]="muInfo?.matricule" (ngModelChange)="muInfo.matricule = $event">
   </div>
 </div>
-<mat-form-field appearance="fill" style="display: block; width: 100%">
+<!--<mat-form-field appearance="fill" style="display: block; width: 100%">
   <mat-label>Entrepôt source</mat-label>
   <mat-select [formControl]="entrepotSrc" required (selectionChange)="affectEntrepotSrc($event.value)">
-    <mat-option>--</mat-option>
+    <mat-option>&#45;&#45;</mat-option>
     <mat-option *ngFor="let entrepot of entrepots" [value]="entrepot" >
       {{entrepot.nom}}
     </mat-option>
   </mat-select>
   <mat-error *ngIf="entrepotSrc.hasError('required')">Veuillez sélectionner un entrepôt</mat-error>
   <mat-hint>{{entrepotSrc.value?.sound}}</mat-hint>
-</mat-form-field>
+</mat-form-field>-->
 <mat-form-field appearance="fill" style="display: block; width: 100%">
   <mat-label>Entrepôt Destination</mat-label>
   <mat-select [formControl]="entrepotDest" required (selectionChange)="affectEntrepotDest($event.value)">

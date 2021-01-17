@@ -70,9 +70,11 @@ export class CreateActivityPickUpComponent implements OnInit, AfterViewInit {
       autreValue: [null, Validators.required],
     }
   );
-  private trips: Trip[] = [];
-  private ListScanPickUpNB: any;
-  private pickUpStepper = false;
+  trips: Trip[] = [];
+  ListScanPickUpNB: any;
+  pickUpStepper = false;
+  listConflit: Conflit[] = [];
+  actions = ['lost', 'non expédié', 'damaged'];
 
 
   constructor(private activityPickUpService: ActivityPickUpService, private _formBuilder: FormBuilder, private tripService: TripService,
@@ -472,7 +474,16 @@ export class CreateActivityPickUpComponent implements OnInit, AfterViewInit {
     this.modalService.open(MODALS[name]).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
       let listToUpdateChezLivreur = this.ListScanPickUp.map((trp) => trp.idTrip);
+      const listConflitTripsIds = this.listConflit.map((conflit) => conflit.colisId);
       const listTreatedTripsIds = this.ListScanPickUp.map((trp) => trp.idTrip);
+      this.tripService.getListOfTips(listConflitTripsIds).subscribe((resTripsConflit) =>{
+        const surveyTrips: Trip[] =  [];
+        resTripsConflit.body.forEach((trip) => {
+          trip.survey = true;
+          surveyTrips.push(trip);
+        });
+        this.tripService.updateListOfTips(surveyTrips).subscribe();
+      });
       const pickUpsToUpdate = this.activityPickUp.listPickUps;
       const newPickUps: PickUp[] = [];
       pickUpsToUpdate.forEach((pickUp) => {
@@ -482,7 +493,12 @@ export class CreateActivityPickUpComponent implements OnInit, AfterViewInit {
             colis.treated = true;
             return colis;
           } else {
-            return colis;
+            if (listConflitTripsIds.indexOf(colis.idTrip) >= 0 && colis.removed === false) {
+              colis.survey = true;
+              return colis;
+            } else {
+              return colis;
+            }
           }
         });
         newPickUps.push(pickUpToPush);
@@ -512,8 +528,10 @@ export class CreateActivityPickUpComponent implements OnInit, AfterViewInit {
                 this.tripService.updateListOfTips(trips).subscribe((resUpdatedTrips) => {
                   listToUpdateChezLivreur = resUpdatedTrips.body.map((trip) => trip.idTrip);
                   this.tripService.updateTripsStatus('Chez Livreur', listToUpdateChezLivreur, this.user.name, 'EntrepotGafsa').subscribe(() => {
-                        this.spinner = false;
-                        this.openCheckSuccess('activityConfirmed');
+                    this.conflitService.createList(this.listConflit).subscribe(() => {
+                      this.spinner = false;
+                      this.openCheckSuccess('activityConfirmed');
+                    });
                   });
                 });
               });
@@ -576,6 +594,23 @@ export class CreateActivityPickUpComponent implements OnInit, AfterViewInit {
     });
   }
 
+  affectActionToConflictTrip(value: any, trp: Trip) {
+    if (value === null || value === undefined) {
+      this.listConflit = this.listConflit.filter((conflit) => conflit.colisId !== trp.idTrip);
+    } else if (value === 'non expédié') {
+      this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, trp.entrepot, value, 'pick up',  this.activityPickUp.ref);
+      this.listConflit.push(conflit);
+    } else if (value === 'lost') {
+      this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityPickUp.entrepot, value, 'pick up', this.activityPickUp.ref, false, null, null);
+      this.listConflit.push(conflit);
+    } else if (value === 'damaged') {
+      this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityPickUp.entrepot, value, 'pick up', this.activityPickUp.ref, false, null, null);
+      this.listConflit.push(conflit);
+    }
+  }
 }
 @Component({
   selector: 'confirm-activity-pickup-modal',

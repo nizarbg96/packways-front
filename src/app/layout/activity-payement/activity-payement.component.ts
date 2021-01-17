@@ -166,10 +166,9 @@ export class ActivityPayementComponent implements OnInit {
          }
   }
   generateExcelReportForClient(activityPayement: ActivityPayement) {
-    this.tripService.getListOfTips(activityPayement.listRapportTrips).subscribe((res) => {
       this.userService.getUserById(activityPayement.clientId).subscribe((resUser) => {
         const client = resUser.json();
-        const listTripsRapport = res.body;
+        const listTripsRapport = activityPayement.listRapportTrips;
         const tripsByUser = [];
         let costTrip = 0;
         let valpack = 0;
@@ -199,11 +198,7 @@ export class ActivityPayementComponent implements OnInit {
 
         const montantNet = valpack - costTrip;
         this.tripExcelService.generateExcel(tripsByUser, nameuser, montantNet, client.mobileUser, client.adressUser);
-      })
-
-
-    });
-
+      });
 
   }
   splitDateFormatMDY2(dd) {

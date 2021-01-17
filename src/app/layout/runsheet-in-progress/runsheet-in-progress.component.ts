@@ -90,7 +90,7 @@ export class RunsheetInProgressComponent implements OnInit {
           .map((colis) => colis.idTrip) ;
         this.tripService.getListOfTips(list).subscribe((resTrips) => {
           const trips = resTrips.body;
-          const nbTreatedColis = runsheet.listColis.slice().filter(colis => (colis.treated === true) && (colis.removed === false)).length;
+          const nbTreatedColis = runsheet.listColis.slice().filter(colis => (colis.treated === false) && (colis.removed === false)).length;
           const nbColisLivree = trips.filter((trip) => trip.statusTrip === 'Livree').length;
           const nbColisRetour = trips.filter((trip) => trip.statusTrip === 'Retour').length;
           const nbColisEnCours = trips.filter((trip) => trip.statusTrip === 'livraison en cours' || trip.statusTrip === 'En cours de retour').length;
@@ -208,5 +208,14 @@ export class RunsheetInProgressComponent implements OnInit {
 
   imprimerRunsheet(selectedRunsheet: Runsheet) {
     this.BSFromServer(selectedRunsheet);
+  }
+
+  inNonTreatedList(trp: Trip) {
+    if(trp.statusTrip === 'Chez Livreur' || trp.statusTrip === 'Retour'
+      || trp.statusTrip === 'Livree' || trp.statusTrip === 'Retournee'){
+      return false;
+    } else {
+      return true;
+    }
   }
 }

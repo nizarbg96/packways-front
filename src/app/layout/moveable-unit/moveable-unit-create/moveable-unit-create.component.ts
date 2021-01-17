@@ -33,7 +33,8 @@ export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
   constructor(private tservice: TripService, private snackBar: MatSnackBar, private moveableUnitService: MoveableUnitService,
               private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,
               public dialog: MatDialog, private modalService: NgbModal, private runsheetService: RunsheetService, private ramassageService: RamassageService,
-              private userService: UserService, private conflitService: ConflitService) { }
+              private userService: UserService, private conflitService: ConflitService) {
+  }
 
   date: Date;
   nbSelectedMU = 0;
@@ -44,9 +45,9 @@ export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
   ListScan = [];
   ListScanNB = 0;
   //
-  driver: any = null ;
+  driver: any = null;
   user: any;
-  moveableUnit: MoveableUnit = null ;
+  moveableUnit: MoveableUnit = null;
   routeSub: Subscription;
   confirmed = false;
   muInfo: MuInfo;
@@ -57,15 +58,20 @@ export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
+    if(!this.moveableUnitService.muInfo){
+      this.router.navigate(['/mu/']);
+      return;
+    }
     this.muInfo = this.moveableUnitService.muInfo;
     this.createNewDraftMoveableUnit();
     // saving draft when leaving component
     this.routeSub = this.router.events.subscribe((event) => {
       if ((event instanceof NavigationStart) && !this.confirmed) {
-          this.moveableUnitService.update(this.moveableUnit).subscribe();
-        }
+        this.moveableUnitService.update(this.moveableUnit).subscribe();
+      }
     });
   }
+
   // select driver to add in mu
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogAddDriverToCreateMUComponent, {
@@ -78,10 +84,8 @@ export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
       if (!!this.muInfo) {
         this.moveableUnitService.muInfo = this.muInfo;
         this.affectedEntrepotDest = this.muInfo.entrepotDest;
-        this.affectedEntrepotSrc = this.muInfo.entrepotSrc;
         this.affectedMatricule = this.muInfo.matricule;
         this.driver = this.muInfo.driver;
-        this.moveableUnit.entrepotSrc = this.affectedEntrepotSrc;
         this.moveableUnit.entrepotDest = this.affectedEntrepotDest;
         this.moveableUnit.driver = this.driver;
         this.moveableUnit.matricule = this.affectedMatricule;
@@ -108,58 +112,74 @@ export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
         let verif = false;
         // vérif
         for (let index = 0; index < this.ListScan.length; index++) {
-          if (obj.idTrip === this.ListScan[index].idTrip ||  obj.refTrip === this.ListScan[index].refTrip) {
+          if (obj.idTrip === this.ListScan[index].idTrip || obj.refTrip === this.ListScan[index].refTrip) {
             verif = true;
           }
         }
         if (verif === false) {
-          if ((obj.currentRunsheetId !== null) && (obj.currentRunsheetId !== 'null') && (obj.currentRunsheetId !== undefined) ) {
+          if (!!obj.entrepot) {
+            if (obj.entrepot.id !== this.moveableUnit.entrepotSrc.id) {
+              const msg = 'impossible de scanner le colis! colis n\'appartient pas à ce Hub';
+              this.snackBar.open(msg, 'Fermer', {duration: 8000,});
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  moveable unit: ' + this.moveableUnit.ref,
+                'Exception : ' + msg));
+              this.tservice.updateOneTrip(obj).subscribe();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation', this.moveableUnit.ref);
+                this.conflitService.create(conflit).subscribe();
+              });
+              return;
+            }
+          }
+          if ((obj.currentRunsheetId !== null) && (obj.currentRunsheetId !== 'null') && (obj.currentRunsheetId !== undefined)) {
             this.runsheetService.find(obj.currentRunsheetId).subscribe((res) => {
               const msg = 'impossible de scanner le colis! ce colis existe dans la runsheet' +
                 ' de Réference: ' + res.body.ref + ', Etat: ' + res.body.status;
-              this.snackBar.open( msg, 'Fermer', {duration: 8000, });
+              this.snackBar.open(msg, 'Fermer', {duration: 8000,});
               this.playFailureAudio();
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  moveable unit: ' + this.moveableUnit.ref,
                 'Exception : ' + msg));
               this.tservice.updateOneTrip(obj).subscribe();
               this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
                 const admin = resUser.json();
-                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation',  this.moveableUnit.ref);
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation', this.moveableUnit.ref);
                 this.conflitService.create(conflit).subscribe();
               });
             });
-          } else if ((obj.currentMUId !== null) && (obj.currentMUId !== 'null') && (obj.currentMUId !== undefined) ) {
+          } else if ((obj.currentMUId !== null) && (obj.currentMUId !== 'null') && (obj.currentMUId !== undefined)) {
             this.moveableUnitService.find(obj.currentMUId).subscribe((res) => {
               const msg = 'impossible de scanner le colis! ce colis existe dans la moveable unit' +
                 ' de Réference: ' + res.body.ref + ', Etat: ' + res.body.status;
-              this.snackBar.open( msg, 'Fermer', {duration: 8000, });
+              this.snackBar.open(msg, 'Fermer', {duration: 8000,});
               this.playFailureAudio();
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  moveable unit: ' + this.moveableUnit.ref,
                 'Exception : ' + msg));
               this.tservice.updateOneTrip(obj).subscribe();
               this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
                 const admin = resUser.json();
-                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation',  this.moveableUnit.ref);
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation', this.moveableUnit.ref);
                 this.conflitService.create(conflit).subscribe();
               });
             });
-          } else if ((obj.currentPickUpId !== null) && (obj.currentPickUpId !== 'null') && (obj.currentPickUpId !== undefined) ) {
+          } else if ((obj.currentPickUpId !== null) && (obj.currentPickUpId !== 'null') && (obj.currentPickUpId !== undefined)) {
             this.ramassageService.find(obj.currentPickUpId).subscribe((res) => {
               const msg = 'impossible de scanner le colis! ce colis existe dans le pick up' +
                 ' de Réference: ' + res.body.ref + ', Etat: ' + res.body.status;
-              this.snackBar.open( msg, 'Fermer', {duration: 8000, });
+              this.snackBar.open(msg, 'Fermer', {duration: 8000,});
               this.playFailureAudio();
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  moveable unit: ' + this.moveableUnit.ref,
                 'Exception : ' + msg));
               this.tservice.updateOneTrip(obj).subscribe();
               this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
                 const admin = resUser.json();
-                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation',  this.moveableUnit.ref);
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation', this.moveableUnit.ref);
                 this.conflitService.create(conflit).subscribe();
               });
             });
           } else {
-            if (obj.statusTrip === 'Chez Livreur') {
+            if (obj.statusTrip === 'Chez Livreur' || obj.statusTrip === 'Retour') {
               this.ListScan.push(obj);
               this.playSuccessAudio();
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la moveable unit: ' + this.moveableUnit.ref,
@@ -182,28 +202,25 @@ export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la moveable unit: ' + this.moveableUnit.ref,
                 'Exception : ' + msg));
               this.tservice.updateOneTrip(obj).subscribe((res) => {
-                if (res.body.statusTrip === 'Retour') {
-                  this.moveableUnitService.scannedTrip = res.body;
-                  this.openForceStatusRetour('forceRetour');
-                }
-                else {
-                  this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
-                    const admin = resUser.json();
-                    const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation',  this.moveableUnit.ref);
-                    this.conflitService.create(conflit).subscribe();
-                  });
-                }
+                this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                  const admin = resUser.json();
+                  const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'M.U creation', this.moveableUnit.ref);
+                  this.conflitService.create(conflit).subscribe();
+                });
               });
             }
           }
-        } else {
-          const msg = 'Ce colis a été scanné';
-          this.snackBar.open(msg, 'Fermer', {
-            duration: 8000,
-          });
-          this.playFailureAudio();
         }
-      });
+        else
+          {
+            const msg = 'Ce colis a été scanné';
+            this.snackBar.open(msg, 'Fermer', {
+              duration: 8000,
+            });
+            this.playFailureAudio();
+          }
+        }
+      );
     } else {
       this.snackBar.open('Ce colis a été scanné', 'Fermer', {
         duration: 8000,
@@ -225,12 +242,13 @@ export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
       .filter((colis) => ((colis.idTrip === trip.idTrip) && (colis.removed === false)))[0];
     const index = this.moveableUnit.listColis.indexOf(colisToDelete);
     this.moveableUnit.listColis[index].removed = true;
-    this.moveableUnit.listColis[index].removedBy =  this.user.idAdmin;
-    this.moveableUnit.listColis[index].removedDate =  new Date() ;
+    this.moveableUnit.listColis[index].removedBy = this.user.idAdmin;
+    this.moveableUnit.listColis[index].removedDate = new Date();
     this.tservice.updateMoveableUnit(trip.idTrip, new MoveableUnitHistory(null, this.user.idAdmin, new Date())).subscribe(() => {
       this.moveableUnitService.update(this.moveableUnit).subscribe();
     });
   }
+
   createNewDraftMoveableUnit() {
     const draftMoveableUnit = new MoveableUnit(null, null, 'draft', this.user.idAdmin, new Date());
     if (!!this.muInfo) {
@@ -257,9 +275,10 @@ export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
       this.router.navigate(['/mu']);
     });
   }
+
   getListColisLength(listColis: ColisRunsheet[]): number {
     return listColis.slice()
-      .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).length ;
+      .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).length;
   }
 
   openForceStatusRetour(name: string) {
@@ -270,20 +289,20 @@ export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
         new Date(), false));
       const listTrips = [trip.refTrip];
       this.tservice.updateTripsStatus('Chez Livreur', listTrips, this.user.name, '').subscribe(() => {
-        this.tservice.getTripscanListById(trip.idTrip).subscribe((resTrip) => {
-          const trip2  = resTrip.body;
-          this.ListScan.push(trip2);
-          this.playSuccessAudio();
-          this.tservice.updateMoveableUnit(trip2.idTrip, new MoveableUnitHistory(this.moveableUnit.id, this.user.idAdmin, new Date)).subscribe(() => {
-            this.tservice.getTripscanListById(trip2.idTrip).subscribe((resTrp) => {
-              const trip3  = resTrp.body;
-              this.moveableUnitService.update(this.moveableUnit).subscribe(() => {
-                trip3.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  moveable unit: ' + this.moveableUnit.ref, 'Success : forced status'));
-                this.tservice.updateOneTrip(trip3).subscribe();
+          this.tservice.getTripscanListById(trip.idTrip).subscribe((resTrip) => {
+            const trip2 = resTrip.body;
+            this.ListScan.push(trip2);
+            this.playSuccessAudio();
+            this.tservice.updateMoveableUnit(trip2.idTrip, new MoveableUnitHistory(this.moveableUnit.id, this.user.idAdmin, new Date)).subscribe(() => {
+              this.tservice.getTripscanListById(trip2.idTrip).subscribe((resTrp) => {
+                const trip3 = resTrp.body;
+                this.moveableUnitService.update(this.moveableUnit).subscribe(() => {
+                  trip3.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  moveable unit: ' + this.moveableUnit.ref, 'Success : forced status'));
+                  this.tservice.updateOneTrip(trip3).subscribe();
+                });
               });
             });
           });
-        });
         }
       );
     }, (reason) => {
@@ -302,13 +321,14 @@ export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  playSuccessAudio(){
+  playSuccessAudio() {
     const audio = new Audio();
     audio.src = '../../../../assets/audio/zapsplat_public_places_supermarket_checkout_beep_002_44357.wav';
     audio.load();
     audio.play();
   }
-  playFailureAudio(){
+
+  playFailureAudio() {
     const audio = new Audio();
     audio.src = '../../../../assets/audio/zapsplat_multimedia_game_sound_error_incorrect_001_30721.wav';
     audio.load();
@@ -317,9 +337,11 @@ export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (!this.confirmed) {
-        this.moveableUnitService.update(this.moveableUnit).subscribe();
-      }
-    this.routeSub.unsubscribe();
+      this.moveableUnitService.update(this.moveableUnit).subscribe();
+    }
+    if (!!this.routeSub){
+      this.routeSub.unsubscribe();
+    }
 
   }
 
@@ -337,9 +359,9 @@ export class DialogAddDriverToCreateMUComponent implements OnInit {
   affectedDriverNgModel = '';
   entrepots: Entrepot[] = [];
   entrepotSrc = new FormControl('', Validators.required);
-  entrepotDest = new FormControl('', Validators.required );
-  entrepotSrcValue: Entrepot =  null;
-  entrepotDestValue: Entrepot =  null;
+  entrepotDest = new FormControl('', Validators.required);
+  entrepotSrcValue: Entrepot = null;
+  entrepotDestValue: Entrepot = null;
   matricule: string;
   muInfo: MuInfo = {matricule: null, driver: null, entrepotDest: null, entrepotSrc: null};
 
@@ -347,13 +369,14 @@ export class DialogAddDriverToCreateMUComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToCreateMUComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService, private entrepotService: EntrepotService,
-    private moveableUnitService: MoveableUnitService, private driverService: DriversService) {}
+    private moveableUnitService: MoveableUnitService, private driverService: DriversService) {
+  }
 
   ngOnInit(): void {
     this.getAllDrivers();
     this.getEntrepots();
     if (!!this.moveableUnitService.muInfo) {
-      if ( !!this.moveableUnitService.muInfo.driver) {
+      if (!!this.moveableUnitService.muInfo.driver) {
         this.affectedDriverNgModel = this.moveableUnitService.muInfo.driver.nameDriver + ' ' + this.moveableUnitService.muInfo.driver.surnameDriver;
       }
       if (!!this.moveableUnitService.muInfo.driver) {
@@ -388,13 +411,15 @@ export class DialogAddDriverToCreateMUComponent implements OnInit {
     }, error => {
     });
   }
+
   getSelectedDriver(driver: any) {
     if (driver != null) {
       const ind = this.Listdriverauto.indexOf(driver.title);
       this.affectedDriver = this.Listdriver[ind];
       this.driverService.getOneDriver(this.affectedDriver.idDriver).subscribe((oneDriver) => {
-        this.muInfo.driver =  oneDriver.json();
-      });    }
+        this.muInfo.driver = oneDriver.json();
+      });
+    }
   }
 
   getEntrepots() {
@@ -406,8 +431,9 @@ export class DialogAddDriverToCreateMUComponent implements OnInit {
 
   affectEntrepotSrc(entrepot: Entrepot) {
     this.entrepotSrcValue = entrepot;
-    this.muInfo.entrepotSrc = this.entrepotSrcValue ;
+    this.muInfo.entrepotSrc = this.entrepotSrcValue;
   }
+
   affectEntrepotDest(entrepot: Entrepot) {
     this.entrepotDestValue = entrepot;
     this.muInfo.entrepotDest = this.entrepotDestValue;

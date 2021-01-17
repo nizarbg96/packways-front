@@ -138,18 +138,29 @@
             </tr>
             </thead>
             <tbody style="font-size:14px !important;">
-            <tr *ngFor="let trp of selectedInProgressTrips" class="table-active text-center" [ngStyle]="{'background-color':!!trp.currentRunsheetId?'#ffffff':'#00aa88'}" >
-              <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" >{{trp.refTrip}}</td>
-              <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}">{{trp.statusTrip }}</td>
-              <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
-              <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" >{{trp.destTrip.contactAdr }}</td>
-              <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="trp.msgTrip && trp.msgTrip.length > 0">
+            <tr *ngFor="let trp of selectedInProgressTrips" class="table-active text-center" style="background-color: #ffffff;">
+              <td *ngIf="!!trp.survey" style="background-color: orange">{{trp.refTrip}}</td>
+              <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey">{{trp.refTrip}}</td>
+              <td *ngIf="!!trp.survey" style="background-color: orange">{{trp.statusTrip }}</td>
+              <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey">{{trp.statusTrip }}</td>
+              <td *ngIf="!!trp.survey" style="background-color: orange">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
+              <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
+              <td *ngIf="!!trp.survey" style="background-color: orange" >{{trp.destTrip.contactAdr }}</td>
+              <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}"  *ngIf="!trp.survey">{{trp.destTrip.contactAdr }}</td>
+              <td  *ngIf="!!trp.survey && (trp.msgTrip && trp.msgTrip.length > 0)" style="background-color: orange" >
                 <ul>
                   <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
                   <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg }}</li>
                 </ul>
               </td>
-              <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="trp.msgTrip && trp.msgTrip.length === 0">-</td>
+              <td  [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey &&trp.msgTrip && trp.msgTrip.length > 0">
+                <ul>
+                  <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
+                  <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg }}</li>
+                </ul>
+              </td>
+              <td *ngIf="!!trp.survey && (trp.msgTrip && trp.msgTrip.length === 0)" style="background-color: orange">-</td>
+              <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey && trp.msgTrip && trp.msgTrip.length === 0">-</td>
 
             </tr>
             </tbody>
@@ -171,7 +182,7 @@
             <th style="width:1%">Expéditeur</th>
             <th style="width:1%">Destinataire</th>
             <th style="width:1%">Msg</th>
-            <th style="width:1%">Action</th>
+            <th style="width:1%" *ngIf="activityRunsheet.status === 'draft'">Action</th>
           </tr>
           </thead>
           <tbody style="font-size:14px !important;">
@@ -187,7 +198,7 @@
               </ul>
             </td>
             <td style="background-color: #ffffff;" *ngIf="trp.msgTrip && trp.msgTrip.length === 0">-</td>
-            <td style="background-color: #ffffff;">
+            <td style="background-color: #ffffff;" *ngIf="activityRunsheet.status === 'draft'">
               <i class="material-icons" style="cursor:pointer;" (click)="deleteScanListFailure(trp)" > delete </i>
             </td>
           </tr>
@@ -207,7 +218,7 @@
             <th style="width:1%">Expéditeur</th>
             <th style="width:1%">Destinataire</th>
             <th style="width:1%">Msg</th>
-            <th style="width:1%">Action</th>
+            <th style="width:1%" *ngIf="activityRunsheet.status === 'draft'">Action</th>
           </tr>
           </thead>
           <tbody style="font-size:14px !important;">
@@ -223,7 +234,7 @@
               </ul>
             </td>
             <td style="background-color: #ffffff;" *ngIf="trp.msgTrip && trp.msgTrip.length === 0">-</td>
-            <td style="background-color: #ffffff;">
+            <td style="background-color: #ffffff;" *ngIf="activityRunsheet.status === 'draft'">
               <i class="material-icons" style="cursor:pointer;" (click)="deleteScanListSuccess(trp)" > delete </i>
             </td>
           </tr>
@@ -242,21 +253,47 @@
             <th style="width:1%">Expéditeur</th>
             <th style="width:1%">Destinataire</th>
             <th style="width:1%">Msg</th>
+            <th style="width:1%">Action</th>
           </tr>
           </thead>
           <tbody style="font-size:14px !important;">
           <tr *ngFor="let trp of listColisNonTreated" class="table-active text-center" style="background-color: #ffffff;">
-            <td style="background-color: #ffffff;">{{trp.refTrip}}</td>
-            <td style="background-color: #ffffff; width:25%;">{{trp.statusTrip}}</td>
-            <td style="background-color: #ffffff; width:25%;">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
-            <td style="background-color: #ffffff; width:25%;" >{{trp.destTrip.contactAdr }}</td>
-            <td  style="background-color: #ffffff;  width:25%;" *ngIf="trp.msgTrip && trp.msgTrip.length > 0">
+            <td *ngIf="!!trp.survey" style="background-color: orange;width: 20%">{{trp.refTrip}}</td>
+            <td *ngIf="!trp.survey" style="background-color: #ffffff;">{{trp.refTrip}}</td>
+            <td *ngIf="!!trp.survey" style="background-color: orange;width: 20%">{{trp.statusTrip}}</td>
+            <td *ngIf="!trp.survey" style="background-color: #ffffff; width:20%;">{{trp.statusTrip}}</td>
+            <td *ngIf="!!trp.survey" style="background-color: orange;width: 20%">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
+            <td *ngIf="!trp.survey" style="background-color: #ffffff; width:20%;">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
+            <td *ngIf="!!trp.survey" style="background-color: orange;width: 20%" >{{trp.destTrip.contactAdr }}</td>
+            <td *ngIf="!trp.survey" style="background-color: #ffffff; width:20%;" >{{trp.destTrip.contactAdr }}</td>
+            <td  *ngIf="!!trp.survey && (trp.msgTrip && trp.msgTrip.length > 0)" style="background-color: orange;width: 20%" >
               <ul>
                 <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
                 <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg }}</li>
               </ul>
             </td>
-            <td style="background-color: #ffffff;" *ngIf="trp.msgTrip && trp.msgTrip.length === 0">-</td>
+            <td  style="background-color: #ffffff;  width:20%;" *ngIf="!trp.survey && trp.msgTrip && trp.msgTrip.length > 0">
+              <ul>
+                <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
+                <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg }}</li>
+              </ul>
+            </td>
+            <td *ngIf="!!trp.survey && trp.msgTrip && trp.msgTrip.length === 0" style="background-color: orange;width: 20%">-</td>
+            <td *ngIf="!trp.survey && trp.msgTrip && trp.msgTrip.length === 0" style="background-color: #ffffff;" >-</td>
+            <td style="background-color: #ffffff;" *ngIf="!trp.survey">
+              <mat-form-field appearance="fill" style="display: block; width: 100%">
+                <mat-label>Affecter une action</mat-label>
+                <mat-select   (selectionChange)="affectActionToConflictTrip($event.value, trp )">
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let action of actions" [value]="action" >
+                    {{action}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td *ngIf="!!trp.survey">
+              <p>Enquête en cours ..</p>
+            </td>
           </tr>
           </tbody>
         </table>

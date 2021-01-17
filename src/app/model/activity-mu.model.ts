@@ -28,6 +28,7 @@ export interface IActivityMu {
   ref?: string;
   entrepot?: Entrepot;
   listColisException?: string[];
+  listSurvey?: string[];
 }
 
 export class ActivityMu implements IActivityMu {
@@ -52,8 +53,9 @@ export class ActivityMu implements IActivityMu {
     public listColisNonTreated?: string[],
     public ref?: string,
     public entrepot?: Entrepot,
-    public listColisException?: string[]
-  ) {
+    public listColisException?: string[],
+    public listSurvey?: string[]
+) {
     this.deleted = this.deleted || false;
   }
 }

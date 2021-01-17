@@ -3,6 +3,7 @@ import {ColisFailureRunsheet} from './colis-failure-runsheet.model';
 import {ColisSuccessRunsheet} from './colis-success-runsheet.model';
 import {DepenseActivity} from './depense-activity.model';
 import {Entrepot} from './entrepot.model';
+import {Trip} from '../layout/trips/Trip';
 
 
 export interface IActivityPayement {
@@ -28,7 +29,7 @@ export interface IActivityPayement {
   entrepot?: Entrepot;
   userName?: string;
   clientName?: string;
-  listRapportTrips?: string[];
+  listRapportTrips?: Trip[];
   listPayedTrips?: string[];
   listEnCoursDePayementTrips?: string[];
 }
@@ -57,7 +58,7 @@ export class ActivityPayement implements IActivityPayement {
     public entrepot?: Entrepot,
     public userName?: string,
     public clientName?: string,
-    public listRapportTrips?: string[],
+    public listRapportTrips?: Trip[],
     public listPayedTrips?: string[],
     public listEnCoursDePayementTrips?: string[]
 

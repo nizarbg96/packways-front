@@ -187,4 +187,12 @@ export class RamassageInProgressComponent implements OnInit {
       this.filtredInProgressPickUps = this.inProgressPickUps.slice().filter((item) => item.pickUpObject.ref.includes(filterValueUpper));
     }
   }
+
+  inNonTreatedList(trp: Trip) {
+    if (trp.statusTrip === 'Chez Livreur'){
+      return false;
+    } else {
+      return true;
+    }
+  }
 }

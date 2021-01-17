@@ -45,6 +45,10 @@ export class InventaireComponent implements OnInit {
     this.spinner = true;
     this.inventaireService.query().subscribe((resInventaire) => {
       this.inventaires = resInventaire.body.filter((inventaire) => ((inventaire.deleted === false) && (inventaire.status === 'draft' || inventaire.status === 'confirmed')));
+      if(this.user.role !== 'superAdmin'){
+        this.inventaires = this.inventaires.filter((inventaire) => inventaire.entrepot.id === this.user.entrepot.id ||
+          inventaire.createdBy === this.user.idAdmin);
+      }
       this.spinner = false;
     });
   }

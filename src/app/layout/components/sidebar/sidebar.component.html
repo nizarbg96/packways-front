@@ -9,25 +9,31 @@
             <span>{{ 'Gestion des colis' | translate }}</span>
         </a>
         <a *ngIf="isVisible"  href="#runsheetSubmenu"  class="list-group-item dropdown-toggle" data-toggle="collapse" aria-expanded="false">
-            <i class="fa fa-files-o"></i>&nbsp; Runsheet</a>
+            <i class="fa fa-files-o"></i>&nbsp; Runsheets</a>
       <ul class="collapse list-unstyled" id="runsheetSubmenu">
         <li>
           <a *ngIf="isVisible" [routerLink]="['/runsheet']" [routerLinkActive]="['router-link-active']"  class="list-group-item">
-            <i class="fa fa-circle-o ml-3"></i>Runsheets</a>
+            <i class="fa fa-circle-o ml-3"></i>Créer Runsheet</a>
         </li>
         <li>
           <a *ngIf="isVisible" [routerLink]="['/runsheet-in-progress']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-circle-o ml-3"></i>Runsheets en cours
           </a>
         </li>
+        <li>
+          <a *ngIf="isVisible" style="white-space: pre-line;" [routerLink]="['/reconcile-runsheet']" [routerLinkActive]="['router-link-active']" class="list-group-item ml-3">
+            <i class="fa fa-circle-o"></i>&nbsp;
+            <span style="white-space: pre-line;">Réconcilier Runsheet</span>
+          </a>
+        </li>
       </ul>
       <a *ngIf="isVisible"  href="#muSubmenu"  class="list-group-item dropdown-toggle" data-toggle="collapse" aria-expanded="false">
-        <i class="fa fa-th-large"></i>&nbsp; Moveable Unit</a>
+        <i class="fa fa-th-large"></i>&nbsp; Moveable Units</a>
       <ul class="collapse list-unstyled" id="muSubmenu">
         <li>
           <a *ngIf="isVisible"  [routerLink]="['/mu']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-circle-o ml-3"></i>&nbsp;
-            <span >Moveable Units </span>
+            <span >Créer Moveable Unit </span>
           </a>
         </li>
         <li>
@@ -36,24 +42,36 @@
             <span style="white-space: pre-line;">Moveable Units en cours </span>
           </a>
         </li>
+        <li>
+          <a *ngIf="isVisible" style="white-space: pre-line;" [routerLink]="['/reconcile-mu']" [routerLinkActive]="['router-link-active']" class="list-group-item ml-3">
+            <i class="fa fa-circle-o"></i>&nbsp;
+            <span style="white-space: pre-line;">Réconcilier Moveable Unit</span>
+          </a>
+        </li>
       </ul>
       <a *ngIf="isVisible"  href="#puSubmenu"  class="list-group-item dropdown-toggle" data-toggle="collapse" aria-expanded="false">
-        <i class="fa fa-truck"></i>&nbsp; Pick Up</a>
+        <i class="fa fa-truck"></i>&nbsp; Pick Ups</a>
       <ul class="collapse list-unstyled" id="puSubmenu">
         <li>
           <a *ngIf="isVisible" [routerLink]="['/ramassage']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-circle-o ml-3"></i>&nbsp;
-            <span>Pick Up</span>
+            <span>Créer Pick Up</span>
           </a>
         </li>
         <li>
           <a *ngIf="isVisible" style="white-space: pre-line;" [routerLink]="['/ramassage-in-progress']" [routerLinkActive]="['router-link-active']" class="list-group-item ml-3">
             <i class="fa fa-circle-o"></i>&nbsp;
-            <span >Pick Up en cours</span>
+            <span >Pick Ups en cours</span>
+          </a>
+        </li>
+        <li>
+          <a *ngIf="isVisible" style="white-space: pre-line;" [routerLink]="['/reconcile-pickUp']" [routerLinkActive]="['router-link-active']" class="list-group-item ml-3">
+            <i class="fa fa-circle-o"></i>&nbsp;
+            <span style="white-space: pre-line;">Réconcilier Pick Up</span>
           </a>
         </li>
       </ul>
-      <a *ngIf="isVisible"  href="#reoncileSubmenu"  class="list-group-item dropdown-toggle" data-toggle="collapse" aria-expanded="false">
+      <!--<a *ngIf="isVisible"  href="#reoncileSubmenu"  class="list-group-item dropdown-toggle" data-toggle="collapse" aria-expanded="false">
         <i class="fa fa-check-circle"></i>&nbsp; Reconcilier Activité</a>
       <ul class="collapse list-unstyled" id="reoncileSubmenu">
         <li>
@@ -74,24 +92,24 @@
             <span style="white-space: pre-line;">Pick Up</span>
           </a>
         </li>
-      </ul>
-      <a *ngIf="isVisible" [routerLink]="['/close-activity-runsheet']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-        <i class="fa fa-money"></i>&nbsp;
-        <span>Clôturer Activité</span>
-      </a>
-      <a *ngIf="isVisible" [routerLink]="['/payements']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-        <i class="fa fa-credit-card"></i>&nbsp;
-        <span>Payements</span>
-      </a>
+      </ul>-->
       <a *ngIf="isVisible" [routerLink]="['/inventaire']" [routerLinkActive]="['router-link-active']" class="list-group-item">
         <i class="fa fa-search"></i>&nbsp;
         <span>Inventaire</span>
+      </a>
+      <a *ngIf="isVisible" [routerLink]="['/close-activity-runsheet']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-money"></i>&nbsp;
+        <span>Récolter Activité</span>
+      </a>
+      <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/payements']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-credit-card"></i>&nbsp;
+        <span>Payements</span>
       </a>
         <!-- <a [routerLink]="['/adresses']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-address-card"></i>&nbsp;
             <span>{{ 'Adresses' | translate }}</span>
         </a> -->
-        <a *ngIf="isVisible" [routerLink]="['/users']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/users']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-users"></i>&nbsp;
             <span>{{ 'Clients' | translate }}</span>
         </a>
@@ -99,7 +117,7 @@
             <i class="fa fa-address-card"></i>&nbsp;
             <span>Adresses</span>
         </a>
-        <a *ngIf="isVisible" [routerLink]="['/drivers']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/drivers']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-car"></i>&nbsp;
             <span>{{ 'Drivers' | translate }}</span>
         </a>
@@ -107,19 +125,19 @@
             <i class="fa fa-exchange"></i>&nbsp;
             <span>PickUp</span>
         </a>
-        <a *ngIf="isVisible" [routerLink]="['/entrepot']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/entrepot']" [routerLinkActive]="['router-link-active']" class="list-group-item">
           <i class="fa fa-building"></i>&nbsp;
           <span>Entrepot</span>
         </a>
-        <a *ngIf="isVisible" [routerLink]="['/conflicts']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/conflicts']" [routerLinkActive]="['router-link-active']" class="list-group-item">
           <i class="fa fa-building"></i>&nbsp;
           <span>Colis de conflits</span>
         </a>
-        <a *ngIf="!isVisible" [routerLink]="['/profile']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <a *ngIf="!isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/profile']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-fw fa-user"></i>&nbsp;
             <span>Profil</span>
         </a>
-        <a *ngIf="isVisible" [routerLink]="['/courbeille']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/courbeille']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-trash"></i>&nbsp;
             <span>Corbeille</span>
         </a>
@@ -131,7 +149,7 @@
             <i class="fa fa-tachometer"></i>&nbsp;
             <span>Compteurs </span>
         </a>
-        <a *ngIf="isVisible" [routerLink]="['/rapport']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/rapport']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-files-o"></i>&nbsp;
             <span>Rapports </span>
         </a>

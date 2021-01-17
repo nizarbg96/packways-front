@@ -92,6 +92,9 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
   inputCusMessageToClient: any;
   @ViewChild('contentMsg') contentMsgAction: TemplateRef<any>;
   scannedTrip: Trip = null;
+  listConflit: Conflit[] = [];
+  actions = ['lost', 'non expédié', 'damaged'];
+
 
 
   constructor(private activityRunsheetService: ActivityRunsheetService, private _formBuilder: FormBuilder, private tripService: TripService,
@@ -264,6 +267,22 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
           }
         }
         if (verif === false) {
+          if (!!obj.entrepot) {
+            if (obj.entrepot.id !== this.activityRunsheet.entrepot.id) {
+              const msg = 'impossible de scanner le colis! colis n\'appartient pas à ce Hub';
+              this.snackBar.open(msg, 'Fermer', {duration: 8000,});
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet: - Liste des colis (non Livrés / non Retournés):' + this.activityRunsheet.ref,
+                'Exception : ' + msg));
+              this.tripService.updateOneTrip(obj).subscribe();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet - Liste des colis (non Livrés / non Retournés):', this.activityRunsheet.ref);
+                this.conflitService.create(conflit).subscribe();
+              });
+              return;
+            }
+          }
           if ((obj.currentRunsheetId !== null) && (obj.currentRunsheetId !== 'null') && (obj.currentRunsheetId !== undefined)) {
             if (obj.driverTrip.idDriver !== ('DT' + this.activityRunsheet.driver.idDriver)) {
               const msg = 'le colis n\'appartient pas au livreur. Livreur de colis scanné: ' + obj.driverTrip.nameDriver + ' ' + obj.driverTrip.surnameDriver;
@@ -283,7 +302,15 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
             }
 
             if (obj.statusTrip === 'Retour' || obj.statusTrip === 'livraison en cours' || obj.statusTrip === 'En cours de retour') {
+              const currentDate = new Date();
+              currentDate.setHours(0);
+              currentDate.setMinutes(0);
+              currentDate.setSeconds(0);
               if (obj.msgTrip.length === 0) {
+                this.scannedTrip = obj;
+                this.openSms(obj);
+                return;
+              }  else if(obj.msgTrip[obj.msgTrip.length - 1].dateMsg < currentDate){
                 this.scannedTrip = obj;
                 this.openSms(obj);
                 return;
@@ -494,6 +521,22 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
           }
         }
         if (verif === false) {
+          if (!!obj.entrepot) {
+            if (obj.entrepot.id !== this.activityRunsheet.entrepot.id) {
+              const msg = 'impossible de scanner le colis! colis n\'appartient pas à ce Hub';
+              this.snackBar.open(msg, 'Fermer', {duration: 8000,});
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet - Liste des colis (Livrés / Retournés): ' + this.activityRunsheet.ref,
+                'Exception : ' + msg));
+              this.tripService.updateOneTrip(obj).subscribe();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet - Liste des colis (Livrés / Retournés):', this.activityRunsheet.ref);
+                this.conflitService.create(conflit).subscribe();
+              });
+              return;
+            }
+          }
           if ((obj.currentRunsheetId !== null) && (obj.currentRunsheetId !== 'null') && (obj.currentRunsheetId !== undefined)) {
             if (obj.driverTrip.idDriver !== 'DT' + this.activityRunsheet.driver.idDriver) {
               const msg = 'le colis n\'appartient pas au livreur. Livreur de colis scanné: ' +
@@ -863,16 +906,24 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
   conirmeActivite(name: string) {
     this.modalService.open(MODALS[name]).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
+      const listConflitTripsIds = this.listConflit.map((conflit) => conflit.colisId);
       const listLivraisonEnCoursIds = this.ListScanFailure.filter((trp) => trp.statusTrip === 'livraison en cours').map((trp) => trp.idTrip);
       const listToUpdateChezLivreur = this.ListScanPickUp.map((trp) => trp.idTrip).concat(listLivraisonEnCoursIds);
       const listChercheUnLivreur = this.ListScanPickUp.map((trp) => trp.idTrip);
       const listEnCoursDeRetourIds = this.ListScanFailure.filter((trp) => trp.statusTrip === 'En cours de retour').map((trp) => trp.idTrip);
       const listSuccessTripsIds = this.ListScanSuccess.map((trp) => trp.idTrip);
       const listSuccessTripsRetourneeIds = this.ListScanSuccess.filter((trp) => trp.statusTrip === 'Retournee').map((trp) => trp.idTrip);
-      const listTreatedTripsIds = this.ListScanSuccess.map((trp) => trp.idTrip)
-        .concat(this.ListScanFailure.map((trp) => trp.idTrip));
+      const listTreatedTripsIds = this.ListScanSuccess.map((trp) => trp.idTrip).concat(this.ListScanFailure.map((trp) => trp.idTrip));
       const runsheetsToUpdate = this.activityRunsheet.listRunsheets;
       const newRunsheets: Runsheet[] = [];
+      this.tripService.getListOfTips(listConflitTripsIds).subscribe((resTripsConflit) =>{
+        const surveyTrips: Trip[] =  [];
+        resTripsConflit.body.forEach((trip) => {
+          trip.survey = true;
+          surveyTrips.push(trip);
+        });
+        this.tripService.updateListOfTips(surveyTrips).subscribe();
+      });
       runsheetsToUpdate.forEach((runsheet) => {
         const runsheetToPush = runsheet;
         runsheetToPush.listColis = runsheet.listColis.map((colis) => {
@@ -880,7 +931,12 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
             colis.treated = true;
             return colis;
           } else {
-            return colis;
+            if (listConflitTripsIds.indexOf(colis.idTrip) >= 0 && colis.removed === false) {
+              colis.survey = true;
+              return colis;
+            } else {
+              return colis;
+            }
           }
         });
         newRunsheets.push(runsheetToPush);
@@ -897,9 +953,9 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       this.runsheetService.updateList(newRunsheets).subscribe((res) => {
         this.activityRunsheet.listRunsheets = res.body;
         this.activityRunsheet.status = 'confirmed';
-        this.activityRunsheet.confirmedBy = this.user.name;
+        this.activityRunsheet.confirmedBy = this.user.idAdmin;
+        this.activityRunsheet.confirmedByName = this.user.name;
         this.activityRunsheet.confirmedDate = new Date();
-        this.activityRunsheetService.update(this.activityRunsheet).subscribe(() => {
           this.tripService.updateTripsWhenDeleteRunsheet(listTreatedTripsIds).subscribe(() => {
             this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
               this.tripService.getListOfTips(listChercheUnLivreur).subscribe((resTrips) => {
@@ -914,17 +970,22 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
                       this.tripService.updateTripsPreRecolte(listSuccessTripsIds, this.user.idAdmin).subscribe(() => {
                         if (listSuccessTripsRetourneeIds.length > 0){
                           this.tripService.updateTripsStatus('Retournee', listSuccessTripsRetourneeIds, this.user.name, '').subscribe(() => {
-                            this.tripService.updateTripsRecolted(listSuccessTripsRetourneeIds, this.user.idAdmin).subscribe(() => {
+                              this.activityRunsheetService.update(this.activityRunsheet).subscribe(() => {
+                                this.conflitService.createList(this.listConflit).subscribe(() => {
+                                  this.openCheckSuccess('activityConfirmed');
+                                });
+                              });
+                          });
+                        }else {
+                          this.activityRunsheetService.update(this.activityRunsheet).subscribe(() => {
+                            this.conflitService.createList(this.listConflit).subscribe(() => {
                               this.openCheckSuccess('activityConfirmed');
                             });
                           });
-                        }else {
-                          this.openCheckSuccess('activityConfirmed');
                         }
                       });
                     });
                   });
-                });
               });
             });
           });
@@ -1001,6 +1062,9 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
         dateMsg: date
       }]
     };
+    obj.msgTrip = msgdata.msgTrip;
+    this.ListScanFailure.push(obj);
+    this.playSuccessAudio();
     const jwt = JSON.parse(localStorage.getItem('currentUser')).token;
     const headerOptions = new Headers({
       'Content-Type': 'application/json',
@@ -1014,26 +1078,41 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       this.snackBar.open('Message envoyé avec succès.', 'Fermer', {
         duration: 5000,
       });
-      obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
-        'Success'));
-      this.tripService.getTripscanListById(obj.idTrip).subscribe((res) => {
-        obj = res.body;
-        this.tripService.updateOneTrip(obj).subscribe();
-        this.ListScanFailure.push(obj);
-        this.playSuccessAudio();
-        const index = this.listColisNonTreated.indexOf(obj);
-        this.listColisNonTreated = this.listColisNonTreated.filter((trip) => trip.idTrip !== obj.idTrip);
-        this.activityRunsheet.listColisNonTreated = this.listColisNonTreated.map((trip) => trip.idTrip);
-        this.activityRunsheet.listColisFailure.push(new ColisFailureRunsheet(obj.idTrip, this.user.idAdmin, new Date(), false));
-        this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
-          this.activityRunsheet = res.body;
+      this.tripService.getTripscanListById(obj.idTrip).subscribe((resTrip) => {
+        obj = resTrip.body;
+        obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
+          'Success'));
+        this.tripService.getTripscanListById(obj.idTrip).subscribe((res) => {
+          obj = res.body;
+          this.tripService.updateOneTrip(obj).subscribe();
+          const index = this.listColisNonTreated.indexOf(obj);
+          this.listColisNonTreated = this.listColisNonTreated.filter((trip) => trip.idTrip !== obj.idTrip);
+          this.activityRunsheet.listColisNonTreated = this.listColisNonTreated.map((trip) => trip.idTrip);
+          this.activityRunsheet.listColisFailure.push(new ColisFailureRunsheet(obj.idTrip, this.user.idAdmin, new Date(), false));
+          this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
+            this.activityRunsheet = res.body;
+          });
         });
       });
+
     }, error => {
       console.log(error); // Error getting the data
     });
   }
 
+  affectActionToConflictTrip(value: any, trp: Trip) {
+    if (value === null || value === undefined) {
+      this.listConflit = this.listConflit.filter((conflit) => conflit.colisId !== trp.idTrip);
+    } else if (value === 'lost') {
+      this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityRunsheet.entrepot, value, 'Reconcile Activity Runsheet', this.activityRunsheet.ref, false, null, null);
+      this.listConflit.push(conflit);
+    } else if (value === 'damaged') {
+      this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityRunsheet.entrepot, value, 'Reconcile Activity Runsheet', this.activityRunsheet.ref, false, null, null);
+      this.listConflit.push(conflit);
+    }
+  }
 }
 
 @Component({

@@ -52,9 +52,6 @@
             <button type="button" style="z-index: 10;" class="mat-mini-fab ml-2 mt-2" title="Supprimer" (click)="deleteRunsheet(runsheet)">
               <i class="material-icons"  > delete </i>
             </button>
-            <button *ngIf="runsheet.status === 'confirmed'" style="z-index: 10;" type="button" class="mat-mini-fab ml-2 mt-2" title="Imprimer" (click)="printRunsheet()">
-              <i class="material-icons" > print </i>
-            </button>
             <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
           </div>
           <div class="col-md-1">

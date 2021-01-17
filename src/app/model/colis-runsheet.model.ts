@@ -8,6 +8,7 @@ export interface IColisRunsheet {
   removedBy?: string;
   removedDate?: Date;
   treated?: boolean;
+  survey?: boolean;
 }
 
 export class ColisRunsheet implements IColisRunsheet {
@@ -19,8 +20,11 @@ export class ColisRunsheet implements IColisRunsheet {
      public removed?: boolean,
      public removedBy?: string,
      public removedDate?: Date,
-     ) {
+     public survey?: boolean
+) {
     this.treated = this.treated || false;
     this.removed = this.removed || false;
+    this.survey = this.survey || false;
+
   }
 }

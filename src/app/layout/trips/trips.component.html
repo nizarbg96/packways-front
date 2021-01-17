@@ -52,16 +52,20 @@
                                                         <div align="right" class="col-xl-1 text-xs-center">
                                                             <button type="button" class="btn btn-warning btn-sm" title="Ajouter un nouveau clois." (click)="openAddModal(content3)"><i class="fa fa-plus"></i></button>
                                                         </div>
-                                                        <div *ngIf="isVisible" align="right" class="col-xl-1 text-xs-center">
+                                                        <!--<div *ngIf="isVisible" align="right" class="col-xl-1 text-xs-center">
                                                                 <button type="button" class="btn btn-warning btn-sm" title="Action d'envoi sms." (click)="open(contentMsgAction)"><i class="material-icons">
                                                                         sms</i>
                                                                 </button>
-                                                        </div>
+                                                        </div>-->
                                                       <div *ngIf="isVisible" align="right" class="col-xl-1 text-xs-center">
                                                         <button type="button" class="btn btn-warning btn-sm" title="Action d'envoi sms." (click)="testFunction()">TEST
                                                         </button>
                                                       </div>
-                                                        <div class="col-xl-1 text-xs-center" *ngIf="isVisible">
+                                                      <div *ngIf="isVisible" align="right" class="col-xl-1 text-xs-center">
+                                                        <button type="button" class="btn btn-warning btn-sm" title="Action d'envoi sms." (click)="test2Function()">TEST Livraison
+                                                        </button>
+                                                      </div>
+                                                        <!--<div class="col-xl-1 text-xs-center" *ngIf="isVisible">
                                                                         <div class="dropdown">
                                                                                         <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" title="Actions Financière">
                                                                                         <span class="caret"></span><i class="material-icons"> local_atm </i> </button>
@@ -73,8 +77,8 @@
                                                                                         </ul>
 
                                                                         </div>
-                                                        </div>
-                                                        <div class="col-xl-1 text-xs-center" *ngIf="isVisible">
+                                                        </div>-->
+                                                        <!--<div class="col-xl-1 text-xs-center" *ngIf="isVisible">
                                                                         <div class="dropdown">
                                                                                 <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" title="Actions de l'etat">
                                                                                 <span class="caret"></span><i class="material-icons"> offline_pin </i> </button>
@@ -91,9 +95,9 @@
                                                                                                 <li (click)="getvalueEtat('PresRecolte',contentupdatePresRecolte)">PrésRécolté</li>
                                                                                         </ul>
                                                                         </div>
-                                                        </div>
-                                                        <div class="col-xl-2 text-xs-center" *ngIf="isVisible">
-                                                                        <!--  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" title="Actions Financière">
+                                                        </div>-->
+                                                        <!--<div class="col-xl-2 text-xs-center" *ngIf="isVisible">
+                                                                        &lt;!&ndash;  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" title="Actions Financière">
                                                                                           <span class="caret"></span><i class="material-icons"> local_atm </i></button>
                                                                           <select class="form-control" id="actionA" [(ngModel)]="actionA" name="actionA" (change)="affectDriver(contentupdatedriverAFF)" title="Action d'affectation">
                                                                                   <ng-container *ngFor="let driver of Listdriver" class="form-control">
@@ -101,13 +105,13 @@
                                                                                                   {{driver.nameDriver}}  {{driver.surnameDriver}}
                                                                                           </option>
                                                                                   </ng-container>
-                                                                          </select>  -->
+                                                                          </select>  &ndash;&gt;
                                                                         <ng2-completer [inputClass]="'form-control form-control-inline'" [datasource]="Listdriverauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
                                                                                 [textNoResults]="'Pas trouvé.'" [placeholder]="'Entrer le livreur'" id="actionA" name="actionA" [(ngModel)]="actionA2"
                                                                                 (selected)="getSelectedDriver($event);affectDriver(contentupdatedriverAFF)">
                                                                         </ng2-completer>
 
-                                                        </div>
+                                                        </div>-->
                                                 </div>
                                                         <div class="row" *ngIf="!isVisible" hidden>
                                                                 <div align="right" class="col-xl-12 text-xs-center" align="right">
@@ -342,33 +346,33 @@
                                                 <td>{{ trip.packageTrip.valPackage }}</td>
                                                 <td>{{ showFinancialStatus(trip) }}</td>
                                                 <td>
-                                                        <button type="button" class="mat-mini-fab" title="Modifier" > <!-- (click)="open(content)" -->
+                                                       <!-- <button type="button" class="mat-mini-fab" title="Modifier" > &lt;!&ndash; (click)="open(content)" &ndash;&gt;
                                                                 <i class="material-icons" (click)="editTrip(content, trip)"> create </i>
-                                                        </button>
-                                                        <button type="button" class="mat-mini-fab" title="Dupliquer" (click)="open(content1)" hidden>
+                                                        </button>-->
+                                                        <!--<button type="button" class="mat-mini-fab" title="Dupliquer" (click)="open(content1)" hidden>
                                                                 <i class="material-icons"> file_copy </i>
-                                                        </button>
-                                                        <button type="button" class="mat-mini-fab" title="Supprimer">
+                                                        </button>-->
+                                                        <!--<button type="button" class="mat-mini-fab" title="Supprimer">
                                                                 <i class="material-icons" (click)="openBlModal2(contentdeleteTrip,trip)" > delete </i>
-                                                        </button>
+                                                        </button>-->
                                                         <button type="button" class="mat-mini-fab" title="Détails">
                                                                 <i class="material-icons" (click)="infoTrip(content2, trip)"> open_in_new </i>
                                                         </button>
                                                         <button type="button" class="mat-mini-fab" title="Envoyer le bon de livraison">
                                                                 <i class="material-icons" (click)="openBlModal(content7, trip)"> call_made </i>
                                                         </button>
-                                                        <button *ngIf="isVisible" type="button" class="mat-mini-fab" title="Envoyer un message" (click)="openMsgModal(contentMsg, trip)">
+                                                        <!--<button *ngIf="isVisible" type="button" class="mat-mini-fab" title="Envoyer un message" (click)="openMsgModal(contentMsg, trip)">
                                                                 <i class="material-icons"> present_to_all </i>
-                                                        </button>
-                                                        <button type="button" class="mat-mini-fab" title="Ajuster la position de déstinataire" (click)="openLinkPos(trip.idTrip)">
+                                                        </button>-->
+                                                        <!--<button type="button" class="mat-mini-fab" title="Ajuster la position de déstinataire" (click)="openLinkPos(trip.idTrip)">
                                                                 <i class="material-icons"> my_location </i>
-                                                        </button>
+                                                        </button>-->
                                                         <button type="button" class="mat-mini-fab" title="Générer le bon de livraison" (click)="selectOne(trip);BLFromServer(contentBLTelechargement)">
                                                                 <i class="material-icons"> file_download </i>
                                                         </button>
-                                                        <button *ngIf="isVisible" type="button" class="mat-mini-fab" title="argentRecolte" (click)="openBlModal2(contentupdateargentR, trip)">
+                                                        <!--<button *ngIf="isVisible" type="button" class="mat-mini-fab" title="argentRecolte" (click)="openBlModal2(contentupdateargentR, trip)">
                                                                 <i class="material-icons"> local_atm </i>
-                                                        </button>
+                                                        </button>-->
                                                         <button *ngIf="isVisible" type="button" class="mat-mini-fab" title="Historique">
                                                                 <i class="material-icons" (click)="infoTrip(contentHostorique, trip)"> list </i>
                                                         </button>
@@ -1015,38 +1019,41 @@
                         </div>
                 </div>
         </div>
-  <div class="row">
-    <div class="col-md-12">
-      <fieldset class="scheduler-border">
-        <legend class="scheduler-border"><h6>Historique des Runsheets</h6></legend>
-        <div class="control-group">
-          <ul *ngFor="let runsheet of runsheetPrintHistory">
-            <li>Runsheet Ref : {{runsheet.runsheetRef}}
-              <ul>
-                <li> Ajouté par : {{runsheet.runsheetHistory.addedBy}}</li>
-                <li> Date d'ajout : {{runsheet.runsheetHistory.addedDate | date}}</li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </fieldset>
+  <div class="container" *ngIf ="isVisible">
+    <div class="row">
+      <div class="col-md-12">
+        <fieldset class="scheduler-border">
+          <legend class="scheduler-border"><h6>Historique des Runsheets</h6></legend>
+          <div class="control-group">
+            <ul *ngFor="let runsheet of runsheetPrintHistory">
+              <li>Runsheet Ref : {{runsheet.runsheetRef}}
+                <ul>
+                  <li> Ajouté par : {{runsheet.runsheetHistory.addedBy}}</li>
+                  <li> Date d'ajout : {{runsheet.runsheetHistory.addedDate | date}}</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </fieldset>
+      </div>
+      <div class="col-md-12">
+        <fieldset class="scheduler-border">
+          <legend class="scheduler-border"><h6>Historique des scans</h6></legend>
+          <div class="control-group">
+            <ul *ngFor="let historique of historiqueScan">
+              <li>Contexte de Scan : {{historique.scanScope}}
+                <ul>
+                  <li>Scanné par : {{historique.scannedBy}}</li>
+                  <li>Date de scan : {{historique.scannedDate}}</li>
+                  <li>Message de scan : {{historique.scanMsg}}</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </fieldset>
+      </div>
     </div>
-    <div class="col-md-12">
-      <fieldset class="scheduler-border">
-        <legend class="scheduler-border"><h6>Historique des scans</h6></legend>
-        <div class="control-group">
-          <ul *ngFor="let historique of historiqueScan">
-            <li>Contexte de Scan : {{historique.scanScope}}
-              <ul>
-                <li>Scanné par : {{historique.scannedBy}}</li>
-                <li>Date de scan : {{historique.scannedDate}}</li>
-                <li>Message de scan : {{historique.scanMsg}}</li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </fieldset>
-    </div>
+
   </div>
 
 

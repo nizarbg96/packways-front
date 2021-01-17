@@ -96,6 +96,9 @@ export class TripService {
   getBS(id, data): Observable<any> {
     return this.http.post(`${this.url}/exportpdf/` + id, data, {headers: this.headerOptions});
   }
+  getMU(id, data,entrepotScr,entrepotDest,refMu): Observable<any> {
+    return this.http.post(`${this.url}/exportpdfMU/` + id+"/"+entrepotScr+"/"+entrepotDest+"/"+refMu, data, {headers: this.headerOptions});
+  }
 
   getBRetour(id, data): Observable<any> {
     return this.http.post(`${this.url}/exportpdfBretour/` + id, data, {headers: this.headerOptions});
@@ -154,7 +157,7 @@ export class TripService {
     return   this.http.post(this.url + '/updatepresrecolte' + '?name=' + idAdmin, trips , {headers: this.headerOptions});
   }
   updateTripsRecolted(trips: string[], idAdmin: string){
-    return this.http.post(this.url + '/updaterecolter' + '?idAdmin=' + idAdmin, trips , {headers: this.headerOptions});
+    return this.http.post(this.url + '/updaterecolter' + '?name=' + idAdmin, trips , {headers: this.headerOptions});
   }
   updateTripsDriver(idDriver: string, trips: string[], userName: string) {
     return this.http.post(this.url + '/updatedriver/' + idDriver + '?name=' + userName, trips , {headers: this.headerOptions});

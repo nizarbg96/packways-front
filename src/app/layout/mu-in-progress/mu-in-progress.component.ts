@@ -11,6 +11,8 @@ import {ColisRunsheet} from '../../model/colis-runsheet.model';
 import {InProgressRunsheet} from '../runsheet-in-progress/runsheet-in-progress.component';
 import {MoveableUnit} from '../../model/moveable-unit.model';
 import {MoveableUnitService} from '../moveable-unit/moveable-unit.service';
+import {environment} from '../../../environments/environment';
+import {RunsheetService} from '../runsheet/runsheet.service';
 
 export interface InProgressMoveableUnit {
   moveableUnitObject: MoveableUnit;
@@ -46,7 +48,7 @@ export class MuInProgressComponent implements OnInit {
 
 
   constructor(public dialog: MatDialog, private moveableUnitService: MoveableUnitService, private router: Router, private tripService: TripService,
-              private modalService: NgbModal) { }
+              private modalService: NgbModal, private runsheetService: RunsheetService) { }
 
   ngOnInit() {
     this.selectionList.selectedOptions = new SelectionModel<MatListOption>(false);
@@ -183,6 +185,33 @@ export class MuInProgressComponent implements OnInit {
     else {
       this.filtredInProgressMoveableUnits = this.inProgressMoveableUnits.slice().filter((item) => item.moveableUnitObject.ref.includes(filterValueUpper));
     }
+  }
+
+  inNonTreatedList(trp: Trip) {
+    if(trp.statusTrip === 'transit livraison' || trp.statusTrip === 'transit retour'){
+      return true;
+    } else {
+      return false;
+    }
+  }
+  BSFromServer(mu: MoveableUnit) {
+    const listIdTrips = mu.listColis.filter(colis => (colis.removed === false)).map((colis => colis.idTrip ));
+    this.tripService.getMU(mu.driver.idDriver, listIdTrips,mu.entrepotSrc.nom,mu.entrepotDest.nom,mu.ref).subscribe(data => {
+      const path = data['_body'];
+      this.downloadBS(path);
+    });
+  }
+  downloadBS(path: string) {
+    const index: number = path.indexOf('MU') - 1;
+    path = path.substring(index);
+    this.runsheetService.downloadPDF(environment.serverUrl + '/trip/downloadMU/' + path).subscribe(res => {
+      const fileURL = URL.createObjectURL(res);
+      window.open( fileURL, '_blank');
+    });
+  }
+
+  imprimerMu(selectedMu: MoveableUnit) {
+    this.BSFromServer(selectedMu);
   }
 }
 

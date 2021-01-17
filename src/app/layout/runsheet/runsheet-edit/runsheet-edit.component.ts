@@ -131,6 +131,22 @@ export class RunsheetEditComponent implements OnInit, OnDestroy {
           }
         }
         if (verif === false) {
+          if (!!obj.entrepot) {
+            if (obj.entrepot.id !== this.runsheet.entrepot.id) {
+              const msg = 'impossible de scanner le colis! colis n\'appartient pas à ce Hub';
+              this.snackBar.open(msg, 'Fermer', {duration: 8000,});
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  runsheet: ' + this.runsheet.ref,
+                'Exception : ' + msg));
+              this.tservice.updateOneTrip(obj).subscribe();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'runsheet creation', this.runsheet.ref);
+                this.conflitService.create(conflit).subscribe();
+              });
+              return;
+            }
+          }
           if ((obj.currentRunsheetId !== null) && (obj.currentRunsheetId !== 'null') && (obj.currentRunsheetId !== undefined) ) {
             this.runsheetService.find(obj.currentRunsheetId).subscribe((res) => {
               const msg = 'impossible de scanner le colis! ce colis existe dans la runsheet' +

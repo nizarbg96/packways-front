@@ -89,17 +89,28 @@
       </thead>
       <tbody style="font-size:14px !important;">
       <tr *ngFor="let trp of selectedInProgressTrips" class="table-active text-center" style="background-color: #ffffff;">
-        <td style="background-color: #ffffff;">{{trp.refTrip}}</td>
-        <td style="background-color: #ffffff;">{{trp.statusTrip }}</td>
-        <td style="background-color: #ffffff; width:15%;">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
-        <td style="background-color: #ffffff; width:15%;" >{{trp.destTrip.contactAdr }}</td>
-        <td  style="background-color: #ffffff;  width:50%;" *ngIf="trp.msgTrip && trp.msgTrip.length > 0">
+        <td *ngIf="!!trp.survey" style="background-color: orange">{{trp.refTrip}}</td>
+        <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey">{{trp.refTrip}}</td>
+        <td *ngIf="!!trp.survey" style="background-color: orange">{{trp.statusTrip }}</td>
+        <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey">{{trp.statusTrip }}</td>
+        <td *ngIf="!!trp.survey" style="background-color: orange">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
+        <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
+        <td *ngIf="!!trp.survey" style="background-color: orange" >{{trp.destTrip.contactAdr }}</td>
+        <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}"  *ngIf="!trp.survey">{{trp.destTrip.contactAdr }}</td>
+        <td  *ngIf="!!trp.survey && (trp.msgTrip && trp.msgTrip.length > 0)" style="background-color: orange" >
           <ul>
             <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
             <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg }}</li>
           </ul>
         </td>
-        <td style="background-color: #ffffff;" *ngIf="trp.msgTrip && trp.msgTrip.length === 0">-</td>
+        <td  [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey &&trp.msgTrip && trp.msgTrip.length > 0">
+          <ul>
+            <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
+            <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg }}</li>
+          </ul>
+        </td>
+        <td *ngIf="!!trp.survey && (trp.msgTrip && trp.msgTrip.length === 0)" style="background-color: orange">-</td>
+        <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey && trp.msgTrip && trp.msgTrip.length === 0">-</td>
 
       </tr>
       </tbody>

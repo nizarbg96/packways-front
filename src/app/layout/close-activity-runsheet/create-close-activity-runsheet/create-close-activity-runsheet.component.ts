@@ -877,10 +877,11 @@ export class CreateCloseActivityRunsheetComponent implements OnInit {
       this.closeResult = `Closed with: ${result}`;
       const listSuccessTripsIds = this.ListScanSuccess.map((trp) => trp.idTrip);
         this.activityRunsheet.status = 'closed';
-        this.activityRunsheet.closedBy = this.user.name;
-        this.activityRunsheet.closedDate = new Date();
+        this.activityRunsheet.closedBy = this.user.idAdmin;
+      this.activityRunsheet.closedByName = this.user.name;
+      this.activityRunsheet.closedDate = new Date();
         this.activityRunsheetService.update(this.activityRunsheet).subscribe(() => {
-          this.tripService.updateTripsPreRecolte(listSuccessTripsIds, this.user.idAdmin).subscribe(() => {
+          this.tripService.updateTripsRecolted(listSuccessTripsIds, this.user.idAdmin).subscribe(() => {
             this.openCheckSuccess('activityClosed');
           });
         });

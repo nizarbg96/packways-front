@@ -1,4 +1,4 @@
-import { IRunsheet } from './runsheet.model';
+import {IRunsheet} from './runsheet.model';
 import {ColisFailureRunsheet} from './colis-failure-runsheet.model';
 import {ColisSuccessRunsheet} from './colis-success-runsheet.model';
 import {DepenseActivity} from './depense-activity.model';
@@ -29,6 +29,10 @@ export interface IActivity {
   ref?: string;
   entrepot?: Entrepot;
   listColisException?: string[];
+  createdByName?: string;
+  confirmedByName?: string;
+  closedByName?: string;
+
 
 }
 
@@ -56,9 +60,11 @@ export class Activity implements IActivity {
     public listColisNonTreated?: string[],
     public ref?: string,
     public entrepot?: Entrepot,
-    public listColisException?: string[]
-
-) {
+    public listColisException?: string[],
+    public createdByName?: string,
+    public confirmedByName?: string,
+    public closedByName?: string
+  ) {
     this.deleted = this.deleted || false;
   }
 }

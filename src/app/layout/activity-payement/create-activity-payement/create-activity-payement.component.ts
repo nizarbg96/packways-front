@@ -186,7 +186,8 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
 
 
     createDraftActivity() {
-    const draftActivity: ActivityPayement = {
+      this.client = this.activityPayementInfo.client;
+      const draftActivity: ActivityPayement = {
       ...new ActivityPayement(),
       status: 'draft',
       createdDate: new Date(),
@@ -278,8 +279,8 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         this.recoltedTrips = res.body;
         this.filtredRecoltedTrips = this.recoltedTrips;
         this.tripService.getListOfTips(this.activityPayement.listColisToPay).subscribe((resTrips) => {
-          this.tripService.getListOfTips(this.activityPayement.listColisToPay).subscribe((resTripsRapport) => {
-            this.listRapportTrips = resTripsRapport.body;
+            this.listRapportTrips = this.activityPayement.listRapportTrips;
+            this.filtredRecoltedTrips = this.listRapportTrips;
             this.listColisToPay = resTrips.body;
             this.userService.getUserById(activityToEdit.clientId).subscribe((resUser) => {
               const client = resUser.json();
@@ -289,7 +290,6 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
               this.activityPayementInfo = {recoltedTrips: this.listColisToPay, client: client};
               this.spinner = false;
             });
-          });
         });
       });
     } else if (activityToEdit.status === 'closed'){
@@ -297,9 +297,9 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         this.recoltedTrips = res.body;
         this.filtredRecoltedTrips = this.recoltedTrips;
         this.tripService.getListOfTips(this.activityPayement.listColisToPay).subscribe((resTrips) => {
-          this.tripService.getListOfTips(this.activityPayement.listColisToPay).subscribe((resTripsRapport) => {
-            this.listRapportTrips = resTripsRapport.body;
-            this.listColisToPay = resTrips.body;
+            this.listRapportTrips = this.activityPayement.listRapportTrips;
+          this.filtredRecoltedTrips = this.listRapportTrips;
+          this.listColisToPay = resTrips.body;
             this.userService.getUserById(activityToEdit.clientId).subscribe((resUser) => {
               const client = resUser.json();
               this.amountToPay = this.activityPayement.amountToPay;
@@ -310,7 +310,6 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
             });
           });
         });
-      });
     }
 
   }
@@ -328,7 +327,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         this.activityPayement.amountToPay = this.amountToPay;
         this.activityPayement.status = 'confirmed';
         this.activityPayement.listEnCoursDePayementTrips = this.listColisToPay.map((trip) => trip.idTrip);
-        this.activityPayement.listRapportTrips = this.listRapportTrips.map(trip => trip.idTrip);
+        this.activityPayement.listRapportTrips = this.listRapportTrips;
         this.activityPayementService.update(this.activityPayement).subscribe(() => {
           this.openCheckSuccess('activityConfirmed');
         });
@@ -346,6 +345,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
       this.closeResult = `Closed with: ${result}`;
       this.tripService.updatePayed(this.listColisToPay.map((trip) => trip.idTrip), this.user.idAdmin).subscribe(() => {
         this.activityPayement.listPayedTrips = this.listColisToPay.map((trip) => trip.idTrip);
+        this.activityPayement.listRapportTrips = this.listRapportTrips;
         this.activityPayement.status = 'closed';
         this.activityPayementService.update(this.activityPayement).subscribe(() => {
           this.openCheckSuccess('activityConfirmed');
@@ -409,18 +409,20 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
     this.shippingCosts = 0;
     this.amountToPay = 0;
     this.listColisToPay.forEach((trip) => {
-      this.totalAmount = this.totalAmount + parseFloat(trip.packageTrip.valPackage);
       if (trip.statusTrip === 'Livree') {
+        this.totalAmount = this.totalAmount + parseFloat(trip.packageTrip.valPackage);
         this.shippingCosts = this.shippingCosts + parseFloat(trip.costTrip);
         this.listRapportTrips.push(trip);
       } else if (trip.statusTrip === 'Retournee') {
         if (trip.isBilled) {
           this.shippingCosts = this.shippingCosts + parseFloat(trip.costTrip);
           trip.packageTrip.valPackage = 0;
+          this.totalAmount = this.totalAmount + parseFloat(trip.packageTrip.valPackage);
           this.listRapportTrips.push(trip);
         } else {
           this.shippingCosts = this.shippingCosts + this.returnedCost;
           trip.packageTrip.valPackage = 0;
+          this.totalAmount = this.totalAmount + parseFloat(trip.packageTrip.valPackage);
           trip.costTrip = this.returnedCost;
           this.listRapportTrips.push(trip);
         }
@@ -818,4 +820,4 @@ export class NgbdModalActivityPayementConfirmed implements OnInit {
 const MODALS: { [name: string]: Type<any> } = {
   confirmActivity: NgbdModalConfirmActivityPayement,
   activityConfirmed: NgbdModalActivityPayementConfirmed,
-};
+}

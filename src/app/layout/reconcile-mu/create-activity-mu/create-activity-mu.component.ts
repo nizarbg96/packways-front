@@ -79,6 +79,7 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
   private ListScanMoveableUnitNB: any;
   private muStepper = false;
   actions = ['lost', 'non expédié', 'damaged'];
+   listSurvey: Trip[] = [];
 
 
   constructor(private activityMoveableUnitService: ActivityMuService, private _formBuilder: FormBuilder, private tripService: TripService,
@@ -235,7 +236,7 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
               });
               this.playFailureAudio();
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity M.U: ' + this.activityMoveableUnit.ref,
-                'Exception : '+ msg));
+                'Exception : ' + msg));
               this.tripService.updateOneTrip(obj).subscribe();
               this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
                 const admin = resUser.json();
@@ -244,7 +245,23 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
               });
               return;
             }
-            if (obj.statusTrip === 'transit') {
+            if(!!obj.survey){
+              const msg = 'une enquête est en cours conçernant ce colis !';
+              this.snackBar.open(msg, 'Fermer', {
+                duration: 8000,
+              });
+              this.playFailureAudio();
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity M.U: ' + this.activityMoveableUnit.ref,
+                'Exception : ' + msg));
+              this.tripService.updateOneTrip(obj).subscribe();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity M.U',  this.activityMoveableUnit.ref);
+                this.conflitService.create(conflit).subscribe();
+              });
+              return;
+            }
+            if (obj.statusTrip === 'transit livraison' || 'transit retour') {
               this.playSuccessAudio();
               this.ListScanMoveableUnit.push(obj);
               const index = this.listColisNonTreated.indexOf(obj);
@@ -257,15 +274,14 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity M.U: ' + this.activityMoveableUnit.ref,
                 'Success'));
               this.tripService.updateOneTrip(obj).subscribe();
-            }
-            else {
+            } else {
               const msg = 'L\'état de colis doit être " transit " ! Etat de colis scanné : ' + obj.statusTrip;
               this.snackBar.open(msg, 'Fermer', {
                 duration: 8000,
               });
               this.playFailureAudio();
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity M.U: ' + this.activityMoveableUnit.ref,
-                'Exception : '+ msg));
+                'Exception : ' + msg));
               this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
                 const admin = resUser.json();
                 const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity M.U',  this.activityMoveableUnit.ref);
@@ -280,7 +296,7 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
             });
             this.playFailureAudio();
             obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity M.U: ' + this.activityMoveableUnit.ref,
-              'Exception : '+ msg));
+              'Exception : ' + msg));
             this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
               const admin = resUser.json();
               const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity M.U',  this.activityMoveableUnit.ref);
@@ -441,21 +457,35 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
 
 
   conirmeActivite(name: string) {
-    this.activityMoveableUnitService.activityMoveableUnitInfo = {driver: this.activityMoveableUnit.driver, moveableUnits : []}
+    this.activityMoveableUnitService.activityMoveableUnitInfo = {driver: this.activityMoveableUnit.driver, moveableUnits : []};
     this.modalService.open(MODALS[name]).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
       let listToUpdateChezLivreur = this.ListScanMoveableUnit.map((trp) => trp.idTrip);
       const listTreatedTripsIds = this.ListScanMoveableUnit.map((trp) => trp.idTrip);
+      const listConflitTripsIds = this.listConflit.map((conflit) => conflit.colisId);
+      this.tripService.getListOfTips(listConflitTripsIds).subscribe((resTripsConflit) =>{
+        const surveyTrips: Trip[] =  [];
+        resTripsConflit.body.forEach((trip) => {
+          trip.survey = true;
+          surveyTrips.push(trip);
+        });
+        this.tripService.updateListOfTips(surveyTrips).subscribe();
+      });
       const moveableUnitsToUpdate = this.activityMoveableUnit.listMoveableUnits;
       const newMoveableUnits: MoveableUnit[] = [];
       moveableUnitsToUpdate.forEach((moveableUnit) => {
         const MoveableUnitToPush = moveableUnit;
         MoveableUnitToPush.listColis = moveableUnit.listColis.map((colis) => {
-          if (listTreatedTripsIds.concat(this.listConflit.map((conflit) => conflit.colisId)).indexOf(colis.idTrip) >= 0 && colis.removed === false) {
+          if (listTreatedTripsIds.indexOf(colis.idTrip) >= 0 && colis.removed === false) {
             colis.treated = true;
             return colis;
           } else {
-            return colis;
+            if (listConflitTripsIds.indexOf(colis.idTrip) >= 0 && colis.removed === false) {
+              colis.survey = true;
+              return colis;
+            } else {
+              return colis;
+            }
           }
         });
         newMoveableUnits.push(MoveableUnitToPush);
@@ -475,7 +505,7 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
         this.activityMoveableUnit.confirmedBy = this.user.idAdmin;
         this.activityMoveableUnit.confirmedDate = new Date();
         this.activityMoveableUnitService.update(this.activityMoveableUnit).subscribe(() => {
-          this.tripService.updateTripsWhenDeleteMU(listTreatedTripsIds.concat(this.listConflit.map((conflit) => conflit.colisId))).subscribe(() => {
+          this.tripService.updateTripsWhenDeleteMU(listTreatedTripsIds).subscribe(() => {
             this.tripService.getListOfTips(listToUpdateChezLivreur).subscribe((resTrips) => {
               let trips = resTrips.body;
               trips = trips.map((trip) => {
@@ -484,10 +514,14 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
               });
               this.tripService.updateListOfTips(trips).subscribe((resUpdatedTrips) => {
                 listToUpdateChezLivreur = resUpdatedTrips.body.map((trip) => trip.idTrip);
-                this.tripService.updateTripsStatus('Chez Livreur', listToUpdateChezLivreur, this.user.name, 'EntrepotGafsa').subscribe(() => {
-                  this.conflitService.createList(this.listConflit).subscribe(() => {
-                    // make conflict trips treated
-                    this.openCheckSuccess('activityConfirmed');
+                const transitLivraison =  resUpdatedTrips.body.filter( trip => trip.statusTrip === 'transit livraison').map((trip) => trip.idTrip);
+                const transitRetour =  resUpdatedTrips.body.filter( trip => trip.statusTrip === 'transit retour').map((trip) => trip.idTrip);
+                this.tripService.updateTripsStatus('Chez Livreur', transitLivraison, this.user.name, 'EntrepotGafsa').subscribe(() => {
+                  this.tripService.updateTripsStatus('Retour', transitRetour, this.user.name, 'EntrepotGafsa').subscribe(() => {
+                    this.conflitService.createList(this.listConflit).subscribe(() => {
+                      // make conflict trips treated
+                      this.openCheckSuccess('activityConfirmed');
+                    });
                   });
                 });
               });
@@ -528,30 +562,48 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
   }
 
   affectActionToConflictTrip(value: any, trp: Trip) {
-    if (value === null || value === undefined){
+    if (value === null || value === undefined) {
       this.listConflit = this.listConflit.filter((conflit) => conflit.colisId !== trp.idTrip);
-    }
-    else if(value === 'non expédié') {
+    } else if (value === 'non expédié') {
       this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
       const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, trp.entrepot, value, 'moveable unit',  this.activityMoveableUnit.ref);
       this.listConflit.push(conflit);
-    } else if(value === 'lost') {
+    } else if (value === 'lost') {
+      this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityMoveableUnit.entrepot, value, 'moveable unit', this.activityMoveableUnit.ref, false, null, null);
+      this.listConflit.push(conflit);
+    } else if (value === 'damaged') {
       this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
       const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityMoveableUnit.entrepot, value, 'moveable unit', this.activityMoveableUnit.ref, false, null, null);
       this.listConflit.push(conflit);
     }
   }
-  playSuccessAudio(){
+  playSuccessAudio() {
     const audio = new Audio();
     audio.src = '../../../../assets/audio/zapsplat_public_places_supermarket_checkout_beep_002_44357.wav';
     audio.load();
     audio.play();
   }
-  playFailureAudio(){
+  playFailureAudio() {
     const audio = new Audio();
     audio.src = '../../../../assets/audio/zapsplat_multimedia_game_sound_error_incorrect_001_30721.wav';
     audio.load();
     audio.play();
+  }
+  addToSurveyList(trip: Trip){
+    const index = this.listColisNonTreated.indexOf(trip);
+    if (index >= 0 ){
+      this.listColisNonTreated = this.listColisNonTreated.filter((tripMap) => tripMap.idTrip !== tripMap.idTrip);
+      this.listSurvey.push(trip);
+    }
+
+  }
+  removeFromSurveyList(trip: Trip){
+    const index = this.listSurvey.indexOf(trip);
+    if (index >= 0 ){
+      this.listSurvey = this.listSurvey.filter((tripMap) => tripMap.idTrip !== tripMap.idTrip);
+      this.listColisNonTreated.push(trip);
+    }
   }
 }
 @Component({

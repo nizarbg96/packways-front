@@ -14,6 +14,7 @@ import {Runsheet} from '../../model/runsheet.model';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {PopUpDeleteComponent} from '../shared/pop-up-delete/pop-up-delete.component';
 import {PopUpDeleteService} from '../shared/pop-up-delete/pop-up-delete.service';
+import {UserService} from '../users/users.service';
 @Component({
   selector: 'app-moveable-unit',
   templateUrl: './moveable-unit.component.html',
@@ -38,7 +39,7 @@ export class MoveableUnitComponent implements OnInit {
   private affectedEntrepotDest: Entrepot;
 
   constructor(public dialog: MatDialog, private muService: MoveableUnitService, private router: Router, private tripService: TripService,
-              private modalService: NgbModal, private popUpDeleteService: PopUpDeleteService) { }
+              private modalService: NgbModal, private popUpDeleteService: PopUpDeleteService, private userService: UserService) { }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
@@ -55,12 +56,18 @@ export class MoveableUnitComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: MuInfo) => {
       console.log('The dialog was closed');
       if( !!result ){
-        this.affectedDriver = result.driver;
-        this.affectedMatricule = result.matricule;
-        this.affectedEntrepotSrc = result.entrepotSrc;
-        this.affectedEntrepotDest = result.entrepotDest;
-        this.muService.muInfo = result;
-        this.router.navigate(['/mu/create']);
+
+        this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+          const admin = resUser.json();
+          this.affectedDriver = result.driver;
+          this.affectedMatricule = result.matricule;
+          this.affectedEntrepotSrc = admin.entrepot;
+          this.affectedEntrepotDest = result.entrepotDest;
+          result.entrepotSrc = this.affectedEntrepotSrc;
+          this.muService.muInfo = result;
+          this.router.navigate(['/mu/create']);
+        })
+
       } else {
         this.muService.muInfo = null;
       }
@@ -73,8 +80,13 @@ export class MoveableUnitComponent implements OnInit {
       this.moveableUnits = this.moveableUnits.filter((mu: MoveableUnit) =>
         ((mu.status === 'draft' || mu.status === 'confirmed') && mu.deleted === false) );
       if(this.user.role !== 'superAdmin'){
-        this.moveableUnits = this.moveableUnits.filter((mu: MoveableUnit) => mu.entrepotSrc.id === this.user.entrepot.id ||
-          mu.entrepotDest.id === this.user.entrepot.id || mu.createdBy === this.user.idAdmin);
+        this.moveableUnits = this.moveableUnits.filter((mu: MoveableUnit) => {
+          if (!!mu.entrepotSrc){
+            return (mu.entrepotSrc.id === this.user.entrepot.id || mu.createdBy === this.user.idAdmin);
+          } else {
+        return (mu.createdBy === this.user.idAdmin);
+      }
+        });
       }
       this.moveableUnits = this.moveableUnits.sort((a, b) => (a.createdDate > b.createdDate) ? 1 : 0);
       this.spinner = false;
@@ -132,10 +144,15 @@ export class MoveableUnitComponent implements OnInit {
     this.muService.update(this.selectedMU).subscribe(() => {
       const listTrips: string[] = this.selectedMU.listColis
         .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map((colis) => colis.idTrip);
-      console.log(this.user);
-      this.tripService.updateTripsDriver(this.selectedMU.driver.idDriver, listTrips, this.user.name).subscribe(() => {
-        this.tripService.updateTripsStatus('transit', listTrips,  this.user.name, '').subscribe();
-      });
+      this.tripService.getListOfTips(listTrips).subscribe((resTrips) => {
+        const transitLivraison = resTrips.body.filter((trip) => trip.statusTrip === 'Chez Livreur').map(trip => trip.idTrip);
+        const transitRetour = resTrips.body.filter((trip) => trip.statusTrip === 'Retour').map(trip => trip.idTrip);
+        this.tripService.updateTripsDriver(this.selectedMU.driver.idDriver, listTrips, this.user.name).subscribe(() => {
+          this.tripService.updateTripsStatus('transit livraison', transitLivraison,  this.user.name, '').subscribe(() => {
+            this.tripService.updateTripsStatus('transit retour', transitRetour,  this.user.name, '').subscribe();
+          });
+        });
+      })
     });
   }
 

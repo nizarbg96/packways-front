@@ -49,14 +49,11 @@
             <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
           </div>
           <div class="col-md-2">
-            <button style="z-index: 10;" type="button" class="mat-mini-fab mt-2" title="Modifier" > <!-- (click)="open(content)" -->
-              <i class="material-icons" [routerLink]="'/mu/edit/'+mu.id"> create </i>
+            <button style="z-index: 10;" type="button" class="mat-mini-fab mt-2" title="Modifier" [routerLink]="'/mu/edit/'+mu.id"> <!-- (click)="open(content)" -->
+              <i class="material-icons" > create </i>
             </button>
-            <button type="button" style="z-index: 10;" class="mat-mini-fab ml-2 mt-2" title="Supprimer">
-              <i class="material-icons" (click)="deleteMU(mu)" > delete </i>
-            </button>
-            <button *ngIf="mu.status === 'confirmed'" style="z-index: 10;" type="button" class="mat-mini-fab ml-2 mt-2" title="Imprimer">
-              <i class="material-icons" (click)="printmu()"> print </i>
+            <button type="button" style="z-index: 10;" class="mat-mini-fab ml-2 mt-2" title="Supprimer" (click)="deleteMU(mu)">
+              <i class="material-icons"  > delete </i>
             </button>
             <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
           </div>
