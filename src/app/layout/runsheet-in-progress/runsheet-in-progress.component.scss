@@ -22,6 +22,9 @@
   margin-left: auto;
   margin-top: 10%;
   width: 50%;
-
-
+}
+.myspinner .black-overlay{ position: fixed !important;
+}
+.black-overlay{
+  height: 100vh;
 }

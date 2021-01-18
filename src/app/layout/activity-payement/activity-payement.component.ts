@@ -33,6 +33,7 @@ export class ActivityPayementComponent implements OnInit {
   private keyFiltredTrip1: any;
   private keyFiltredTrip4: string;
   private jsonObj: any;
+  listCheckedActivities: ActivityPayement[] = [];
 
 
 
@@ -107,8 +108,10 @@ export class ActivityPayementComponent implements OnInit {
     if (activityPayement_option.selected) {
       this.checkedActivityStatus = activityPayement.status;
       this.selectedActivityPayement = activityPayement;
+      this.listCheckedActivities.push(this.selectedActivityPayement);
     } else {
       this.selectedActivityPayement = null;
+      this.listCheckedActivities = this.listCheckedActivities.filter(activity => activity.ref !== activityPayement.ref);
     }
   }
   deleteSelectedActivity() {

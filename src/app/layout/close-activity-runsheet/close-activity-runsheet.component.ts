@@ -10,6 +10,7 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {ColisRunsheet} from '../../model/colis-runsheet.model';
 import {ActivityRunsheetInfo, DialogAddDriverToReconcileRunsheetComponent} from '../reconcile-runsheet/reconcile-runsheet.component';
 import {MoveableUnit} from '../../model/moveable-unit.model';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-close-activity-runsheet',
@@ -112,8 +113,20 @@ export class CloseActivityRunsheetComponent implements OnInit {
     return listColis.slice()
       .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).length ;
   }
-  printRunsheet() {
-
+  printRunsheet(activityRunsheet: Activity) {
+    this.activityRunsheetService.exportPdf(activityRunsheet).subscribe((res) => {
+      const path: string = res['_body'];
+      this.downloadRapport(path);
+    } );
+  }
+  downloadRapport(path: string) {
+    const index: number = path.indexOf('PDF/ActivityRunsheet') + 20;
+    path = path.substring(index);
+    console.log(path);
+    this.activityRunsheetService.downloadPDF(environment.serverUrl + '/api/activities/downloadPDF' + path).subscribe(res => {
+      const fileURL = URL.createObjectURL(res);
+      window.open(fileURL, '_blank');
+    });
   }
   onAreaListControlChanged(activityRunsheet_option: MatListOption, activityRunsheet: Activity) {
     if (activityRunsheet_option.selected) {

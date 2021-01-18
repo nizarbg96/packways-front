@@ -197,6 +197,13 @@ export class RunsheetInProgressComponent implements OnInit {
       this.downloadBS(path);
     });
   }
+  BRetourFromServer(runsheet: Runsheet) {
+    const listIdTrips = runsheet.listColis.filter(colis => (colis.removed === false)).map((colis => colis.idTrip ));
+    this.tripService.getBRetour(runsheet.driver.idDriver, listIdTrips).subscribe(data => {
+      const path = data['_body'];
+      this.downloadBRetour(path);
+    });
+  }
   downloadBS(path: string) {
     const index: number = path.indexOf('Bon') - 1;
     path = path.substring(index);
@@ -205,9 +212,21 @@ export class RunsheetInProgressComponent implements OnInit {
       window.open( fileURL, '_blank');
     });
   }
+  downloadBRetour(path: string) {
+    const index: number = path.indexOf('Bon') - 1;
+    path = path.substring(index);
+    this.runsheetService.downloadPDF(environment.serverUrl + '/trip/downloadBRetour/' + path).subscribe(res => {
+      const fileURL = URL.createObjectURL(res);
+      window.open( fileURL, '_blank');
+    });
+  }
 
   imprimerRunsheet(selectedRunsheet: Runsheet) {
-    this.BSFromServer(selectedRunsheet);
+    if(selectedRunsheet.type === 'livraison'){
+      this.BSFromServer(selectedRunsheet);
+    }else if(selectedRunsheet.type === 'retour'){
+      this.BRetourFromServer(selectedRunsheet);
+    }
   }
 
   inNonTreatedList(trp: Trip) {

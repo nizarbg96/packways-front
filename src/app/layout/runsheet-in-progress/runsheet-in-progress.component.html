@@ -31,6 +31,9 @@
     </div>
   </mat-card>
 </div>
+<ngx-spinner class="myspinner" bdColor = "rgba(255,255,255,0.8)" fullScreen="false" size = "large" color = "#000000" type = "ball-square-clockwise-spin">
+  <p style="color: black; font-size: large; margin-top: 100px; height: 100vh !important"> Veuillez patienter...</p>
+</ngx-spinner>
 <div class="row">
   <mat-spinner *ngIf="spinner" class="center"></mat-spinner>
   <mat-selection-list style="width:100%"  #runsheets_list>

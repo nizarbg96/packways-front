@@ -101,7 +101,7 @@ export class RamassageComponent implements OnInit {
         this.pickUps[index] = pickUp;
         const listTripsToUpdate = pickUp.listColis.slice()
           .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
-        this.tripService.updateTripsWhenDeleteRunsheet(listTripsToUpdate).subscribe();
+        this.tripService.updateTripsWhenDeletePickUp(listTripsToUpdate).subscribe();
       }, (reason) => {
       }
     );

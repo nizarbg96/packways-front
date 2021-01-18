@@ -141,7 +141,7 @@ export class CreateCloseActivityRunsheetComponent implements OnInit {
           this.successStepper = false;
           this.pickUpStepper = false;
           this.finalStep = false;
-          if (this.activityRunsheet.status === 'confirmed'){
+          if (this.activityRunsheet.status === 'confirmed' || this.activityRunsheet.status === 'closed'){
             this.firstStep = false;
             this.failureStepper = false;
             this.successStepper = false;

@@ -22,7 +22,7 @@
         </button>
         <button mat-raised-button  class="ml-2"
                 style="width: 100%; background-color: #00aa88; color: white;"
-                *ngIf="activityRunsheet_list.selectedOptions.selected.length>0 && (checkedActivityStatus === 'confirmed' || checkedActivityStatus === 'closed' ) " (click)="printRunsheet()">
+                *ngIf="activityRunsheet_list.selectedOptions.selected.length>0 && (checkedActivityStatus === 'confirmed' || checkedActivityStatus === 'closed' ) " (click)="printRunsheet(selectedActivity)">
           imprimer
         </button>
       </div>
@@ -65,7 +65,7 @@
             </button>
             <button *ngIf="activityRunsheet.status === 'confirmed' || activityRunsheet.status === 'closed' " style="z-index: 10;" type="button"
                     class="mat-mini-fab ml-2 mt-2" title="Imprimer">
-              <i class="material-icons" (click)="printRunsheet()"> print </i>
+              <i class="material-icons" (click)="printRunsheet(activityRunsheet)"> print </i>
             </button>
             <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
           </div>
