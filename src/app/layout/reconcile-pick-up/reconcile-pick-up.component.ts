@@ -18,6 +18,7 @@ import {RamassageService} from '../ramassage/ramassage.service';
 import {PopUpDeleteService} from '../shared/pop-up-delete/pop-up-delete.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {PopUpDeleteComponent} from '../shared/pop-up-delete/pop-up-delete.component';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-reconcile-pick-up',
@@ -134,9 +135,22 @@ export class ReconcilePickUpComponent implements OnInit {
     return listColis.slice()
       .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).length ;
   }
-  printRunsheet() {
-
+  printRunsheet(activityPickUp: ActivityPickUp) {
+    this.activityPickUpService.exportPdf(activityPickUp).subscribe((res) => {
+      const path: string = res['_body'];
+      this.downloadRapport(path);
+    } );
   }
+  downloadRapport(path: string) {
+    const index: number = path.indexOf('PDF/ActivityPickUp') + 18;
+    path = path.substring(index);
+    console.log(path);
+    this.activityPickUpService.downloadPDF(environment.serverUrl + '/api/activities-pickUp/downloadPDF' + path).subscribe(res => {
+      const fileURL = URL.createObjectURL(res);
+      window.open(fileURL, '_blank');
+    });
+  }
+
   onAreaListControlChanged(activityRunsheet_option: MatListOption, activityRunsheet: Activity) {
     if (activityRunsheet_option.selected) {
       this.checkedActivityStatus = activityRunsheet.status;

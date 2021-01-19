@@ -22,6 +22,11 @@
         </p>
       </div>
       <div class="col-md-2 Aligner ">
+        <button mat-raised-button  class="ml-2"
+                style="width: 100%; background-color: #00aa88; color: white;"
+                *ngIf="pickUp_list.selectedOptions.selected.length>0 " (click)="imprimerPickUp(selectedPickUp)">
+          imprimer
+        </button>
       </div>
     </div>
   </mat-card>

@@ -303,15 +303,15 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
             }
 
             if (obj.statusTrip === 'Retour' || obj.statusTrip === 'livraison en cours' || obj.statusTrip === 'En cours de retour') {
-              const currentDate = new Date();
-              currentDate.setHours(0);
-              currentDate.setMinutes(0);
-              currentDate.setSeconds(0);
+              const deliveryDate = obj.startdelday;
+              deliveryDate.setHours(0);
+              deliveryDate.setMinutes(0);
+              deliveryDate.setSeconds(0);
               if (obj.msgTrip.length === 0) {
                 this.scannedTrip = obj;
                 this.openSms(obj);
                 return;
-              }  else if(obj.msgTrip[obj.msgTrip.length - 1].dateMsg < currentDate){
+              }  else if(obj.msgTrip[obj.msgTrip.length - 1].dateMsg < deliveryDate){
                 this.scannedTrip = obj;
                 this.openSms(obj);
                 return;

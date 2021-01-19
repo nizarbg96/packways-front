@@ -86,20 +86,22 @@ export class TripService {
   updateOneTrip(trip: Trip): Observable<EntityResponseType> {
     return this.httpc.put<Trip>(`${this.url}/updateOneTrip`, trip, {observe: 'response', headers: this.headerOptions2} );
   }
-  updateEncoursDePayement(tripsId: string[], idAdmin: string){
+  updateEncoursDePayement(tripsId: string[], idAdmin: string) {
     return this.http.post(`${this.url}/updatepayed` + '?idAdmin=' + idAdmin, tripsId , {headers: this.headerOptions});
   }
-  updatePayed(tripsId: string[], idAdmin: string){
-    return this.http.post(`${this.url}/updateclosed` + '?idAdmin=' + idAdmin, tripsId , {headers: this.headerOptions})
+  updatePayed(tripsId: string[], idAdmin: string) {
+    return this.http.post(`${this.url}/updateclosed` + '?idAdmin=' + idAdmin, tripsId , {headers: this.headerOptions});
   }
 
   getBS(id, data): Observable<any> {
     return this.http.post(`${this.url}/exportpdf/` + id, data, {headers: this.headerOptions});
   }
-  getMU(id, data,entrepotScr,entrepotDest,refMu): Observable<any> {
-    return this.http.post(`${this.url}/exportpdfMU/` + id+"/"+entrepotScr+"/"+entrepotDest+"/"+refMu, data, {headers: this.headerOptions});
+  getMU(id, data, entrepotScr, entrepotDest, refMu): Observable<any> {
+    return this.http.post(`${this.url}/exportpdfMU/` + id + '/' + entrepotScr + '/' + entrepotDest + '/' + refMu, data, {headers: this.headerOptions});
   }
-
+  getPickUp(id, data, entrepotDest, refPickUp): Observable<any> {
+    return this.http.post(`${this.url}/exportpdfPickUp/` + id + '/' + entrepotDest + '/' + refPickUp, data, {headers: this.headerOptions});
+  }
   getBRetour(id, data): Observable<any> {
     return this.http.post(`${this.url}/exportpdfBretour/` + id, data, {headers: this.headerOptions});
   }
@@ -153,10 +155,10 @@ export class TripService {
     return this.http.post(this.url + '/updatestatus' + '?status=' + status + '&driverAffect=' + driverAffect + '&name=' + userName, trips,
       {headers: this.headerOptions});
   }
-  updateTripsPreRecolte(trips: string[], idAdmin: string){
+  updateTripsPreRecolte(trips: string[], idAdmin: string) {
     return   this.http.post(this.url + '/updatepresrecolte' + '?name=' + idAdmin, trips , {headers: this.headerOptions});
   }
-  updateTripsRecolted(trips: string[], idAdmin: string){
+  updateTripsRecolted(trips: string[], idAdmin: string) {
     return this.http.post(this.url + '/updaterecolter' + '?name=' + idAdmin, trips , {headers: this.headerOptions});
   }
   updateTripsDriver(idDriver: string, trips: string[], userName: string) {

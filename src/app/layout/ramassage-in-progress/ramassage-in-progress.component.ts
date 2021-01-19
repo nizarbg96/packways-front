@@ -10,6 +10,9 @@ import {DialogAddDriverToRunsheetComponent} from '../runsheet/runsheet.component
 import {ColisRunsheet} from '../../model/colis-runsheet.model';
 import {PickUp} from '../../model/pickup.model';
 import {RamassageService} from '../ramassage/ramassage.service';
+import {MoveableUnit} from '../../model/moveable-unit.model';
+import {environment} from '../../../environments/environment';
+import {RunsheetService} from '../runsheet/runsheet.service';
 
 export interface InProgressPickUp {
   pickUpObject: PickUp;
@@ -46,7 +49,7 @@ export class RamassageInProgressComponent implements OnInit {
 
 
   constructor(public dialog: MatDialog, private ramassageService: RamassageService, private router: Router, private tripService: TripService,
-              private modalService: NgbModal) { }
+              private modalService: NgbModal, private runsheetService: RunsheetService) { }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
@@ -77,18 +80,18 @@ export class RamassageInProgressComponent implements OnInit {
       this.pickUps = res.body;
       this.pickUps = this.pickUps.filter((runsheet: Runsheet) =>
         ((runsheet.status === 'dispached') && runsheet.deleted === false) );
-      if(this.user.role !== 'superAdmin'){
+      if (this.user.role !== 'superAdmin') {
         this.pickUps = this.pickUps.filter((pickup: PickUp) => {
-          if(!!pickup.entrepot){
+          if (!!pickup.entrepot) {
             return (pickup.entrepot.id === this.user.entrepot.id ||
-              pickup.createdBy === this.user.idAdmin)
+              pickup.createdBy === this.user.idAdmin);
           } else {
             return false;
           }
         });
       }
       this.pickUps = this.pickUps.sort((a, b) => (a.dispachedDate > b.dispachedDate) ? 1 : 0);
-      this.pickUps.forEach((pickUp) =>{
+      this.pickUps.forEach((pickUp) => {
         const list = pickUp.listColis.slice().filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined))
           .map((colis) => colis.idTrip) ;
         this.tripService.getListOfTips(list).subscribe((resTrips) => {
@@ -97,7 +100,7 @@ export class RamassageInProgressComponent implements OnInit {
             || trip.statusTrip === 'Retournee').length;
           this.inProgressPickUps.push({pickUpObject: pickUp, nbTreatedTrips: nbColisLivree});
         });
-      })
+      });
       this.spinner = false;
       this.filtredInProgressPickUps = this.inProgressPickUps;
     });
@@ -121,7 +124,7 @@ export class RamassageInProgressComponent implements OnInit {
   printRunsheet() {}
 
   onAreaListControlChanged(pickUp_option: MatListOption, pickUp: PickUp) {
-    if (pickUp_option.selected){
+    if (pickUp_option.selected) {
       this.checkedPickUpsStatus = pickUp.status;
       this.selectedPickUp = pickUp;
     } else {
@@ -133,11 +136,11 @@ export class RamassageInProgressComponent implements OnInit {
     this.selectedPickUp.status = 'dispached';
     this.selectedPickUp.dispachedBy = this.user.idAdmin;
     this.selectedPickUp.dispachedDate = new Date();
-    this.ramassageService.update(this.selectedPickUp).subscribe(() =>{
+    this.ramassageService.update(this.selectedPickUp).subscribe(() => {
       const listTrips: string[] = this.selectedPickUp.listColis
         .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map((colis) => colis.idTrip);
       console.log(this.user);
-      this.tripService.updateTripsDriver(this.selectedPickUp.driver.idDriver, listTrips, this.user.name).subscribe(() =>{
+      this.tripService.updateTripsDriver(this.selectedPickUp.driver.idDriver, listTrips, this.user.name).subscribe(() => {
         this.tripService.updateTripsStatus('livraison en cours', listTrips,  this.user.name, '').subscribe();
       });
     });
@@ -180,19 +183,37 @@ export class RamassageInProgressComponent implements OnInit {
   }
   applyFilter(filterValue: any) {
     const filterValueUpper = filterValue.toUpperCase();
-    if(filterValue === '' ) {
+    if (filterValue === '' ) {
       this.filtredInProgressPickUps = this.inProgressPickUps;
-    }
-    else {
+    } else {
       this.filtredInProgressPickUps = this.inProgressPickUps.slice().filter((item) => item.pickUpObject.ref.includes(filterValueUpper));
     }
   }
 
   inNonTreatedList(trp: Trip) {
-    if (trp.statusTrip === 'Chez Livreur'){
+    if (trp.statusTrip === 'Chez Livreur') {
       return false;
     } else {
       return true;
     }
+  }
+  BSFromServer(pickUp: PickUp) {
+    const listIdTrips = pickUp.listColis.filter(colis => (colis.removed === false)).map((colis => colis.idTrip ));
+    this.tripService.getPickUp(pickUp.driver.idDriver, listIdTrips, pickUp.entrepot.nom, pickUp.ref).subscribe(data => {
+      const path = data['_body'];
+      this.downloadBS(path);
+    });
+  }
+  downloadBS(path: string) {
+    const index: number = path.indexOf('PU') - 1;
+    path = path.substring(index);
+    this.runsheetService.downloadPDF(environment.serverUrl + '/trip/downloadPickUp/' + path).subscribe(res => {
+      const fileURL = URL.createObjectURL(res);
+      window.open( fileURL, '_blank');
+    });
+  }
+
+  imprimerPickUp(selectedPickUp: PickUp) {
+    this.BSFromServer(selectedPickUp);
   }
 }

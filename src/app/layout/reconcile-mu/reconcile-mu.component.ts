@@ -14,6 +14,8 @@ import {Runsheet} from '../../model/runsheet.model';
 import {PopUpDeleteService} from '../shared/pop-up-delete/pop-up-delete.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {PopUpDeleteComponent} from '../shared/pop-up-delete/pop-up-delete.component';
+import {Activity} from '../../model/activity.model';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-reconcile-mu',
@@ -128,8 +130,20 @@ export class ReconcileMuComponent implements OnInit {
     return listColis.slice()
       .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).length ;
   }
-  printRunsheet() {
-
+  printRunsheet(activityMoveableUnit: Activity) {
+    this.activityMoveableUnitService.exportPdf(activityMoveableUnit).subscribe((res) => {
+      const path: string = res['_body'];
+      this.downloadRapport(path);
+    } );
+  }
+  downloadRapport(path: string) {
+    const index: number = path.indexOf('PDF/ActivityMoveableUnit') + 24;
+    path = path.substring(index);
+    console.log(path);
+    this.activityMoveableUnitService.downloadPDF(environment.serverUrl + '/api/activities-mu/downloadPDF' + path).subscribe(res => {
+      const fileURL = URL.createObjectURL(res);
+      window.open(fileURL, '_blank');
+    });
   }
   onAreaListControlChanged(activityMoveableUnit_option: MatListOption, activityMoveableUnit: ActivityMu) {
     if (activityMoveableUnit_option.selected) {

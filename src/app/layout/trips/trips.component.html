@@ -346,15 +346,15 @@
                                                 <td>{{ trip.packageTrip.valPackage }}</td>
                                                 <td>{{ showFinancialStatus(trip) }}</td>
                                                 <td>
-                                                       <!-- <button type="button" class="mat-mini-fab" title="Modifier" > &lt;!&ndash; (click)="open(content)" &ndash;&gt;
+                                                        <button *ngIf="!dataUser.role" type="button" class="mat-mini-fab" title="Modifier" > &lt;!&ndash; (click)="open(content)" &ndash;&gt;
                                                                 <i class="material-icons" (click)="editTrip(content, trip)"> create </i>
-                                                        </button>-->
+                                                        </button>
                                                         <!--<button type="button" class="mat-mini-fab" title="Dupliquer" (click)="open(content1)" hidden>
                                                                 <i class="material-icons"> file_copy </i>
                                                         </button>-->
-                                                        <!--<button type="button" class="mat-mini-fab" title="Supprimer">
+                                                        <button *ngIf="!dataUser.role" type="button" class="mat-mini-fab" title="Supprimer">
                                                                 <i class="material-icons" (click)="openBlModal2(contentdeleteTrip,trip)" > delete </i>
-                                                        </button>-->
+                                                        </button>
                                                         <button type="button" class="mat-mini-fab" title="Détails">
                                                                 <i class="material-icons" (click)="infoTrip(content2, trip)"> open_in_new </i>
                                                         </button>
@@ -1017,6 +1017,14 @@
                                         </div>
                                 </fieldset>
                         </div>
+                  <div class="col-xl-4 text-xs-center" *ngIf="objTrip.msgTrip && objTrip.msgTrip.length > 0">
+                    <fieldset class="scheduler-border">
+                      <legend class="scheduler-border"><h6>Entrepot</h6></legend>
+                      <div class="control-group">
+                        <p>{{!!objTrip.entrepot?objTrip.entrepot.nom:'-'}}</p>
+                      </div>
+                    </fieldset>
+                  </div>
                 </div>
         </div>
   <div class="container" *ngIf ="isVisible">
