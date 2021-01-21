@@ -303,7 +303,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
             }
 
             if (obj.statusTrip === 'Retour' || obj.statusTrip === 'livraison en cours' || obj.statusTrip === 'En cours de retour') {
-              const deliveryDate = obj.startdelday;
+              const deliveryDate = new Date();
               deliveryDate.setHours(0);
               deliveryDate.setMinutes(0);
               deliveryDate.setSeconds(0);
@@ -326,7 +326,6 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
               this.activityRunsheet.listColisNonTreated = this.listColisNonTreated.map((trip) => trip.idTrip);
               this.activityRunsheet.listColisFailure.push(new ColisFailureRunsheet(obj.idTrip, this.user.idAdmin, new Date(), false));
               this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
-                this.activityRunsheet = res.body;
               });
             } else {
               const msg = 'L\'état de colis doit être "Retour" , "Livaison en cours" ou "En cours de retour"! Etat de colis scanné: ' + obj.statusTrip;
@@ -396,7 +395,6 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
     this.activityRunsheet.listColisFailure[index].removedBy = this.user.idAdmin;
     this.activityRunsheet.listColisFailure[index].removedDate = new Date();
     this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
-      this.activityRunsheet = res.body;
     });
   }
 
@@ -448,7 +446,6 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
                 this.activityRunsheet.listColisPickUp.push(new ColisRunsheet(obj.idTrip, false, this.user.idAdmin,
                   new Date(), false));
                 this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
-                  this.activityRunsheet = res.body;
                 });
               });
             } else {
@@ -567,7 +564,6 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
               this.activityRunsheet.listColisNonTreated = this.listColisNonTreated.map((trip) => trip.idTrip);
               this.activityRunsheet.listColisSuccess.push(new ColisSuccessRunsheet(obj.idTrip, this.user.idAdmin, new Date(), false));
               this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
-                this.activityRunsheet = res.body;
               });
 
             } else if (obj.statusTrip === 'En cours de retour') {
@@ -651,7 +647,6 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
     this.activityRunsheet.listColisSuccess[index].removedBy = this.user.idAdmin;
     this.activityRunsheet.listColisSuccess[index].removedDate = new Date();
     this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
-      this.activityRunsheet = res.body;
     });
   }
 
@@ -825,7 +820,6 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
           this.ListScanFailure.push(trip);
           this.activityRunsheet.listColisFailure.push(new ColisFailureRunsheet(trip.idTrip, this.user.idAdmin, new Date(), false));
           this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
-            this.activityRunsheet = res.body;
           });
         });
       });
@@ -857,7 +851,6 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
             this.playSuccessAudio();
             this.activityRunsheet.listColisSuccess.push(new ColisFailureRunsheet(trip.idTrip, this.user.idAdmin, new Date(), false));
             this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
-              this.activityRunsheet = res.body;
             });
           });
       });
@@ -892,9 +885,8 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
           this.playSuccessAudio();
           this.activityRunsheet.listColisSuccess.push(new ColisFailureRunsheet(trip.idTrip, this.user.idAdmin, new Date(), false));
           this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
-            this.activityRunsheet = res.body;
           });
-        })
+        });
       });
 
     }, (reason) => {
@@ -1091,7 +1083,6 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
           this.activityRunsheet.listColisNonTreated = this.listColisNonTreated.map((trip) => trip.idTrip);
           this.activityRunsheet.listColisFailure.push(new ColisFailureRunsheet(obj.idTrip, this.user.idAdmin, new Date(), false));
           this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
-            this.activityRunsheet = res.body;
           });
         });
       });
@@ -1113,6 +1104,58 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityRunsheet.entrepot, value, 'Reconcile Activity Runsheet', this.activityRunsheet.ref, false, null, null);
       this.listConflit.push(conflit);
     }
+  }
+
+  forceRetour(trp: Trip) {
+    this.activityRunsheetService.forcedRetour = true;
+    this.modalService.open(MODALS['forceFailure']).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+      for (let i = 0; i < this.ListScanFailure.length; i++) {
+        if (trp.idTrip === this.ListScanFailure[i].idTrip) {
+          this.ListScanFailure.splice(i, 1);
+        }
+      }
+      this.ListScanNBFailure = this.ListScanFailure.length;
+      this.listColisNonTreated.push(trp);
+      this.activityRunsheet.listColisNonTreated.push(trp.idTrip);
+      const colisToDelete = this.activityRunsheet.listColisFailure.slice()
+        .filter((colis) => ((colis.idTrip === trp.idTrip) && (colis.removed === false)))[0];
+      const index = this.activityRunsheet.listColisFailure.indexOf(colisToDelete);
+      this.activityRunsheet.listColisFailure[index].removed = true;
+      this.activityRunsheet.listColisFailure[index].removedBy = this.user.idAdmin;
+      this.activityRunsheet.listColisFailure[index].removedDate = new Date();
+       this.tripService.updateTripsStatus('Retour',
+        [trp.idTrip], this.user.name, '').subscribe(() => {
+        this.tripService.getTripscanListById(trp.idTrip).subscribe((res) => {
+          const trip = res.body;
+          trip.statusTrip = 'Retour';
+          trip.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
+            'Success : forced Retour status'));
+          this.tripService.updateOneTrip(trip).subscribe();
+          const indexNonTreated = this.listColisNonTreated.map((trp) => trp.idTrip).indexOf(trip.idTrip);
+          const indexSuccess = this.ListScanSuccess.map((trp) => trp.idTrip).indexOf(trip.idTrip);
+          if (indexNonTreated >= 0) {
+            this.listColisNonTreated = this.listColisNonTreated.filter((nonTreatedTrip) => nonTreatedTrip.idTrip !== trip.idTrip);
+            this.activityRunsheet.listColisNonTreated = this.listColisNonTreated.map((resTrip) => resTrip.idTrip);
+          }
+          if (indexSuccess >= 0) {
+            this.ListScanSuccess = this.ListScanSuccess.filter((sucessTrip) => sucessTrip.idTrip !== trip.idTrip);
+            this.activityRunsheet.listColisSuccess = this.activityRunsheet.listColisSuccess.filter((colis) => colis.idTrip !== trip.idTrip);
+          }
+          trip.statusTrip = 'Retour';
+          this.ListScanFailure.push(trip);
+          this.activityRunsheet.listColisFailure.push(new ColisFailureRunsheet(trip.idTrip, this.user.idAdmin, new Date(), false));
+          this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
+            this.activityRunsheetService.forcedRetour = false;
+          });
+        });
+      });
+
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      console.log(this.closeResult);
+      this.activityRunsheetService.forcedRetour = false;
+    });
   }
 }
 

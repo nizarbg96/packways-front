@@ -4,7 +4,7 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div class="modal-body">
+<div class="modal-body" *ngIf="activityRunsheetService.forcedRetour === false">
   <p><strong>L'Etat de colis que vous venez de scanner est <span class="text-primary">"{{!!trip?trip.statusTrip:'-'}}"</span></strong></p>
   <p>Pour forcer le scan, vous devez selectionner le nouveau état  à affecter <span class="text-danger">"Retour", "En cours de retour" et "Livraison en cours".</span>
   </p>
@@ -18,7 +18,13 @@
       </select>
     </div>
 </div>
+</div>
+<div class="modal-body" *ngIf="activityRunsheetService.forcedRetour === true">
+  <p><strong>L'Etat de colis que vous venez de scanner est <span class="text-primary">"livraison en cours"</span></strong></p>
+  <p>Etes vous sure de forcer l'état <span class="text-danger">"Retour"</span> ?
+</div>
 <div class="modal-footer">
   <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Annuler</button>
-  <button type="button" ngbAutofocus class="btn btn-danger" [disabled]="!newStatus"  (click)="modal.close('Ok click');updateNewStatus(newStatus)">Accepter</button>
+  <button type="button" *ngIf="activityRunsheetService.forcedRetour === false" ngbAutofocus class="btn btn-danger" [disabled]="!newStatus"  (click)="modal.close('Ok click');updateNewStatus(newStatus)">Accepter</button>
+  <button type="button" *ngIf="activityRunsheetService.forcedRetour === true" ngbAutofocus class="btn btn-danger" (click)="modal.close('Ok click');updateNewStatus(newStatus)">Accepter</button>
 </div>

@@ -267,7 +267,6 @@ export class CreateActivityPickUpComponent implements OnInit, AfterViewInit {
               this.activityPickUp.listColisNonTreated = this.listColisNonTreated.map((trip) => trip.idTrip);
               this.activityPickUp.listColisSuccess.push(new ColisSuccessRunsheet(obj.idTrip, this.user.idAdmin, new Date(), false));
               this.activityPickUpService.update(this.activityPickUp).subscribe((res) => {
-                this.activityPickUp = res.body;
               });
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Pick Up: ' + this.activityPickUp.ref,
                 'Success'));

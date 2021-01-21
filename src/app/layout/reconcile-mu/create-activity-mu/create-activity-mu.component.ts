@@ -269,7 +269,6 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
               this.activityMoveableUnit.listColisNonTreated = this.listColisNonTreated.map((trip) => trip.idTrip);
               this.activityMoveableUnit.listColisSuccess.push(new ColisSuccessRunsheet(obj.idTrip, this.user.idAdmin, new Date(), false));
               this.activityMoveableUnitService.update(this.activityMoveableUnit).subscribe((res) => {
-                this.activityMoveableUnit = res.body;
               });
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity M.U: ' + this.activityMoveableUnit.ref,
                 'Success'));

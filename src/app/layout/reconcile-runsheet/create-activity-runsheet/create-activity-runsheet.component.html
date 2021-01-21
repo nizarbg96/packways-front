@@ -191,15 +191,16 @@
             <td style="background-color: #ffffff; width:15%;">{{trp.statusTrip}}</td>
             <td style="background-color: #ffffff; width:15%;">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
             <td style="background-color: #ffffff; width:15%;" >{{trp.destTrip.contactAdr }}</td>
-            <td  style="background-color: #ffffff;  width:50%;" *ngIf="trp.msgTrip && trp.msgTrip.length > 0">
+            <td  style="background-color: #ffffff;  width:20%;" *ngIf="trp.msgTrip && trp.msgTrip.length > 0">
               <ul>
                 <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
                 <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg | date:'medium' }}</li>
               </ul>
             </td>
             <td style="background-color: #ffffff;" *ngIf="trp.msgTrip && trp.msgTrip.length === 0">-</td>
-            <td style="background-color: #ffffff;" *ngIf="activityRunsheet.status === 'draft'">
-              <i class="material-icons" style="cursor:pointer;" (click)="deleteScanListFailure(trp)" > delete </i>
+            <td style="background-color: #ffffff; width:20%;" *ngIf="activityRunsheet.status === 'draft'">
+                <button style="display:inline-block;width: 50%" mat-raised-button (click)="forceRetour(trp)" *ngIf="trp.statusTrip === 'livraison en cours'" class="mr-2">Force Retour</button>
+                <i style="display:inline-block;width: 50%" class="material-icons mt-2" style="cursor:pointer;" (click)="deleteScanListFailure(trp)" > delete </i>
             </td>
           </tr>
           </tbody>

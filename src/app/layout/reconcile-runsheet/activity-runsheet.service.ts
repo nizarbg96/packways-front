@@ -37,6 +37,7 @@ export class ActivityRunsheetService {
     'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
     'Authorization': `Bearer ${this.jwt}`
   });
+  forcedRetour = false;
   constructor(protected http: HttpClient, protected httpOld: Http) {}
 
   create(activity: IActivity): Observable<EntityResponseType> {
