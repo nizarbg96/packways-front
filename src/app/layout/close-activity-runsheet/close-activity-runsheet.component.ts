@@ -29,6 +29,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
   selectedActivity: Activity;
   checkedActivityStatus: string;
   user: any;
+  moreDayCounter = 1;
 
 
 
@@ -44,12 +45,13 @@ export class CloseActivityRunsheetComponent implements OnInit {
 
   getActivities() {
     this.spinner = true;
-    // const  fromDate = new Date();
-    // fromDate.setDate(fromDate.getDate() - 1);
-    // fromDate.setHours(0); fromDate.setMinutes(0); fromDate.setSeconds(0);
-    // const toDate = new Date();
-    this.activityRunsheetService.query().subscribe((resActivity) => {
-      this.activitiesRunsheet = resActivity.body.filter((activity) => ((activity.deleted === false) && (activity.status === 'confirmed' || activity.status === 'closed')));
+    const  fromDate = new Date();
+    fromDate.setDate(fromDate.getDate() - this.moreDayCounter);
+    fromDate.setHours(0); fromDate.setMinutes(0); fromDate.setSeconds(0);
+    const toDate = new Date();
+    this.activityRunsheetService.findByCreatedDateGreaterThan(fromDate).subscribe((resActivity) => {
+      this.activitiesRunsheet = resActivity.body.filter((activity) => ((activity.deleted === false) &&
+        (activity.status === 'confirmed' || activity.status === 'closed'))).reverse();
       if(this.user.role !== 'superAdmin'){
         this.activitiesRunsheet = this.activitiesRunsheet.filter((activity) => activity.entrepot.id === this.user.entrepot.id ||
           activity.closedBy === this.user.idAdmin);
@@ -156,6 +158,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
   }
 
   showMore() {
-
+    this.moreDayCounter = this.moreDayCounter  + 1;
+    this.getActivities();
   }
 }

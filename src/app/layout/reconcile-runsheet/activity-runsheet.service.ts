@@ -66,7 +66,11 @@ export class ActivityRunsheetService {
   }
   findByCreatedDateBetween(fromDate: Date, toDate: Date): Observable<EntityArrayResponseType> {
     return this.http
-      .get<IActivity[]>(`${this.resourceUrl}/betweenDate?fromDate=${fromDate}&toDate=${toDate}`, {observe: 'response' });
+      .post<IActivity[]>(`${this.resourceUrl}/betweenDate/`, {fromDate: fromDate, toDate: toDate}, {observe: 'response' });
+  }
+  findByCreatedDateGreaterThan(fromDate: Date): Observable<EntityArrayResponseType> {
+    return this.http
+      .post<IActivity[]>(`${this.resourceUrl}/afterDate/`, fromDate, {observe: 'response' });
   }
 
   delete(id: string): Observable<HttpResponse<{}>> {
