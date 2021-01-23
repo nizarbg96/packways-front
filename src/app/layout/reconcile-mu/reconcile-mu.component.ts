@@ -35,6 +35,7 @@ export class ReconcileMuComponent implements OnInit {
   selectedActivityMu: ActivityMu;
   checkedActivityMuStatus: string;
   user: any;
+  moreDayCounter = 1;
 
 
 
@@ -50,8 +51,11 @@ export class ReconcileMuComponent implements OnInit {
   }
 
   getActivities() {
+    const  fromDate = new Date();
+    fromDate.setDate(fromDate.getDate() - this.moreDayCounter);
+    fromDate.setHours(0); fromDate.setMinutes(0); fromDate.setSeconds(0);
     this.spinner = true;
-    this.activityMoveableUnitService.query().subscribe((resActivityMu) => {
+    this.activityMoveableUnitService.findByCreatedDateGreaterThan(fromDate).subscribe((resActivityMu) => {
       this.activitiesMoveableUnit = resActivityMu.body.filter((activity) => ((activity.deleted === false) && (activity.status === 'draft' || activity.status === 'confirmed')));
       if(this.user.role !== 'superAdmin') {
         this.activitiesMoveableUnit = this.activitiesMoveableUnit.filter((activity) => activity.entrepot.id === this.user.entrepot.id || activity.createdBy === this.user.idAdmin );
@@ -183,6 +187,11 @@ export class ReconcileMuComponent implements OnInit {
     else {
       this.filtredActivitiesMoveableUnit = this.activitiesMoveableUnit.slice().filter((item) => item.ref.includes(filterValueUpper));
     }
+  }
+
+  showMore() {
+    this.moreDayCounter = this.moreDayCounter  + 1;
+    this.getActivities();
   }
 }
 

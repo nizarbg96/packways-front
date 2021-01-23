@@ -73,9 +73,10 @@ export class ReconcilePickUpComponent implements OnInit {
       if ( !!result ) {
         this.driver = result;
         console.log(this.driver.idDriver);
-        const driverActivity = this.activitiesPickUp.filter((activity) => (activity.driver.idDriver === this.driver.idDriver) && activity.deleted === false && activity.status === 'draft')
+        const driverActivity = this.activitiesPickUp.filter((activity) => (activity.driver.idDriver === this.driver.idDriver)
+          && activity.deleted === false && activity.status === 'draft' && activity.entrepot.id === this.user.entrepot.id);
         if (driverActivity.length > 0){
-          this.snackBar.open('Le livreur a déja une activité-pickUp à l\'état " draft ": ', 'Fermer', {
+          this.snackBar.open('Le livreur a déja une activité-pickUp à l\'état " draft ", sinon vérifier votre entrepot ! ', 'Fermer', {
             duration: 8000,
           });
           return;

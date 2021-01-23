@@ -15,12 +15,12 @@
       <div class="col-md-10 Aligner">
       </div>
       <div class="col-md-2 Aligner ">
-        <button mat-raised-button *ngIf="activityPayement_List.selectedOptions.selected.length === 0 "
-                style="width:100%;" color="primary" (click)="openDialog()" class="ml-2">Faire un payement
+        <button mat-raised-button *ngIf="activityPayement_List.selectedOptions.selected.length === 0 && user.role === 'superAdmin' "
+                style="width:100%;" color="primary" (click)="openDialog()" class="ml-2">nouveau payement
         </button>
         <button mat-raised-button color="warn" class="ml-2"
                 style="width: 100%"
-                *ngIf="activityPayement_List.selectedOptions.selected.length>0 && checkedActivityStatus === 'draft' " (click)="deleteSelectedActivity()">
+                *ngIf="activityPayement_List.selectedOptions.selected.length>0 && checkedActivityStatus === 'draft' && user.role === 'superAdmin' " (click)="deleteSelectedActivity()">
           Annuler
         </button>
         <button mat-raised-button  class="ml-2"
@@ -38,7 +38,7 @@
     <div *ngFor="let activityPayement of activitiesPayement">
       <mat-list-option #activityPayement_option
                        *ngIf="(activityPayement.deleted === false) && (activityPayement.status === 'draft' || activityPayement.status ==='confirmed'
-                       || activityPayement.status ==='closed')"
+                       || activityPayement.status ==='closed') && user.role === 'superAdmin'"
                        (click)="onAreaListControlChanged(activityPayement_option, activityPayement)">
         <div class="row mt-1">
           <div class="col-md-9">
@@ -65,6 +65,40 @@
             <button type="button" *ngIf="activityPayement.status === 'draft'" style="z-index: 10;" class="mat-mini-fab ml-2 mt-2" title="Supprimer">
               <i class="material-icons" (click)="deleteActivity(activityPayement)"> delete </i>
             </button>
+            <button *ngIf="activityPayement.status === 'confirmed' || activityPayement.status === 'closed'" style="z-index: 10;" type="button"
+                    class="mat-mini-fab ml-2 mt-2" title="Imprimer">
+              <i class="material-icons" (click)="generateExcelReportForClient(activityPayement)"> print </i>
+            </button>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+            <p style="color: grey; font-style: italic;"
+               class="mt-2">{{ activityPayement.createdDate | date:'dd/MM/yyyy'}}</p>
+            <p style="color: grey; font-style: italic;"
+               [ngClass]="{'text-success': calculateDiff(activityPayement.createdDate) < 2 ,
+              'text-warning': calculateDiff(activityPayement.createdDate) === 2, 'text-danger': calculateDiff(activityPayement.createdDate) > 2}"
+               class="mt-2">
+              <strong>{{ calculateDiff(activityPayement.createdDate)}} Jours</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+      </mat-list-option>
+      <mat-list-option #activityPayement_option
+                       *ngIf="(activityPayement.deleted === false) && (activityPayement.status ==='confirmed'
+                       || activityPayement.status ==='closed') && user.idUser === activityPayement.clientId"
+                       (click)="onAreaListControlChanged(activityPayement_option, activityPayement)">
+        <div class="row mt-1">
+          <div class="col-md-9">
+            <p>activityPayement_Packways_{{activityPayement.ref}}</p>
+            <p style="color: grey; font-style: italic;">
+              {{showStatus(activityPayement.status)}} - Client: <strong>
+              {{(!!activityPayement.clientName) ? activityPayement.clientName : "n'est pas assigné"}}
+            </strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-2">
+
             <button *ngIf="activityPayement.status === 'confirmed' || activityPayement.status === 'closed'" style="z-index: 10;" type="button"
                     class="mat-mini-fab ml-2 mt-2" title="Imprimer">
               <i class="material-icons" (click)="generateExcelReportForClient(activityPayement)"> print </i>

@@ -51,6 +51,10 @@ export class ActivityMuService {
     return this.http
       .get<IActivityMu[]>(this.resourceUrl, {observe: 'response' });
   }
+  findByCreatedDateGreaterThan(fromDate: Date): Observable<EntityArrayResponseType> {
+    return this.http
+      .post<IActivityMu[]>(`${this.resourceUrl}/afterDate/`, fromDate, {observe: 'response' });
+  }
 
   findByStatus(status: string): Observable<EntityArrayResponseType> {
     return this.http
