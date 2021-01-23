@@ -84,7 +84,7 @@ export class ReconcileMuComponent implements OnInit {
         this.moveableUnitService.findAllByStatus('dispached').subscribe((res) => {
           // !!!!! FILTER BY ENTREPOT TOO
           const moveableUnitsToReconcile = res.body
-            .filter((moveableUnit) => (moveableUnit.deleted === false && moveableUnit.driver.idDriver === this.driver.idDriver));
+            .filter((moveableUnit) => (moveableUnit.deleted === false && moveableUnit.driver.idDriver === this.driver.idDriver && moveableUnit.entrepotDest.id === this.user.entrepot.id));
           if(moveableUnitsToReconcile.length === 0) {
             this.snackBar.open('Le livreur n\'a pas des moveableUnits en cours ', 'Fermer', {
               duration: 8000,

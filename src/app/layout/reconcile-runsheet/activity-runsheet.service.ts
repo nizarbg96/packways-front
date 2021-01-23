@@ -64,6 +64,10 @@ export class ActivityRunsheetService {
     return this.http
       .get<IActivity[]>(`${this.resourceUrl}/status/${status}`, {observe: 'response' });
   }
+  findByCreatedDateBetween(fromDate: Date, toDate: Date): Observable<EntityArrayResponseType> {
+    return this.http
+      .get<IActivity[]>(`${this.resourceUrl}/betweenDate?fromDate=${fromDate}&toDate=${toDate}`, {observe: 'response' });
+  }
 
   delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });

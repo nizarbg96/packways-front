@@ -44,6 +44,10 @@ export class CloseActivityRunsheetComponent implements OnInit {
 
   getActivities() {
     this.spinner = true;
+    // const  fromDate = new Date();
+    // fromDate.setDate(fromDate.getDate() - 1);
+    // fromDate.setHours(0); fromDate.setMinutes(0); fromDate.setSeconds(0);
+    // const toDate = new Date();
     this.activityRunsheetService.query().subscribe((resActivity) => {
       this.activitiesRunsheet = resActivity.body.filter((activity) => ((activity.deleted === false) && (activity.status === 'confirmed' || activity.status === 'closed')));
       if(this.user.role !== 'superAdmin'){
@@ -151,4 +155,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
     this.router.navigate(['/close-activity-runsheet/create']);
   }
 
+  showMore() {
+
+  }
 }

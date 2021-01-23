@@ -327,33 +327,57 @@ confirmRunsheet() {
 
   openForceStatusRetour(name: string) {
     this.modalService.open(MODALS[name]).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-      const listTrips = [this.runsheetService.sacannedTrip.idTrip];
-      this.tservice.updateTripsStatus('Chez Livreur', listTrips, this.user.name, '').subscribe(() => {
-          this.tservice.getTripscanListById(this.runsheetService.sacannedTrip.idTrip).subscribe((resT) => {
-            const trip = resT.body;
-            this.runsheet.listColis.push(new ColisRunsheet(trip.idTrip, false, this.user.idAdmin,
-              new Date(), false));
-            this.ListScan.push(trip);
-            this.playSuccessAudio();
-            this.tservice.updateRunsheet(trip.idTrip, new RunsheetHistory(this.runsheet.id, this.user.idAdmin, new Date)).subscribe(() => {
-              this.tservice.getTripscanListById(trip.idTrip).subscribe((resT2) => {
-                const trip2 = resT2.body;
-                this.runsheetService.update(this.runsheet).subscribe(() => {
-                  trip2.historiqueScans.push(new HistoriqueScan(this.user.idAdmin, new Date(), 'Ajout dans la  Runsheet: ' + this.runsheet.id, 'Success : forced status'));
-                  this.tservice.updateOneTrip(trip2).subscribe();
+        this.closeResult = `Closed with: ${result}`;
+        const listTrips = [this.runsheetService.sacannedTrip.idTrip];
+        if (this.runsheetService.sacannedTrip.statusTrip === 'Retour') {
+          const obj = this.runsheetService.sacannedTrip;
+          obj.statusTrip = 'Chez Livreur';
+          this.ListScan.push(obj);
+          this.tservice.updateTripsStatus('Chez Livreur', listTrips, this.user.name, '').subscribe(() => {
+            this.tservice.getTripscanListById(this.runsheetService.sacannedTrip.idTrip).subscribe((resT) => {
+              const trip = resT.body;
+              this.runsheet.listColis.push(new ColisRunsheet(trip.idTrip, false, this.user.idAdmin,
+                new Date(), false));
+              this.playSuccessAudio();
+              this.tservice.updateRunsheet(trip.idTrip, new RunsheetHistory(this.runsheet.id, this.user.idAdmin, new Date)).subscribe(() => {
+                this.tservice.getTripscanListById(trip.idTrip).subscribe((resT2) => {
+                  const trip2 = resT2.body;
+                  this.runsheetService.update(this.runsheet).subscribe(() => {
+                    trip2.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  Runsheet: ' + this.runsheet.id, 'Success : forced status'));
+                    this.tservice.updateOneTrip(trip2).subscribe();
+                  });
                 });
-              })
+              });
             });
           });
-        }
-      );
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      console.log(this.closeResult);
-    });
+        } else if (this.runsheetService.sacannedTrip.statusTrip === 'Chez Livreur') {
+          const obj = this.runsheetService.sacannedTrip;
+          obj.statusTrip = 'Retour';
+          this.ListScan.push(obj);
+          this.tservice.updateTripsStatus('Retour', listTrips, this.user.name, '').subscribe(() => {
+              this.tservice.getTripscanListById(this.runsheetService.sacannedTrip.idTrip).subscribe((resT) => {
+                const trip = resT.body;
+                this.runsheet.listColis.push(new ColisRunsheet(trip.idTrip, false, this.user.idAdmin,
+                  new Date(), false));
+                this.playSuccessAudio();
+                this.tservice.updateRunsheet(trip.idTrip, new RunsheetHistory(this.runsheet.id, this.user.idAdmin, new Date)).subscribe(() => {
+                  this.tservice.getTripscanListById(trip.idTrip).subscribe((resT2) => {
+                    const trip2 = resT2.body;
+                    this.runsheetService.update(this.runsheet).subscribe(() => {
+                      trip2.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  Runsheet: ' + this.runsheet.id, 'Success : forced status'));
+                      this.tservice.updateOneTrip(trip2).subscribe();
+                    });
+                  });
+                });
+              });
+            }
+          ); }
+      }, (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+        console.log(this.closeResult);
+      }
+    );
   }
-
 
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {

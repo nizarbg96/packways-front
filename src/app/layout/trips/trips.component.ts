@@ -1412,7 +1412,7 @@ export class TripsComponent implements OnInit {
 
         console.log('this.objTrip.msgTrip: ', this.objTrip.msgTrip.length);
 
-        this.runsheetService.getList(trip.runsheetsHistory.map(runsheetHistory => runsheetHistory.runsheetId)).subscribe((res) => {
+        this.runsheetService.getList(trip.runsheetsHistory.filter((runsheetHistory) => runsheetHistory !== null).map(runsheetHistory => runsheetHistory.runsheetId)).subscribe((res) => {
           this.runsheetsHistory = res.body;
           for(let i = 0; i < this.runsheetsHistory.length; i++){
             this.runsheetPrintHistory.push({runsheetRef: this.runsheetsHistory[i].ref, runsheetHistory: trip.runsheetsHistory[i]});

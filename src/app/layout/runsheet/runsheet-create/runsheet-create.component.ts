@@ -356,7 +356,6 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
               const trip = resT.body;
               this.runsheet.listColis.push(new ColisRunsheet(trip.idTrip, false, this.user.idAdmin,
                 new Date(), false));
-              this.ListScan.push(trip);
               this.playSuccessAudio();
               this.tservice.updateRunsheet(trip.idTrip, new RunsheetHistory(this.runsheet.id, this.user.idAdmin, new Date)).subscribe(() => {
                 this.tservice.getTripscanListById(trip.idTrip).subscribe((resT2) => {
