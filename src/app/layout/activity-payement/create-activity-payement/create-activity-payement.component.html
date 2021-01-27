@@ -12,9 +12,8 @@
       </div>
     </div>
     <div class="row mt-2">
-      <div class="col-md-10">
-        <div class="row" *ngIf="firstStep">
-          <div class="col-md-2">
+      <div class="row">
+        <div class="col-md-3">
           <p><mat-form-field appearance="fill" class="ml-2">
             <mat-label>REF</mat-label>
             <input matInput placeholder="filtrer par réference" (keyup)="applyFilter($event.target.value)">
@@ -22,19 +21,40 @@
           </mat-form-field>
           </p>
         </div>
-          <div class="col-md-2">
-            <p><mat-form-field appearance="fill" style="display: block; width: 100%">
-              <mat-label>Entrepôt</mat-label>
-              <mat-select  required (selectionChange)="affectEntrepotSrc($event.value)">
-                <mat-option>--</mat-option>
-                <mat-option *ngFor="let entrepot of entrepots" [value]="entrepot" >
-                  {{entrepot.nom}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            </p>
-          </div>
-          <div class="col-md-3">
+        <div class="col-md-3">
+          <p><mat-form-field appearance="fill" style="display: block; width: 100%">
+            <mat-label>Entrepôt</mat-label>
+            <mat-select  required (selectionChange)="affectEntrepotSrc($event.value)">
+              <mat-option>--</mat-option>
+              <mat-option *ngFor="let entrepot of entrepots" [value]="entrepot" >
+                {{entrepot.nom}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          </p>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="fill">
+            <mat-label>Date de début</mat-label>
+            <input matInput [matDatepicker]="picker"
+                   (dateInput)="addEventDateDebut('input', $event)" (dateChange)="addEventDateDebut('change', $event)">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="fill">
+            <mat-label>Date de fin</mat-label>
+            <input matInput [matDatepicker]="picker2"
+                   (dateInput)="addEventDateFin('input', $event)" (dateChange)="addEventDateFin('change', $event)">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-10">
+        <div class="row" *ngIf="firstStep">
+          <div class="col-md-4">
             <fieldset class="scheduler-border">
               <legend class="scheduler-border text-center"><h6>Montant Totale</h6></legend>
               <div class="control-group">
@@ -42,7 +62,7 @@
               </div>
             </fieldset>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-4">
             <fieldset class="scheduler-border">
               <legend class="scheduler-border text-center"><h6>Frais de livraison</h6></legend>
               <div class="control-group">
@@ -50,7 +70,7 @@
               </div>
             </fieldset>
           </div>
-          <div class="col-md-2">
+          <div class="col-md-4">
             <fieldset class="scheduler-border">
               <legend class="scheduler-border text-center"><h6>Montant Net</h6></legend>
               <div class="control-group">

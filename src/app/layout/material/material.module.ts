@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 // Angular Material Components
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatCheckboxModule} from '@angular/material';
+import {MatCheckboxModule, MatNativeDateModule} from '@angular/material';
 import {MatButtonModule} from '@angular/material';
 import {MatInputModule} from '@angular/material/input';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
@@ -32,6 +32,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { CommonModule } from '@angular/common';
 
 @NgModule({
@@ -67,7 +68,9 @@ import { CommonModule } from '@angular/common';
     MatSnackBarModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatNativeDateModule,
+    MatMomentDateModule,
   ],
   exports: [
     MatCheckboxModule,
@@ -100,7 +103,9 @@ import { CommonModule } from '@angular/common';
     MatSnackBarModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatNativeDateModule,
+    MatMomentDateModule
   ]
 })
 export class MaterialLibModule { }

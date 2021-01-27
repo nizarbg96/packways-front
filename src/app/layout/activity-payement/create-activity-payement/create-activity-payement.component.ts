@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {PickUp} from '../../../model/pickup.model';
 import {InProgressPickUp} from '../../ramassage-in-progress/ramassage-in-progress.component';
 import {Trip} from '../../trips/Trip';
-import {MatSnackBar, MatStepper} from '@angular/material';
+import {MatDatepickerInputEvent, MatSnackBar, MatStepper} from '@angular/material';
 import {TripService} from '../../trips/trips.service';
 import {ModalDismissReasons, NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
@@ -88,6 +88,9 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
   listRapportTrips: Trip[] = [];
   listPayed: Trip[] = [];
   listEnCoursDePayement: Trip[] = [];
+  dateDebut: Date;
+  dateFin: Date;
+
 
   constructor(private activityPayementService: ActivityPayementService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private fb: FormBuilder,
@@ -157,31 +160,6 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
     this.entrepotService.query().subscribe((res) => {
       this.entrepots = res.body.filter((entrepot) => entrepot.deleted === false);
     });
-  }
-
-  affectEntrepotSrc(entrepot: Entrepot) {
-    this.entrepotSrcValue = entrepot;
-    if (!!entrepot) {
-      this.filtredRecoltedTrips = this.recoltedTrips.slice().filter((item) => item.entrepot.id === entrepot.id);
-    }
-  }
-
-  deleteScanListPickUp(trip) {
-    // for (let i = 0; i < this.ListScanPickUp.length; i++) {
-    //   if (trip.idTrip === this.ListScanPickUp[i].idTrip) {
-    //     this.ListScanPickUp.splice(i, 1);
-    //   }
-    // }
-    // this.listColisNonTreated.push(trip);
-    // this.activityPayement.listColisNonTreated.push(trip.idTrip);
-    // this.ListScanPickUpNB = this.ListScanPickUp.length;
-    // const colisToDelete = this.activityPayement.listColisSuccess.slice()
-    //   .filter((colis) => ((colis.idTrip === trip.idTrip) && (colis.removed === false)))[0];
-    // const index = this.activityPayement.listColisSuccess.indexOf(colisToDelete);
-    // this.activityPayement.listColisSuccess[index].removed = true;
-    // this.activityPayement.listColisSuccess[index].removedBy =  this.user.idAdmin;
-    // this.activityPayement.listColisSuccess[index].removedDate =  new Date() ;
-    // this.activityPayementService.update(this.activityPayement).subscribe();
   }
 
 
@@ -255,7 +233,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
     this.spinner = true;
     this.activityPayement = activityToEdit;
     this.client = this.activityPayementInfo.client;
-    if(activityToEdit.status === 'draft'){
+    if (activityToEdit.status === 'draft') {
       this.tripService.getListOfTips(this.activityPayement.listColisRecolted).subscribe((res) => {
         this.recoltedTrips = res.body;
         this.filtredRecoltedTrips = this.recoltedTrips;
@@ -274,7 +252,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
           });
         });
       });
-    } else if (activityToEdit.status === 'confirmed'){
+    } else if (activityToEdit.status === 'confirmed') {
       this.tripService.getListOfTips(this.activityPayement.listEnCoursDePayementTrips).subscribe((res) => {
         this.recoltedTrips = res.body;
         this.filtredRecoltedTrips = this.recoltedTrips;
@@ -291,7 +269,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
             });
         });
       });
-    } else if (activityToEdit.status === 'closed'){
+    } else if (activityToEdit.status === 'closed') {
       this.tripService.getListOfTips(this.activityPayement.listPayedTrips).subscribe((res) => {
         this.recoltedTrips = res.body;
         this.filtredRecoltedTrips = this.recoltedTrips;
@@ -369,13 +347,13 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
   selectAll(event) {
     this.checkedTrips = [];
     if (event.target.checked) {
-      for (let i = 0; i < this.recoltedTrips.length; i++) {
-        this.recoltedTrips[i].selected = true;
-        this.checkedTrips.push(this.recoltedTrips[i]);
+      for (let i = 0; i < this.filtredRecoltedTrips.length; i++) {
+        this.filtredRecoltedTrips[i].selected = true;
+        this.checkedTrips.push(this.filtredRecoltedTrips[i]);
       }
     } else {
-      for (let i = 0; i < this.recoltedTrips.length; i++) {
-        this.recoltedTrips[i].selected = false;
+      for (let i = 0; i < this.filtredRecoltedTrips.length; i++) {
+        this.filtredRecoltedTrips[i].selected = false;
       }
       this.checkedTrips = [];
     }
@@ -390,7 +368,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
     if (event.target.checked) {
       this.checkedTrips.push(option);
     } else {
-      for (let i = 0; i < this.recoltedTrips.length; i++) {
+      for (let i = 0; i < this.filtredRecoltedTrips.length; i++) {
         if (this.checkedTrips[i] === option) {
           this.checkedTrips.splice(i, 1);
         }
@@ -757,6 +735,102 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
     }
     return dformat;
   }
+
+  affectEntrepotSrc(entrepot: Entrepot) {
+    this.entrepotSrcValue = entrepot;
+    if (!!entrepot) {
+      this.filtredRecoltedTrips = this.recoltedTrips.slice().filter((item) => item.entrepot.id === entrepot.id);
+    } else {
+      this.filtredRecoltedTrips = this.recoltedTrips;
+    }
+    if (!!this.dateDebut){
+      this.filtredRecoltedTrips = this.filtredRecoltedTrips.slice().filter((item: Trip) => {
+        if (!!this.dateFin){
+          if (item.recoltdate >= this.dateDebut && item.recoltdate <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.recoltdate >= this.dateDebut) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } );
+    }
+    if(!!this.dateFin){
+      this.filtredRecoltedTrips = this.filtredRecoltedTrips.slice().filter((item: Trip) => {
+        if (!!this.dateDebut){
+          if (item.recoltdate >= this.dateDebut && item.recoltdate <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.recoltdate <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } );
+    }
+  }
+
+  addEventDateDebut(input: string, $event: MatDatepickerInputEvent<Date>) {
+    this.dateDebut = $event.value;
+    if (!$event.value) {
+      this.filtredRecoltedTrips = this.recoltedTrips;
+    } else {
+      this.filtredRecoltedTrips = this.recoltedTrips.slice().filter((item: Trip) => {
+        if (!!this.dateFin){
+          if (item.recoltdate >= this.dateDebut && item.recoltdate <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.recoltdate >= this.dateDebut) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } );
+    }
+    if (!!this.entrepotSrcValue){
+      this.filtredRecoltedTrips = this.filtredRecoltedTrips.slice().filter((item) => item.entrepot.id === this.entrepotSrcValue.id);
+    }
+
+  }
+
+  addEventDateFin(change: string, $event: MatDatepickerInputEvent<Date>) {
+    this.dateFin = $event.value;
+    if (!$event.value) {
+      this.filtredRecoltedTrips = this.recoltedTrips;
+    } else {
+      this.filtredRecoltedTrips = this.recoltedTrips.slice().filter((item: Trip) => {
+        if (!!this.dateDebut){
+          if (item.recoltdate >= this.dateDebut && item.recoltdate <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.recoltdate <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } );
+    }
+    if (!!this.entrepotSrcValue){
+      this.filtredRecoltedTrips = this.filtredRecoltedTrips.slice().filter((item) => item.entrepot.id === this.entrepotSrcValue.id);
+    }
+  }
 }
 
 @Component({
@@ -819,4 +893,4 @@ export class NgbdModalActivityPayementConfirmed implements OnInit {
 const MODALS: { [name: string]: Type<any> } = {
   confirmActivity: NgbdModalConfirmActivityPayement,
   activityConfirmed: NgbdModalActivityPayementConfirmed,
-}
+};

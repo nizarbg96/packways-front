@@ -29,6 +29,7 @@ export class ConflictTripsComponent implements OnInit {
     'Reconcile M.U - Lost', 'Reconcile M.U - Damaged', 'Reconcile Activity Pick Up - Non Expédié', 'Reconcile Activity Pick Up - Lost',
     'Reconcile Activity Pick Up - Damaged'];
   conflitInventaire = ['Inventaire - Non Treated'];
+  private moreDayCounter = 1;
 
   constructor(private conflitService: ConflitService, private tripService: TripService) { }
 
@@ -37,15 +38,20 @@ export class ConflictTripsComponent implements OnInit {
   }
 
   getConflictTrips() {
-    this.conflitService.query().subscribe((res) => {
-      this.conflits = res.body;
-    const listConflitTripsIds = res.body.filter((conflit) => conflit.closed === false).map((conflit) => conflit.colisId);
+    const  fromDate = new Date();
+    fromDate.setDate(fromDate.getDate() - this.moreDayCounter);
+    fromDate.setHours(0); fromDate.setMinutes(0); fromDate.setSeconds(0);
+    this.spinner = true;
+    this.conflitService.findByCreatedDateGreaterThan(fromDate).subscribe((res) => {
+      this.conflits = res.body.reverse();
+    const listConflitTripsIds = this.conflits.filter((conflit) => conflit.closed === false).map((conflit) => conflit.colisId);
     this.tripService.getListOfTips(listConflitTripsIds).subscribe((resTrips) => {
       this.trips = resTrips.body;
       for (let i = 0; i < this.conflits.length; i++){
         this.conflitTrips.push({conflit: this.conflits[i], trip: this.trips[i]});
       }
       this.filtredConflitTrips = this.conflitTrips;
+      this.spinner = false;
     });
     });
   }
@@ -72,6 +78,10 @@ export class ConflictTripsComponent implements OnInit {
     else {
       this.filtredConflitTrips = this.conflitTrips.slice().filter((item) => item.trip.refTrip.includes(filterValueUpper));
     }
+  }
+  showMore() {
+    this.moreDayCounter = this.moreDayCounter  + 1;
+    this.getConflictTrips();
   }
 
 

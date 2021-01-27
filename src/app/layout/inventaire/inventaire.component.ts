@@ -27,6 +27,7 @@ export class InventaireComponent implements OnInit {
   selectedInventaire: Inventaire;
   checkedInventaireStatus: string;
   user: any;
+  private moreDayCounter = 1;
 
 
 
@@ -42,9 +43,13 @@ export class InventaireComponent implements OnInit {
   }
 
   getInventaires() {
+    const  fromDate = new Date();
+    fromDate.setDate(fromDate.getDate() - this.moreDayCounter);
+    fromDate.setHours(0); fromDate.setMinutes(0); fromDate.setSeconds(0);
     this.spinner = true;
-    this.inventaireService.query().subscribe((resInventaire) => {
-      this.inventaires = resInventaire.body.filter((inventaire) => ((inventaire.deleted === false) && (inventaire.status === 'draft' || inventaire.status === 'confirmed')));
+    this.inventaireService.findByCreatedDateGreaterThan(fromDate).subscribe((resInventaire) => {
+      this.inventaires = resInventaire.body.filter((inventaire) => ((inventaire.deleted === false) &&
+        (inventaire.status === 'draft' || inventaire.status === 'confirmed'))).reverse();
       if(this.user.role !== 'superAdmin'){
         this.inventaires = this.inventaires.filter((inventaire) => inventaire.entrepot.id === this.user.entrepot.id ||
           inventaire.createdBy === this.user.idAdmin);
@@ -122,6 +127,10 @@ export class InventaireComponent implements OnInit {
       return;
     }
     this.router.navigate(['/inventaire/create']);
+  }
+  showMore() {
+    this.moreDayCounter = this.moreDayCounter  + 1;
+    this.getInventaires();
   }
 }
 const MODALS: { [name: string]: Type<any> } = {

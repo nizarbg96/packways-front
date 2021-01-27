@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
-import {Activity} from '../../model/activity.model';
+import {Activity, IActivity} from '../../model/activity.model';
 import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
 import {Trip} from '../trips/Trip';
@@ -51,6 +51,10 @@ export class ActivityPickUpService {
   query(req?: any): Observable<EntityArrayResponseType> {
     return this.http
       .get<IActivityPickUp[]>(this.resourceUrl, {observe: 'response' });
+  }
+  findByCreatedDateGreaterThan(fromDate: Date): Observable<EntityArrayResponseType> {
+    return this.http
+      .post<IActivityPickUp[]>(`${this.resourceUrl}/afterDate/`, fromDate, {observe: 'response' });
   }
 
   findByStatus(status: string): Observable<EntityArrayResponseType> {

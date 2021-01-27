@@ -5,6 +5,7 @@ import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
 import {Trip} from '../trips/Trip';
 import {IInventaire} from '../../model/inventaire.model';
+import {IActivityPickUp} from '../../model/activity-pickUp.model';
 type EntityResponseType = HttpResponse<IInventaire>;
 type EntityArrayResponseType = HttpResponse<IInventaire[]>;
 
@@ -38,6 +39,10 @@ export class InventaireService {
   query(req?: any): Observable<EntityArrayResponseType> {
     return this.http
       .get<IInventaire[]>(this.resourceUrl, {observe: 'response' });
+  }
+  findByCreatedDateGreaterThan(fromDate: Date): Observable<EntityArrayResponseType> {
+    return this.http
+      .post<IInventaire[]>(`${this.resourceUrl}/afterDate/`, fromDate, {observe: 'response' });
   }
 
   findByStatus(status: string): Observable<EntityArrayResponseType> {

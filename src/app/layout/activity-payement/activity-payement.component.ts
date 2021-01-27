@@ -34,6 +34,7 @@ export class ActivityPayementComponent implements OnInit {
   private keyFiltredTrip4: string;
   private jsonObj: any;
   listCheckedActivities: ActivityPayement[] = [];
+  private moreDayCounter = 1;
 
 
 
@@ -47,9 +48,13 @@ export class ActivityPayementComponent implements OnInit {
   }
 
   getActivities() {
+    const  fromDate = new Date();
+    fromDate.setDate(fromDate.getDate() - this.moreDayCounter);
+    fromDate.setHours(0); fromDate.setMinutes(0); fromDate.setSeconds(0);
     this.spinner = true;
-    this.activityPayementService.query().subscribe((resActivity) => {
-      this.activitiesPayement = resActivity.body.filter((activity) => ((activity.deleted === false) && (activity.status === 'draft' || activity.status === 'confirmed' || activity.status === 'closed')));
+    this.activityPayementService.findByCreatedDateGreaterThan(fromDate).subscribe((resActivity) => {
+      this.activitiesPayement = resActivity.body.filter((activity) => ((activity.deleted === false) &&
+        (activity.status === 'draft' || activity.status === 'confirmed' || activity.status === 'closed'))).reverse();
       this.spinner = false;
     });
   }
@@ -213,6 +218,10 @@ export class ActivityPayementComponent implements OnInit {
       dformat = arr[1] + ' ' + arr[0] + ' ' + arr[2];
     }
     return dformat;
+  }
+  showMore() {
+    this.moreDayCounter = this.moreDayCounter  + 1;
+    this.getActivities();
   }
 }
 @Component({

@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {Trip} from '../trips/Trip';
 import {ActivityPayement, IActivityPayement} from '../../model/activity-payement.model';
 import {ActivityPayementInfo} from './activity-payement.component';
+import {IActivityPickUp} from '../../model/activity-pickUp.model';
 type EntityResponseType = HttpResponse<IActivityPayement>;
 type EntityArrayResponseType = HttpResponse<IActivityPayement[]>;
 
@@ -38,6 +39,10 @@ export class ActivityPayementService {
   query(req?: any): Observable<EntityArrayResponseType> {
     return this.http
       .get<IActivityPayement[]>(this.resourceUrl, {observe: 'response' });
+  }
+  findByCreatedDateGreaterThan(fromDate: Date): Observable<EntityArrayResponseType> {
+    return this.http
+      .post<IActivityPayement[]>(`${this.resourceUrl}/afterDate/`, fromDate, {observe: 'response' });
   }
 
   findByStatus(status: string): Observable<EntityArrayResponseType> {

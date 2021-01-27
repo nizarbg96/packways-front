@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { createRequestOption } from 'src/app/shared/util/request-util';
 import {IConflit} from '../../model/conflit.model';
+import {IActivityPickUp} from '../../model/activity-pickUp.model';
 
 
 type EntityResponseType = HttpResponse<IConflit>;
@@ -41,6 +42,10 @@ export class ConflitService {
     const options = createRequestOption(req);
     return this.http
       .get<IConflit[]>(this.resourceUrl, { params: options, observe: 'response' });
+  }
+  findByCreatedDateGreaterThan(fromDate: Date): Observable<EntityArrayResponseType> {
+    return this.http
+      .post<IConflit[]>(`${this.resourceUrl}/afterDate/`, fromDate, {observe: 'response' });
   }
 
   delete(id: string): Observable<HttpResponse<{}>> {

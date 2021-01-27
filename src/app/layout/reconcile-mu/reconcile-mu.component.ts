@@ -56,7 +56,8 @@ export class ReconcileMuComponent implements OnInit {
     fromDate.setHours(0); fromDate.setMinutes(0); fromDate.setSeconds(0);
     this.spinner = true;
     this.activityMoveableUnitService.findByCreatedDateGreaterThan(fromDate).subscribe((resActivityMu) => {
-      this.activitiesMoveableUnit = resActivityMu.body.filter((activity) => ((activity.deleted === false) && (activity.status === 'draft' || activity.status === 'confirmed')));
+      this.activitiesMoveableUnit = resActivityMu.body.filter((activity) => ((activity.deleted === false) &&
+        (activity.status === 'draft' || activity.status === 'confirmed'))).reverse();
       if(this.user.role !== 'superAdmin') {
         this.activitiesMoveableUnit = this.activitiesMoveableUnit.filter((activity) => activity.entrepot.id === this.user.entrepot.id || activity.createdBy === this.user.idAdmin );
       }

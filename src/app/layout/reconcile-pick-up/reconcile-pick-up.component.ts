@@ -38,6 +38,7 @@ export class ReconcilePickUpComponent implements OnInit {
   selectedActivity: Activity;
   checkedActivityStatus: string;
   user: any;
+  private moreDayCounter = 1;
 
 
 
@@ -53,9 +54,13 @@ export class ReconcilePickUpComponent implements OnInit {
   }
 
   getActivities() {
+    const  fromDate = new Date();
+    fromDate.setDate(fromDate.getDate() - this.moreDayCounter);
+    fromDate.setHours(0); fromDate.setMinutes(0); fromDate.setSeconds(0);
     this.spinner = true;
-    this.activityPickUpService.query().subscribe((resActivity) => {
-      this.activitiesPickUp = resActivity.body.filter((activity) => ((activity.deleted === false) && (activity.status === 'draft' || activity.status === 'confirmed')));
+    this.activityPickUpService.findByCreatedDateGreaterThan(fromDate).subscribe((resActivity) => {
+      this.activitiesPickUp = resActivity.body.filter((activity) => ((activity.deleted === false) &&
+        (activity.status === 'draft' || activity.status === 'confirmed'))).reverse();
       if(this.user.role !== 'superAdmin') {
         this.activitiesPickUp = this.activitiesPickUp.filter((activity) => activity.entrepot.id === this.user.entrepot.id || activity.createdBy === this.user.idAdmin );
       }
@@ -189,6 +194,10 @@ export class ReconcilePickUpComponent implements OnInit {
     else {
       this.filtredActivitiesPickUp = this.activitiesPickUp.slice().filter((item) => item.ref.includes(filterValueUpper));
     }
+  }
+  showMore() {
+    this.moreDayCounter = this.moreDayCounter  + 1;
+    this.getActivities();
   }
 }
 
