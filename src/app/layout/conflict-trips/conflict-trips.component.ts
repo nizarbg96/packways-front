@@ -21,7 +21,14 @@ export class ConflictTripsComponent implements OnInit {
   spinner = false;
   selectedConflitTrip: ConflitTrip;
   filtredConflitTrips: ConflitTrip[];
-
+  conflitInfo = ['runsheet creation', 'M.U creation', 'Pick Up creation', 'Reconcile Activity Runsheet - Liste des colis (non Livrés / non Retournés):',
+    'Reconcile Activity Runsheet', 'Reconcile Activity Runsheet - Liste des colis (Livrés / Retournés):', 'Reconcile Activity M.U',
+    'Reconcile Activity Pick Up', 'Inventaire'
+  ];
+  conflitNonTreatedDamagedLost = ['Reconcile Activity Runsheet - Lost', 'Reconcile Activity Runsheet - Damaged', 'Reconcile M.U - Non Expédié',
+    'Reconcile M.U - Lost', 'Reconcile M.U - Damaged', 'Reconcile Activity Pick Up - Non Expédié', 'Reconcile Activity Pick Up - Lost',
+    'Reconcile Activity Pick Up - Damaged'];
+  conflitInventaire = ['Inventaire - Non Treated'];
 
   constructor(private conflitService: ConflitService, private tripService: TripService) { }
 

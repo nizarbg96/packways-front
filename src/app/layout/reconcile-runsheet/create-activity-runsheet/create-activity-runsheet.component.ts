@@ -1097,11 +1097,11 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       this.listConflit = this.listConflit.filter((conflit) => conflit.colisId !== trp.idTrip);
     } else if (value === 'lost') {
       this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
-      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityRunsheet.entrepot, value, 'Reconcile Activity Runsheet', this.activityRunsheet.ref, false, null, null);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityRunsheet.entrepot, value, 'Reconcile Activity Runsheet - Lost', this.activityRunsheet.ref, false, null, null);
       this.listConflit.push(conflit);
     } else if (value === 'damaged') {
       this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
-      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityRunsheet.entrepot, value, 'Reconcile Activity Runsheet', this.activityRunsheet.ref, false, null, null);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityRunsheet.entrepot, value, 'Reconcile Activity Runsheet - Damaged', this.activityRunsheet.ref, false, null, null);
       this.listConflit.push(conflit);
     }
   }

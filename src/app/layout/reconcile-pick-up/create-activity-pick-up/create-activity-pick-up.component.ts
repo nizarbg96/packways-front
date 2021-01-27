@@ -598,15 +598,15 @@ export class CreateActivityPickUpComponent implements OnInit, AfterViewInit {
       this.listConflit = this.listConflit.filter((conflit) => conflit.colisId !== trp.idTrip);
     } else if (value === 'non expédié') {
       this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
-      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, trp.entrepot, value, 'pick up',  this.activityPickUp.ref);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, trp.entrepot, value, 'Reconcile Activity Pick Up - Non Expédié',  this.activityPickUp.ref);
       this.listConflit.push(conflit);
     } else if (value === 'lost') {
       this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
-      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityPickUp.entrepot, value, 'pick up', this.activityPickUp.ref, false, null, null);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityPickUp.entrepot, value, 'Reconcile Activity Pick Up - Lost', this.activityPickUp.ref, false, null, null);
       this.listConflit.push(conflit);
     } else if (value === 'damaged') {
       this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
-      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityPickUp.entrepot, value, 'pick up', this.activityPickUp.ref, false, null, null);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityPickUp.entrepot, value, 'Reconcile Activity Pick Up - Damaged', this.activityPickUp.ref, false, null, null);
       this.listConflit.push(conflit);
     }
   }

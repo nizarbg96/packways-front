@@ -162,7 +162,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
   affectEntrepotSrc(entrepot: Entrepot) {
     this.entrepotSrcValue = entrepot;
     if (!!entrepot) {
-      this.filtredRecoltedTrips = this.recoltedTrips.slice().filter((item) => item.entrepot.nom === entrepot.nom);
+      this.filtredRecoltedTrips = this.recoltedTrips.slice().filter((item) => item.entrepot.id === entrepot.id);
     }
   }
 
@@ -280,7 +280,6 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         this.filtredRecoltedTrips = this.recoltedTrips;
         this.tripService.getListOfTips(this.activityPayement.listColisToPay).subscribe((resTrips) => {
             this.listRapportTrips = this.activityPayement.listRapportTrips;
-            this.filtredRecoltedTrips = this.listRapportTrips;
             this.listColisToPay = resTrips.body;
             this.userService.getUserById(activityToEdit.clientId).subscribe((resUser) => {
               const client = resUser.json();
@@ -298,7 +297,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         this.filtredRecoltedTrips = this.recoltedTrips;
         this.tripService.getListOfTips(this.activityPayement.listColisToPay).subscribe((resTrips) => {
             this.listRapportTrips = this.activityPayement.listRapportTrips;
-          this.filtredRecoltedTrips = this.listRapportTrips;
+          this.filtredRecoltedTrips = this.recoltedTrips;
           this.listColisToPay = resTrips.body;
             this.userService.getUserById(activityToEdit.clientId).subscribe((resUser) => {
               const client = resUser.json();

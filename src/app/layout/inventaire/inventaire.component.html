@@ -38,7 +38,7 @@
     <div *ngFor="let inventaire of inventaires">
       <mat-list-option #inventaire_option
                        *ngIf="(inventaire.deleted === false) && (inventaire.status === 'draft' || inventaire.status ==='confirmed')"
-                       (click)="onAreaListControlChanged(inventaire_option, inventaire)">
+                       (click)="onAreaListControlChanged(inventaire_option, inventaire)" [ngStyle]="{'background-color':inventaire.listColisNonTreated.length > 0 ? 'rgba(255, 207, 96, 1)':'auto'}" >
         <div class="row mt-1">
           <div class="col-md-9">
             <p>inventaire_Packways_{{inventaire.ref}}</p>

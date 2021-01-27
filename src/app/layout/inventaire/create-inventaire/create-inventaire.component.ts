@@ -177,7 +177,7 @@ export class CreateInventaireComponent implements OnInit, AfterViewInit {
                   this.tripService.updateOneTrip(obj).subscribe();
                   this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
                     const admin = resUser.json();
-                    this.conflictService.create(new Conflit(null,obj.idTrip,new Date(),this.user.name,admin.entrepot,msg,'inventaire',
+                    this.conflictService.create(new Conflit(null,obj.idTrip,new Date(),this.user.name,admin.entrepot,msg,'Inventaire',
                       this.inventaire.ref)).subscribe();
                   });
                 });
@@ -397,7 +397,7 @@ export class CreateInventaireComponent implements OnInit, AfterViewInit {
             const admin = resUser.json();
             this.listColisNonTreated.forEach((trip) => {
               listConflits.push(new Conflit(null,trip.idTrip,new Date(),this.user.name,admin.entrepot,
-                'colis non traité dans l\'inventaire','Inventaire', this.inventaire.ref));
+                'colis non traité dans l\'inventaire','Inventaire - Non Treated', this.inventaire.ref));
             });
             if (listConflits.length > 0){
               this.conflictService.createList(listConflits).subscribe(() => {

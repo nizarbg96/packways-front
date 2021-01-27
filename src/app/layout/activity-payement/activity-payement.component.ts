@@ -151,11 +151,12 @@ export class ActivityPayementComponent implements OnInit {
       '', '', '').subscribe(data => {
       const obj = Array.of(JSON.parse(data['_body']).data);
       this.jsonObj = obj[0];
-      console.log(this.jsonObj.length);
-      this.activityPayementInfo = {client: this.client, recoltedTrips: this.jsonObj};
-      this.activityPayementService.activityPayementInfo = this.activityPayementInfo;
-      this.spinner = false;
-      this.router.navigate(['/payements/create']);
+      this.tripService.getListOfTips(this.jsonObj.map(trip => trip.idTrip)).subscribe((resTrips) => {
+        this.activityPayementInfo = {client: this.client, recoltedTrips: resTrips.body};
+        this.activityPayementService.activityPayementInfo = this.activityPayementInfo;
+        this.spinner = false;
+        this.router.navigate(['/payements/create']);
+      });
     });
   }
 

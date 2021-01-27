@@ -1400,6 +1400,7 @@ export class TripsComponent implements OnInit {
         this.objTrip.lastupdateday = this.obj.lastupdateday;
         this.objTrip.historique = this.obj.historique;
         this.objTrip.driverTrip = this.obj.driverTrip;
+        this.objTrip = trip;
         let photo = this.obj.packageTrip.imgPackage;
         if (photo != null) {
             const i = photo.indexOf(',');

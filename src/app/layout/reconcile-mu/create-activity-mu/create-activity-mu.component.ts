@@ -565,15 +565,15 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
       this.listConflit = this.listConflit.filter((conflit) => conflit.colisId !== trp.idTrip);
     } else if (value === 'non expédié') {
       this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
-      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, trp.entrepot, value, 'moveable unit',  this.activityMoveableUnit.ref);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, trp.entrepot, value, 'Reconcile M.U - Non Expédié',  this.activityMoveableUnit.ref);
       this.listConflit.push(conflit);
     } else if (value === 'lost') {
       this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
-      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityMoveableUnit.entrepot, value, 'moveable unit', this.activityMoveableUnit.ref, false, null, null);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityMoveableUnit.entrepot, value, 'Reconcile M.U - Lost', this.activityMoveableUnit.ref, false, null, null);
       this.listConflit.push(conflit);
     } else if (value === 'damaged') {
       this.listConflit = this.listConflit.filter((item) => item.colisId !== trp.idTrip);
-      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityMoveableUnit.entrepot, value, 'moveable unit', this.activityMoveableUnit.ref, false, null, null);
+      const conflit = new Conflit(null, trp.idTrip, new Date, this.user.idAdmin, this.activityMoveableUnit.entrepot, value, 'Reconcile M.U - Damaged', this.activityMoveableUnit.ref, false, null, null);
       this.listConflit.push(conflit);
     }
   }
