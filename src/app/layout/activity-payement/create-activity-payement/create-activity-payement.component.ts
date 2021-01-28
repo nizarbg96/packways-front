@@ -630,7 +630,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         }
       });
       this.amountToPay = this.totalAmount - this.shippingCosts;
-    } else if ([1, 2, 3, 5, 6, 7, 8].indexOf(value) >= 0) {
+    } else if ([0, 1, 2, 3, 5, 6, 7, 8].indexOf(value) >= 0) {
       this.returnedCost = value;
       this.totalAmount = 0;
       this.shippingCosts = 0;

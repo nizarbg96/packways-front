@@ -1157,6 +1157,28 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       this.activityRunsheetService.forcedRetour = false;
     });
   }
+
+  showFinancialStatus(trip: Trip) {
+    let financialStatus = '';
+    if (trip.paymentStatus) {
+      if (trip.paymentStatus === 'Payee') {
+        financialStatus = 'Payé';
+      } else if (trip.paymentStatus === 'En cours de payement') {
+        financialStatus = 'En cours de paiement';
+      } else if (trip.paymentStatus === 'En cours de retour') {
+        financialStatus = 'En cours de retour';
+      } else if (trip.paymentStatus === 'Retournee') {
+        financialStatus = 'Retournee';
+      }
+    } else if (trip.argentRecolte) {
+      financialStatus = 'Récolté';
+    } else if (((!trip.argentRecolte) || (trip.argentRecolte === null)) && (trip.preRecolte === true)) {
+      financialStatus = 'Prés-Recolté';
+    }
+
+
+    return financialStatus;
+  }
 }
 
 @Component({

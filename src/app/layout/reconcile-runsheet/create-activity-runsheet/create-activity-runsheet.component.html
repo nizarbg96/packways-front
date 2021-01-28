@@ -181,6 +181,7 @@
             <th style="width:1%">Status</th>
             <th style="width:1%">Expéditeur</th>
             <th style="width:1%">Destinataire</th>
+            <th style="width:1%">Etat financière</th>
             <th style="width:1%">Msg</th>
             <th style="width:1%" *ngIf="activityRunsheet.status === 'draft'">Action</th>
           </tr>
@@ -191,6 +192,8 @@
             <td style="background-color: #ffffff; width:15%;">{{trp.statusTrip}}</td>
             <td style="background-color: #ffffff; width:15%;">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
             <td style="background-color: #ffffff; width:15%;" >{{trp.destTrip.contactAdr }}</td>
+            <td style="background-color: #ffffff; width:15%;" >{{trp.destTrip.contactAdr }}</td>
+            <td>{{ showFinancialStatus(trp) }}</td>
             <td  style="background-color: #ffffff;  width:20%;" *ngIf="trp.msgTrip && trp.msgTrip.length > 0">
               <ul>
                 <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>

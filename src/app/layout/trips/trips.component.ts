@@ -3626,10 +3626,13 @@ export class TripsComponent implements OnInit {
      const index: number = this.pathRapport.indexOf('PDF/Rapport') + 11;
      this.pathRapport = this.pathRapport.substring(index);
    console.log(this.pathRapport);
+   this.spinner.show();
    this.downloadPDF(environment.serverUrl + '/trip/downloadRapport/' + this.pathRapport).subscribe(res => {
     const fileURL = URL.createObjectURL(res);
-
    window.open(fileURL, '_blank');
+     this.spinner.hide();
+   }, () => {
+     this.spinner.hide();
    });
    }
 
