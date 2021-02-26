@@ -181,7 +181,6 @@
             <th style="width:1%">Status</th>
             <th style="width:1%">Expéditeur</th>
             <th style="width:1%">Destinataire</th>
-            <th style="width:1%">Etat financière</th>
             <th style="width:1%">Msg</th>
             <th style="width:1%" *ngIf="activityRunsheet.status === 'draft'">Action</th>
           </tr>
@@ -192,8 +191,6 @@
             <td style="background-color: #ffffff; width:15%;">{{trp.statusTrip}}</td>
             <td style="background-color: #ffffff; width:15%;">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
             <td style="background-color: #ffffff; width:15%;" >{{trp.destTrip.contactAdr }}</td>
-            <td style="background-color: #ffffff; width:15%;" >{{trp.destTrip.contactAdr }}</td>
-            <td>{{ showFinancialStatus(trp) }}</td>
             <td  style="background-color: #ffffff;  width:20%;" *ngIf="trp.msgTrip && trp.msgTrip.length > 0">
               <ul>
                 <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
@@ -468,7 +465,8 @@
               <p><strong>Recharge Gasoil Carte :</strong> {{!!activityRunsheet.depenses?activityRunsheet.depenses.gasoilCarteValue: '-'}} TND </p>
               <p><strong>Recharge Carte Téléphonique :</strong> {{!!activityRunsheet.depenses?activityRunsheet.depenses.carteTel: '-'}} TND </p>
               <p><strong>Avance :</strong> {{!!activityRunsheet.depenses?activityRunsheet.depenses.avance: '-'}} TND </p>
-              <p><strong>Autre :</strong> {{!!activityRunsheet.depenses?activityRunsheet.depenses.autreValue: '-'}} TND </p>
+              <p><strong>Autre Description :</strong> {{!!activityRunsheet.depenses?activityRunsheet.depenses.autreDesc: '-'}}</p>
+              <p><strong>Autre Valeur:</strong> {{!!activityRunsheet.depenses?activityRunsheet.depenses.autreValue: '-'}} TND </p>
             </mat-expansion-panel>
           </mat-accordion>
         </div>

@@ -109,7 +109,7 @@
         <td  [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey &&trp.msgTrip && trp.msgTrip.length > 0">
           <ul>
             <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
-            <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg }}</li>
+            <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg | date:'medium' }}</li>
           </ul>
         </td>
         <td *ngIf="!!trp.survey && (trp.msgTrip && trp.msgTrip.length === 0)" style="background-color: orange">-</td>

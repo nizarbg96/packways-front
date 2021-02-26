@@ -101,9 +101,17 @@
         <i class="fa fa-money"></i>&nbsp;
         <span>Récolter Activité</span>
       </a>
+      <a *ngIf="isVisible" [routerLink]="['/depenses']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-wallet"></i>&nbsp;
+        <span>Depenses</span>
+      </a>
       <a  [routerLink]="['/payements']" [routerLinkActive]="['router-link-active']" class="list-group-item">
         <i class="fa fa-credit-card"></i>&nbsp;
         <span>Payements</span>
+      </a>
+      <a *ngIf="isVisible" [routerLink]="['/statestics']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-bar-chart"></i>&nbsp;
+        <span>Statestiques</span>
       </a>
         <!-- <a [routerLink]="['/adresses']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-address-card"></i>&nbsp;

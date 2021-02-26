@@ -117,7 +117,8 @@ export class CreateInventaireComponent implements OnInit, AfterViewInit {
     this.tripService.getTripsByEntrepot(this.inventaire.entrepot).subscribe((resTrips) => {
       const trips = resTrips.body;
       this.listColisNonTreated = trips.filter(trip => (trip.statusTrip === 'Chez Livreur' || trip.statusTrip === 'Retour') &&
-        (trip.deleted === false || trip.deleted === undefined || trip.deleted === null));
+        (trip.deleted === false || trip.deleted === undefined || trip.deleted === null) && (trip.currentRunsheetId === null ||
+        trip.currentRunsheetId === undefined));
       this.inventaire.listColisNonTreated = this.listColisNonTreated.map(trip => trip.idTrip);
       this.inventaireService.update(this.inventaire).subscribe((resInventaire) => {
         this.inventaire = resInventaire.body;

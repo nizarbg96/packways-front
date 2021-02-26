@@ -138,21 +138,23 @@ export class MoveableUnitComponent implements OnInit {
   }
 
   dispatchMU() {
-    this.selectedMU.status = 'dispached';
-    this.selectedMU.dispachedBy = this.user.idAdmin;
-    this.selectedMU.dispachedDate = new Date();
-    this.muService.update(this.selectedMU).subscribe(() => {
       const listTrips: string[] = this.selectedMU.listColis
         .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map((colis) => colis.idTrip);
       this.tripService.getListOfTips(listTrips).subscribe((resTrips) => {
+        this.selectedMU.status = 'dispached';
+        this.selectedMU.dispachedBy = this.user.idAdmin;
+        this.selectedMU.dispachedDate = new Date();
         const transitLivraison = resTrips.body.filter((trip) => trip.statusTrip === 'Chez Livreur').map(trip => trip.idTrip);
         const transitRetour = resTrips.body.filter((trip) => trip.statusTrip === 'Retour').map(trip => trip.idTrip);
+        this.selectedMU.nbColisAlivree = transitLivraison.length;
+        this.selectedMU.nbColisRetour = transitRetour.length;
         this.tripService.updateTripsDriver(this.selectedMU.driver.idDriver, listTrips, this.user.name).subscribe(() => {
           this.tripService.updateTripsStatus('transit livraison', transitLivraison,  this.user.name, '').subscribe(() => {
-            this.tripService.updateTripsStatus('transit retour', transitRetour,  this.user.name, '').subscribe();
+            this.tripService.updateTripsStatus('transit retour', transitRetour,  this.user.name, '').subscribe(() => {
+              this.muService.update(this.selectedMU).subscribe();
+            });
           });
         });
-      })
     });
   }
 

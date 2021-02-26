@@ -1,193 +1,758 @@
-import { DashboardService } from './dashboard.service';
-import { Component, OnInit } from '@angular/core';
-import { routerTransition } from '../../router.animations';
+import {DashboardService} from './dashboard.service';
+import {AfterViewInit, Component, ElementRef, Inject, OnInit, TemplateRef, ViewChild, ViewEncapsulation} from '@angular/core';
+import {routerTransition} from '../../router.animations';
+import {StatestiquesService} from '../statestics/statestiques.service';
+import {IStatClient, StatClient} from '../../model/stat-client.model';
+import '../../../assets/statistics_assets/vendors/base/vendor.bundle.base.js';
+import '../../../assets/statistics_assets/vendors/chart.js/Chart.min.js';
+import '../../../assets/statistics_assets/js/off-canvas.js';
+import '../../../assets/statistics_assets/js/hoverable-collapse.js';
+import '../../../assets/statistics_assets/js/template.js';
+import '../../../assets/statistics_assets/js/todolist.js';
+import '../../../assets/statistics_assets/js/dashboard.js';
+import '../../../assets/statistics_assets/js/dashboard_sticksChart.js';
+import {Trip} from '../trips/Trip';
+import {MAT_DIALOG_DATA, MatDatepickerInputEvent, MatDialog, MatPaginator, MatSnackBar, MatTableDataSource} from '@angular/material';
+import {IStatActivityJour, StatActivityJour} from '../../model/stat-activity-jour.model';
+import {DialogData} from '../trips/trips.component';
+import {IStatActivityDriver, StatActivityDriver} from '../../model/stat-activity-driver.model';
+import {IStatActivityJourClient, StatActivityJourClient} from '../../model/stat-activity-jour-client.model';
+import {ClassementDrivers} from '../../model/classement-drivers.model';
+import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {DatePipe} from '@angular/common';
+import {Entrepot} from '../../model/entrepot.model';
+import {FormControl, Validators} from '@angular/forms';
+import {EntrepotService} from '../entrepot/entrepot.service';
+import {TripService} from '../trips/trips.service';
+import {DriversService} from '../drivers/drivers.service';
+import {ActivityPayement} from '../../model/activity-payement.model';
+import {TripExcelService} from '../trips/excel-trip.service';
+
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss'],
-    animations: [routerTransition()]
-})
-export class DashboardComponent implements OnInit {
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
+  animations: [routerTransition()]})
+export class DashboardComponent implements OnInit, AfterViewInit {
 
-    sommeLC: number;
-    somm: any;
-    sommeCH: any;
-    items: any =[];
-    jsonObj: any;
-    ChercheL: Array<any> = [];
-    Enchemin: Array<any> = [];
-    Encours: Array<any> = [];
-    Chezlivreur: Array<any> = [];
-    Retour: Array<any> = [];
-    Retournee: Array<any> = [];
-    driver: Array<any> = [];
-    postes: Array<any> = [];
-    livree: Array<any> = [];
-    annulee: Array<any> = [];
-    result: any;
-    id:any;
-    public alerts: Array<any> = [];
-    public sliders: Array<any> = [];
+  sommeLC: number;
+  somm: any;
+  sommeCH: any;
+  items: any = [];
+  jsonObj: any;
+  ChercheL: Array<any> = [];
+  Enchemin: Array<any> = [];
+  Encours: Array<any> = [];
+  Chezlivreur: Array<any> = [];
+  Retour: Array<any> = [];
+  Retournee: Array<any> = [];
+  driver: Array<any> = [];
+  postes: Array<any> = [];
+  livree: Array<any> = [];
+  annulee: Array<any> = [];
+  result: any;
+  id: any;
+  public alerts: Array<any> = [];
+  public sliders: Array<any> = [];
+  date = new Date();
 
-    isVisible: boolean;
 
-    constructor(public dservice: DashboardService) {
-        this.sliders.push(
-            {
-                imagePath: 'assets/images/slider1.jpg',
-                label: 'PACKWAYS',
-                text:
-                    'The way how to deliver.'
-            },
-            {
-                imagePath: 'assets/images/slider2.jpg',
-                label: 'PACKWAYS',
-                text: 'Assez Simple, Assez Rapide 24/7.'
-            },
-            {
-                imagePath: 'assets/images/slider3.jpg',
-                label: 'PACKWAYS',
-                text:
-                    'PACKWAYS est une plateforme de livraison permettant d’envoyer des colis 24h/24h et 7J/7 en quelques clic et sans avoir à se déplacer.'
-            }
-        );
+  isVisible: boolean;
+  PreMessagesAction = ['Numéro incorrect !', 'Client non joignable par téléphone !',
+    'Client absent au RDV !', 'Client contacté, livraison reportée', 'Reportée, faute de temps'
+    , 'Autre'];
+  messageSelectionee = '-';
+  listColisMessage: Trip[] = [];
+  displayedColumns: string[] = ['jour', 'entrepot', 'nbColisLivree', 'nbColisRetournee', 'nbColisNLRetour', 'nbColisNLALivree', 'nbColisEncours', 'action'];
+  displayedColumns2: string[] = ['jour', 'entrepot', 'driver', 'nbColisLivree', 'nbColisRetournee', 'nbColisNLRetour', 'nbColisNLALivree', 'nbColisEncours', 'action'];
+  displayedColumns3: string[] = ['jour', 'client', 'nbColisPickUp', 'nbColisLivree', 'nbColisRetournee',
+    'nbColisEnCoursDePayement', 'nbColisPayee', 'action'];
+  entrepot = new FormControl('', Validators.required);
+  entrepotValue: Entrepot = null;
+  dataSourceFiltred = new MatTableDataSource<StatActivityJour>([]);
+  dataSourceDriversFiltred = new  MatTableDataSource<StatActivityDriver>([]);
+  dataSourceClientsFiltred = new  MatTableDataSource<StatActivityJourClient>([]);
+  dataSourceClients: StatActivityJourClient[] = [];
+  dataSourceDrivers: StatActivityDriver[] = [];
+  dataSource: StatActivityJour[] = [];
+  dataSourceRanking: ClassementDrivers[] = [];
+  dataSourceLastPickUps: IStatActivityJourClient[] = [];
+  dataSourceNbPickUps: IStatActivityJourClient[] = [];
+  entrepots: Entrepot[] = [];
 
-        this.alerts.push(
-            {
-                id: 1,
-                type: 'success',
-                message: `Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Voluptates est animi quibusdam praesentium quam, et perspiciatis,
-                consectetur velit culpa molestias dignissimos
-                voluptatum veritatis quod aliquam! Rerum placeat necessitatibus, vitae dolorum`
-            },
-            {
-                id: 2,
-                type: 'warning',
-                message: `Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Voluptates est animi quibusdam praesentium quam, et perspiciatis,
-                consectetur velit culpa molestias dignissimos
-                voluptatum veritatis quod aliquam! Rerum placeat necessitatibus, vitae dolorum`
-            }
-        );
 
-        if (localStorage.getItem('auth') === 'admin') {
-            this.isVisible = true;
+  @ViewChild('pag1') paginator1: MatPaginator;
+  @ViewChild('pag2') paginator2: MatPaginator;
+  @ViewChild('pag3') paginator3: MatPaginator;
+  nbColisLivree = 0;
+  nbColisRetournee = 0;
+  valDepenses = 0;
+  valMontantRecoltee = 0;
+  benefice = 0;
+  nbColisLivreeLastMonth = 0;
+  nbColisRetourneeLastMonth = 0;
+  valDepensesLastMonth = 0;
+  valMontantRecolteeLastMonth = 0;
+  beneficeLastMonth = 0;
+  selectedActivityJour: IStatActivityJour;
+  selectedActivityDriver: IStatActivityDriver;
+  selectedActivityClient: IStatActivityJourClient;
+  private closeResult: string;
+
+  Listdriverauto = [];
+  Listdriver = [];
+  affectedDriver: any;
+  affectedDriverNgModel = '';
+  //
+  Listuserauto = [];
+  clientFilter: any;
+  Listuser = [];
+  affectedUser: any;
+  dateDebut: Date;
+  dateFin: Date;
+  @ViewChild('button1') button1: ElementRef<HTMLElement>;
+
+
+
+
+
+  constructor(public dservice: DashboardService, private statestiquesService: StatestiquesService, public dialog: MatDialog,  private modalService: NgbModal,
+              public datepipe: DatePipe, private entrepotService: EntrepotService, private tservice: TripService, private snackBar: MatSnackBar,
+              private driverService: DriversService, private tripExcelService: TripExcelService) {
+
+    if (localStorage.getItem('auth') === 'admin') {
+      this.isVisible = true;
+    } else {
+      this.isVisible = false;
+    }
+  }
+  ngAfterViewInit() {
+    const firstDayCurrentMonth = new Date(this.date.getFullYear(), this.date.getMonth(), 1);
+    let firstDayLastMonth: Date;
+    if (this.date.getMonth() === 0) {
+      firstDayLastMonth = new Date(this.date.getFullYear(), 11, 1);
+    } else {
+      firstDayLastMonth = new Date(this.date.getFullYear(), this.date.getMonth() - 1, 1);
+    }
+    const lastDayLastMonth = new Date(this.date.getFullYear(), this.date.getMonth(), 0);
+    console.log(firstDayLastMonth);
+    console.log(lastDayLastMonth);
+    this.statestiquesService.queryByDateBetwwen(firstDayLastMonth, lastDayLastMonth).subscribe((res) => {
+      res.body.forEach(value => {
+        this.nbColisLivreeLastMonth = this.nbColisLivreeLastMonth + value.nbColisLivree;
+        this.nbColisRetourneeLastMonth = this.nbColisRetourneeLastMonth + value.nbColisRetournee;
+        this.valDepensesLastMonth = this.valDepensesLastMonth + value.valDepenses;
+        this.beneficeLastMonth =  (this.nbColisLivreeLastMonth * 6) + (this.nbColisRetourneeLastMonth * 3) - this.valDepensesLastMonth;
+      });
+    });
+    this.dataSourceFiltred.paginator = this.paginator1;
+    this.dataSourceDriversFiltred.paginator = this.paginator2;
+    this.statestiquesService.queryByDate(firstDayCurrentMonth).subscribe((res) => {
+      const stats = res.body;
+      this.dataSource = stats;
+      this.dataSourceFiltred =  new MatTableDataSource<StatActivityJour>(stats);
+      this.dataSourceFiltred.paginator = this.paginator1;
+      res.body.forEach(value => {
+        this.nbColisLivree = this.nbColisLivree + value.nbColisLivree;
+        this.nbColisRetournee = this.nbColisRetournee + value.nbColisRetournee;
+        this.valDepenses = this.valDepenses + value.valDepenses;
+        this.benefice =  (this.nbColisLivree * 6) + (this.nbColisRetournee * 3) - this.valDepenses;
+      });
+    });
+    this.statestiquesService.getDriversStats().subscribe((res) => {
+      const stats = res.body;
+      this.dataSourceDrivers = stats;
+      this.dataSourceDriversFiltred =  new MatTableDataSource<StatActivityDriver>(stats);
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
+    });
+    this.statestiquesService.getClientsActvityStats().subscribe((res) => {
+      const stats = res.body;
+      this.dataSourceClients = res.body;
+      this.dataSourceClientsFiltred =  new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients);
+      this.dataSourceClientsFiltred.paginator = this.paginator3;
+    });
+    this.statestiquesService.getDriversRanking().subscribe((res) => {
+      this.dataSourceRanking = res.body;
+      this.dataSourceRanking = this.dataSourceRanking.sort((a, b) => b.successRate - a.successRate);
+    });
+    this.statestiquesService.getClientsLastPickUpsDate().subscribe((res) => {
+      this.dataSourceNbPickUps = res.body.slice().sort((a, b) => b.nbColisPickUp - a.nbColisPickUp);
+      console.log(this.dataSourceNbPickUps);
+      this.dataSourceLastPickUps = res.body.slice().sort((a, b) => new Date(b.lasPickUpDate).getTime() - new Date(a.lasPickUpDate).getTime());
+    });
+  }
+
+  ngOnInit() {
+    this.getEntrepots();
+    this.getAllDrivers();
+    this.getAllUsers();
+
+    if (localStorage.getItem('auth') === 'admin') {
+      console.log('user is Admin---');
+      this.id = 'admin';
+    } else {
+      console.log('user is Cleint---');
+      this.id = 'UT' + JSON.parse(localStorage.getItem('currentUser')).data[0].idUser;
+    }
+    // this.getTripPostées();
+    // this.getTripLivree();
+    // this.getTripAnnulee();
+    // this.getDriverAcrives();
+    // this.getTripRetournee();
+    // this.getTripChezlivreur();
+    // this.getTripEncourLivraison();
+    // this.getTripRetour();
+    // this.getTripEnchemin();
+    // this.getTripChercheLivreur();
+    // this.getTrips();
+  }
+  getEntrepots() {
+    this.entrepotService.query().subscribe((res) => {
+      this.entrepots = res.body.filter((entrepot) => entrepot.deleted === false);
+    });
+  }
+  getAllDrivers() {
+    this.tservice.getDrivers().subscribe(data => {
+      const obj = Array.of(JSON.parse(data['_body']).data);
+      const jsonObj = obj[0];
+      for (let i = 0; i < jsonObj.length; i++) {
+        if ((jsonObj[i].accountActive === true) && (jsonObj[i].idDriver !== '5ca28097e4970623916b53e7')) {
+          this.Listdriver.push(jsonObj[i]);
+          this.Listdriverauto.push(jsonObj[i].nameDriver + ' ' + jsonObj[i].surnameDriver);
+        }
+      }
+    }, error => {
+    });
+  }
+
+  getSelectedDriver(driver: any) {
+    if (driver != null) {
+      const ind = this.Listdriverauto.indexOf(driver.title);
+      this.affectedDriver = this.Listdriver[ind];
+      this.driverService.getOneDriver(this.affectedDriver.idDriver).subscribe((oneDriver) => {
+        this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers.filter(value => value.driver.idDriver === oneDriver.json().idDriver));
+        this.dataSourceDriversFiltred.paginator = this.paginator2;
+      });
+    } else {
+      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers);
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
+    }
+  }
+  getAllUsers() {
+    this.tservice.getUsers().subscribe(data => {
+      const obj = Array.of(JSON.parse(data['_body']).data);
+      const jsonObj = obj[0];
+      for (let i = 0; i < jsonObj.length; i++) {
+        if (jsonObj[i].accountActive === true) {
+          this.Listuser.push(jsonObj[i]);
+          this.Listuserauto.push(jsonObj[i].nameUser + ' ' + jsonObj[i].surnameUser);
+        }
+      }
+      // console.log('listuser!::', this.Listuserauto);
+    }, error => {
+      // console.log(error);
+    });
+  }
+  getSelectedUser(user: any) {
+    if (user != null) {
+      const ind = this.Listuserauto.indexOf(user.title);
+      this.affectedUser = this.Listuser[ind];
+      this.dataSourceClientsFiltred =  new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients.filter(value => value.user.idUser === this.affectedUser.idUser));
+      this.dataSourceClientsFiltred.paginator = this.paginator3;
+    } else {
+      this.dataSourceClientsFiltred =  new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients);
+      this.dataSourceClientsFiltred.paginator = this.paginator3;
+    }
+  }
+  addEventDateDebutActivityJour(input: string, $event: MatDatepickerInputEvent<Date>) {
+    this.dateDebut = $event.value;
+    if (!$event.value) {
+      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource);
+      this.dataSourceFiltred.paginator = this.paginator1;
+    } else {
+      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource.slice().filter((item) => {
+        if (!!this.dateFin){
+          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
         } else {
-            this.isVisible = false;
+          if (item.jour >= this.dateDebut) {
+            return true;
+          } else {
+            return false;
+          }
         }
+      } ));
+      this.dataSourceFiltred.paginator = this.paginator1;
+    }
+    if (!!this.entrepotValue){
+      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSourceFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
+      this.dataSourceFiltred.paginator = this.paginator1;
     }
 
-    ngOnInit() {
-        if(localStorage.getItem('auth')==='admin'){
-          console.log('user is Admin---');
-            this.id='admin';
-        }else{
-          console.log('user is Cleint---');
-            this.id='UT'+JSON.parse(localStorage.getItem('currentUser')).data[0].idUser;
+  }
+
+  addEventDateFinActivityJour(change: string, $event: MatDatepickerInputEvent<Date>) {
+    this.dateFin = $event.value;
+    if (!$event.value) {
+      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource);
+      this.dataSourceFiltred.paginator = this.paginator1;
+    } else {
+      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource.slice().filter((item) => {
+        if (!!this.dateDebut){
+          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
         }
-
-        this.getTripPostées();
-        this.getTripLivree();
-        this.getTripAnnulee();
-        this.getDriverAcrives();
-        this.getTripRetournee();
-        this.getTripChezlivreur();
-        this.getTripEncourLivraison();
-        this.getTripRetour();
-        this.getTripEnchemin();
-        this.getTripChercheLivreur();
-        this.getTrips()
+      } ));
+      this.dataSourceFiltred.paginator = this.paginator1;
+    }
+    if (!!this.entrepotValue){
+      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSourceFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
+      this.dataSourceFiltred.paginator = this.paginator1;
+    }
+  }
+  addEventDateDebutActivityDriver(input: string, $event: MatDatepickerInputEvent<Date>) {
+    this.dateDebut = $event.value;
+    if (!$event.value) {
+      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers);
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
+    } else {
+      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers.slice().filter((item) => {
+        if (!!this.dateFin){
+          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.jour >= this.dateDebut) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } ));
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
+    }
+    if (!!this.entrepotValue){
+      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDriversFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
     }
 
-    public closeAlert(alert: any) {
-        const index: number = this.alerts.indexOf(alert);
-        this.alerts.splice(index, 1);
+  }
+
+  addEventDateFinActivityDriver(change: string, $event: MatDatepickerInputEvent<Date>) {
+    this.dateFin = $event.value;
+    if (!$event.value) {
+      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers);
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
+    } else {
+      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers.slice().filter((item) => {
+        if (!!this.dateDebut){
+          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } ));
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
+    }
+    if (!!this.entrepotValue){
+      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDriversFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
+    }
+  }
+  addEventDateDebutActivityClient(input: string, $event: MatDatepickerInputEvent<Date>) {
+    this.dateDebut = $event.value;
+    if (!$event.value) {
+      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients);
+      this.dataSourceClientsFiltred.paginator = this.paginator3;
+    } else {
+      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients.slice().filter((item) => {
+        if (!!this.dateFin){
+          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.jour >= this.dateDebut) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } ));
+      this.dataSourceClientsFiltred.paginator = this.paginator3;
+    }
+    if (!!this.entrepotValue){
+      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClientsFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
+      this.dataSourceClientsFiltred.paginator = this.paginator3;
     }
 
+  }
 
-    getTripPostées(){
-       this.dservice.getTripsEncours(this.id).subscribe((data: any ) =>{
-            this.postes = data;
+  addEventDateFinActivityClient(change: string, $event: MatDatepickerInputEvent<Date>) {
+    this.dateFin = $event.value;
+    if (!$event.value) {
+      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients);
+      this.dataSourceClientsFiltred.paginator = this.paginator3;
+    } else {
+      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients.slice().filter((item) => {
+        if (!!this.dateDebut){
+          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } ));
+      this.dataSourceClientsFiltred.paginator = this.paginator3;
+    }
+    if (!!this.entrepotValue){
+      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClientsFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
+      this.dataSourceClientsFiltred.paginator = this.paginator3;
+    }
+  }
+  affectEntrepotActivityGlobale(entrepot: Entrepot) {
+    this.entrepotValue = entrepot;
+    if (!!entrepot) {
+      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource.slice().filter((item) => item.entrepot.id === entrepot.id));
+      this.dataSourceFiltred.paginator = this.paginator1;
+    } else {
+      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource);
+      this.dataSourceFiltred.paginator = this.paginator1;
+    }
+    if (!!this.dateDebut){
+      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSourceFiltred.data.slice().filter((item) => {
+        if (!!this.dateFin){
+          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.jour >= this.dateDebut) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } ));
+      this.dataSourceFiltred.paginator = this.paginator1;
+
+    }
+    if(!!this.dateFin){
+      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSourceFiltred.data.slice().filter((item) => {
+        if (!!this.dateDebut){
+          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } ));
+      this.dataSourceFiltred.paginator = this.paginator1;
+
+    }
+  }
+  affectEntrepotActivityDriver(entrepot: Entrepot) {
+    this.entrepotValue = entrepot;
+    if (!!entrepot) {
+      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers.slice().filter((item) => item.entrepot.id === entrepot.id));
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
+    } else {
+      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers);
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
+    }
+    if (!!this.dateDebut){
+      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDriversFiltred.data.slice().filter((item) => {
+        if (!!this.dateFin){
+          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.jour >= this.dateDebut) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } ));
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
+
+    }
+    if(!!this.dateFin){
+      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDriversFiltred.data.slice().filter((item) => {
+        if (!!this.dateDebut){
+          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (item.jour <= this.dateFin) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } ));
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
+
+    }
+  }
+
+
+  public closeAlert(alert: any) {
+    const index: number = this.alerts.indexOf(alert);
+    this.alerts.splice(index, 1);
+  }
+
+  public getIntValuue(value: number) {
+    return Math.round(value);
+  }
+  open(content) {
+    this.modalService.open(content, { size: 'lg' }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return  `with: ${reason}`;
+    }
+  }
+  convertTime(date: Date) {
+    return this.datepipe.transform(date, 'yyyy-MM-dd');
+  }
+
+
+
+
+  getTripPostées() {
+    this.dservice.getTripsEncours(this.id).subscribe((data: any) => {
+      this.postes = data;
+    });
+  }
+
+  getTripLivree() {
+    this.dservice.getTripsLivree(this.id).subscribe((data: any) => {
+      this.livree = data;
+    });
+  }
+
+  getTripAnnulee() {
+    this.dservice.getTripsAnnulee(this.id).subscribe((data: any) => {
+      this.annulee = data;
+    });
+  }
+
+  getTripRetournee() {
+    this.dservice.getTripRetournee(this.id).subscribe((data: any) => {
+      this.Retournee = data;
+      console.log('Retournee', this.Retournee);
+    });
+  }
+
+  getTripRetour() {
+    this.dservice.getTripRetour(this.id).subscribe((data: any) => {
+      this.Retour = data;
+      console.log('Retour', this.Retour);
+    });
+  }
+
+  getTripChezlivreur() {
+    this.dservice.getTripChezlivreur(this.id).subscribe((data: any) => {
+      this.Chezlivreur = data;
+      console.log('Chez livreur', this.Chezlivreur);
+    });
+  }
+
+  getTripEncourLivraison() {
+    this.dservice.getTripEncoursdeLivraison(this.id).subscribe((data: any) => {
+      this.Encours = data;
+      console.log('EN cours', this.Encours);
+    });
+  }
+
+  getTripEnchemin() {
+    this.dservice.getTripEnchemin(this.id).subscribe((data: any) => {
+      this.Enchemin = data;
+      console.log('En chemein', this.Enchemin);
+    });
+  }
+
+  getTripChercheLivreur() {
+    this.dservice.getTripChercheLivreur(this.id).subscribe((data: any) => {
+      this.ChercheL = data;
+      console.log('Cherche Livreur::', this.ChercheL);
+    });
+  }
+
+
+  getDriverAcrives() {
+    this.dservice.getDriverActive().subscribe((data: any) => {
+      this.driver = data;
+    });
+  }
+
+
+  getTrips() {
+    this.sommeCH = 0;
+    this.sommeLC = 0;
+    this.dservice.getTripParClient().subscribe((data: any) => {
+      /*const result = data['_body'];
+      const jo = JSON.parse(result);
+      const obj = Array.of(jo.data);*/
+      this.jsonObj = data.data;
+      console.log('cleint: ', this.jsonObj);
+      for (let index = 0; index < this.jsonObj.length; index++) {
+        this.items.push(this.jsonObj[index]);
+        this.somm = this.jsonObj[index];
+        this.sommeCH += Number(this.somm[1]);
+        this.sommeLC += Number(this.somm[2]);
+      }
+
+      console.log('cleint2222: ', this.items);
+      console.log('somme222: ', this.sommeCH);
+      console.log('somme222: ', this.sommeLC);
+    });
+  }
+  openDialog(element: StatActivityJour) {
+    this.dialog.open(DialogStatActivityComponent, {
+      data: element
+    });
+  }
+
+
+  openModalActivityJour(contentActivityJour: TemplateRef<any>, element: IStatActivityJour) {
+    this.selectedActivityJour = element;
+    this.open(contentActivityJour);
+  }
+
+
+  generateExcelReportActivityGlobale(listRapport: StatActivityJour[]) {
+
+      if (listRapport.length === 0) {
+        this.snackBar.open('il n y a pas des statestiques à générer.', 'Fermer', {
+          duration: 10000,
         });
-    }
-
-    getTripLivree(){
-        this.dservice.getTripsLivree(this.id).subscribe((data: any) =>{
-             this.livree = data;
-         })
-    }
-
-    getTripAnnulee(){
-        this.dservice.getTripsAnnulee(this.id).subscribe((data: any)=>{
-             this.annulee = data;
-         })
-    }
-
-    getTripRetournee(){
-        this.dservice.getTripRetournee(this.id).subscribe((data : any) =>{
-            this.Retournee=data;
-        console.log("Retournee",this.Retournee);
-        })
-    }
-    getTripRetour(){
-        this.dservice.getTripRetour(this.id).subscribe((data : any) =>{
-            this.Retour=data;
-        console.log("Retour",this.Retour);
-        })
-    }
-    getTripChezlivreur(){
-        this.dservice.getTripChezlivreur(this.id).subscribe((data : any) =>{
-            this.Chezlivreur=data;
-        console.log("Chez livreur",this.Chezlivreur);
-        })
-    }
-    getTripEncourLivraison(){
-        this.dservice.getTripEncoursdeLivraison(this.id).subscribe((data : any) =>{
-            this.Encours=data;
-        console.log("EN cours",this.Encours);
-        })
-    }
-    getTripEnchemin(){
-        this.dservice.getTripEnchemin(this.id).subscribe((data : any) =>{
-            this.Enchemin=data;
-        console.log("En chemein",this.Enchemin);
-        })
-    }
-    getTripChercheLivreur(){
-        this.dservice.getTripChercheLivreur(this.id).subscribe((data : any) =>{
-            this.ChercheL=data;
-        console.log("Cherche Livreur::",this.ChercheL);
-        })
-    }
+        return;
+      }
+      let tab = [];
+      const tripsByUser = [];
+      for (let i = 0; i < listRapport.length; i++) {
+        tab = [];
+        const jTemp = listRapport[i];
+        tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.entrepot.nom, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, this.nbColisLivree,
+          this.nbColisRetournee, jTemp.nbColisEncours, jTemp.nbColisEntrepot,jTemp.nbColisEntrepotChezLivreur, jTemp.nbColisEntrepotRetour,
+          jTemp.nbColisPickUp, jTemp.nbColisPUNonTreated, jTemp.nbColisMUInALivree, jTemp.nbColisMUInRetour, jTemp.nbColisMUOutALivree, jTemp.nbColisMUOutRetour, jTemp.valColisLivree + ' TND',
+          jTemp.valDepenses+' TND', jTemp.valMontantRecoltee+' TND');
+        tripsByUser.push(tab);
+      }
+      this.tripExcelService.generateExcelActivityJour(tripsByUser, '', '', '', '');
 
 
-    getDriverAcrives(){
-        this.dservice.getDriverActive().subscribe((data : any) =>{
-             this.driver = data;
-         })
-    }
+  }
+  generateExcelReportActivityDriver(listRapport: StatActivityDriver[]) {
 
-    getTrips(){
-        this.sommeCH = 0;
-        this.sommeLC = 0;
-        this.dservice.getTripParClient().subscribe((data: any) => {
-            /*const result = data['_body'];
-            const jo = JSON.parse(result);
-            const obj = Array.of(jo.data);*/
-            this.jsonObj = data.data;
-            console.log('cleint: ', this.jsonObj)
-            for (let index = 0; index < this.jsonObj.length; index++) {
-                this.items.push(this.jsonObj[index]);
-                this.somm = this.jsonObj[index]
-                this.sommeCH += Number(this.somm[1]);
-                this.sommeLC += Number(this.somm[2]);
-            }
-
-            console.log('cleint2222: ', this.items)
-            console.log('somme222: ', this.sommeCH )
-            console.log('somme222: ', this.sommeLC);
-        })
+    if (listRapport.length === 0) {
+      this.snackBar.open('il n y a pas des statestiques à générer.', 'Fermer', {
+        duration: 10000,
+      });
+      return;
     }
+    let tab = [];
+    const tripsByUser = [];
+    for (let i = 0; i < listRapport.length; i++) {
+      tab = [];
+      const jTemp = listRapport[i];
+      tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.driver.nameDriver + ' ' + jTemp.driver.surnameDriver, jTemp.entrepot.nom, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, this.nbColisLivree,
+        this.nbColisRetournee, jTemp.nbColisEncours, jTemp.nbColisEntrepot,jTemp.nbColisEntrepotChezLivreur, jTemp.nbColisEntrepotRetour,
+        jTemp.nbColisPickUp, jTemp.nbColisPUNonTreated, jTemp.nbColisMUInALivree, jTemp.nbColisMUInRetour, jTemp.nbColisMUOutALivree, jTemp.nbColisMUOutRetour, jTemp.valColisLivree + ' TND',
+        jTemp.valDepenses+' TND', jTemp.valMontantRecoltee+' TND');
+      tripsByUser.push(tab);
+    }
+    this.tripExcelService.generateExcelActivityDriver(tripsByUser, '', '', '', '');
+
+
+  }
+  generateExcelReportActivityClient(listRapport: StatActivityJourClient[]) {
+
+    if (listRapport.length === 0) {
+      this.snackBar.open('il n y a pas des statestiques à générer.', 'Fermer', {
+        duration: 10000,
+      });
+      return;
+    }
+    let tab = [];
+    const tripsByUser = [];
+    for (let i = 0; i < listRapport.length; i++) {
+      tab = [];
+      const jTemp = listRapport[i];
+      tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.user.nameUser + ' ' + jTemp.user.surnameUser, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, this.nbColisLivree,
+        this.nbColisRetournee, jTemp.nbColisEncoursLivraison, jTemp.nbColisEntrepot,jTemp.nbColisEntrepotChezLivreur, jTemp.nbColisEntrepotRetour,
+        jTemp.nbColisPickUp, jTemp.nbColisPUNonTreated, jTemp.nbColisMUInALivree, jTemp.nbColisMUInRetour, jTemp.nbColisMUOutALivree, jTemp.nbColisMUOutRetour, jTemp.valColisLivree + ' TND',
+        jTemp.valDepenses+' TND', jTemp.valMontantRecoltee+' TND');
+      tripsByUser.push(tab);
+    }
+    this.tripExcelService.generateExcelActivityClient(tripsByUser, '', '', '', '');
+
+
+  }
+  splitDateFormatMDY2(dd) {
+    let dformat = '';
+    if (dd != null) {
+      const d = '' + dd;
+      const arr = d.split('-');
+      dformat = arr[1] + '/' + arr[0] + '/' + arr[2];
+    }
+    return dformat;
+  }
+}
+@Component({
+  selector: 'dialog-stat-acivity-dialog',
+  templateUrl: './dialog-stat-activity.html',
+})
+export class DialogStatActivityComponent {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 }

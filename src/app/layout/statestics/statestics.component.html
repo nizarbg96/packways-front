@@ -1,0 +1,45 @@
+<app-page-header [heading]="'Statestiques'" [icon]="'fa-bar-chart'"></app-page-header>
+<div class="row">
+  <div class="col-md-12">
+
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource">
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="jour">
+          <th mat-header-cell *matHeaderCellDef> Jour </th>
+          <td mat-cell *matCellDef="let element"> {{element.jour | date}} </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="entrepot">
+          <th mat-header-cell *matHeaderCellDef> Entrepot </th>
+          <td mat-cell *matCellDef="let element"> {{element.entrepot.nom}} </td>
+        </ng-container>
+
+        <!-- Weight Column -->
+        <ng-container matColumnDef="nbColisEntrepot">
+          <th mat-header-cell *matHeaderCellDef> Nb Colis Entrepot </th>
+          <td mat-cell *matCellDef="let element"> {{element.nbColisEntrepot}} </td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="nbColisLivree">
+          <th mat-header-cell *matHeaderCellDef> Nb Colis Livrés </th>
+          <td mat-cell *matCellDef="let element"> {{element.nbColisLivree}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+
+  </div>
+</div>
+

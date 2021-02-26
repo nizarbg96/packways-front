@@ -503,7 +503,6 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
         this.activityMoveableUnit.status = 'confirmed';
         this.activityMoveableUnit.confirmedBy = this.user.idAdmin;
         this.activityMoveableUnit.confirmedDate = new Date();
-        this.activityMoveableUnitService.update(this.activityMoveableUnit).subscribe(() => {
           this.tripService.updateTripsWhenDeleteMU(listTreatedTripsIds).subscribe(() => {
             this.tripService.getListOfTips(listToUpdateChezLivreur).subscribe((resTrips) => {
               let trips = resTrips.body;
@@ -515,17 +514,19 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
                 listToUpdateChezLivreur = resUpdatedTrips.body.map((trip) => trip.idTrip);
                 const transitLivraison =  resUpdatedTrips.body.filter( trip => trip.statusTrip === 'transit livraison').map((trip) => trip.idTrip);
                 const transitRetour =  resUpdatedTrips.body.filter( trip => trip.statusTrip === 'transit retour').map((trip) => trip.idTrip);
+                this.activityMoveableUnit.nbColisAlivree = transitLivraison.length;
+                this.activityMoveableUnit.nbColisRetour = transitRetour.length;
                 this.tripService.updateTripsStatus('Chez Livreur', transitLivraison, this.user.name, 'EntrepotGafsa').subscribe(() => {
                   this.tripService.updateTripsStatus('Retour', transitRetour, this.user.name, 'EntrepotGafsa').subscribe(() => {
                     this.conflitService.createList(this.listConflit).subscribe(() => {
                       // make conflict trips treated
-                      this.openCheckSuccess('activityConfirmed');
+                      this.activityMoveableUnitService.update(this.activityMoveableUnit).subscribe(() => {
+                        this.openCheckSuccess('activityConfirmed'); });
                     });
                   });
                 });
               });
             });
-          });
         });
       });
     }, (reason) => {

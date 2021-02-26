@@ -32,6 +32,12 @@ export interface IActivity {
   createdByName?: string;
   confirmedByName?: string;
   closedByName?: string;
+  nbColisLivree?: number;
+  nbColisRetournee?: number;
+  nbColisNonLivree?: number;
+  nbColisNLRetour?: number;
+  nbColisNLALivree?: number;
+  nbColisEncours?: number;
 
 
 }
@@ -63,7 +69,13 @@ export class Activity implements IActivity {
     public listColisException?: string[],
     public createdByName?: string,
     public confirmedByName?: string,
-    public closedByName?: string
+    public closedByName?: string,
+    public nbColisLivree?: number,
+    public nbColisRetournee?: number,
+    public nbColisNonLivree?: number,
+    public nbColisNLRetour?: number,
+    public nbColisNLALivree?: number,
+    public nbColisEncours?: number
   ) {
     this.deleted = this.deleted || false;
   }

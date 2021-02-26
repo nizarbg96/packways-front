@@ -30,20 +30,24 @@ export class HeaderComponent implements OnInit {
   timedOut = false;
   lastPing?: Date = null;
   title = 'angular-idle-timeout';
-  private objUser: Admin = JSON.parse(localStorage.getItem('currentUser')).data[0];
+  private objUser: Admin;
   private closeResult: string;
   private entrepots: IEntrepot[] = [];
     constructor(private translate: TranslateService, public router: Router, private idle: Idle, private keepalive: Keepalive,
                 private modalService: NgbModal, private entrepotService: EntrepotService, private userService: UserService,
                 private snackBar: MatSnackBar, private loginservice: LoginService) {
+      if(!!JSON.parse(localStorage.getItem('currentUser'))){
+        this.objUser = JSON.parse(localStorage.getItem('currentUser')).data[0];
+        this.dataUser = this.objUser;
+      }
+      else {
+        this.router.navigate(['/login']);
+      }
 
         this.translate.addLangs(['en', 'fr', 'ur', 'es', 'it', 'fa', 'de', 'zh-CHS']);
         this.translate.setDefaultLang('en');
         const browserLang = this.translate.getBrowserLang();
         this.translate.use(browserLang.match(/en|fr|ur|es|it|fa|de|zh-CHS/) ? browserLang : 'en');
-
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.dataUser = this.currentUser.data[0];
 
         if (localStorage.getItem('auth') === 'admin') {
             this.userName = this.dataUser.name;
@@ -112,8 +116,6 @@ export class HeaderComponent implements OnInit {
 
     ngOnInit(): void {
         this.pushRightClass = 'push-right';
-      this.objUser = JSON.parse(localStorage.getItem('currentUser')).data[0];
-
       /*
       this.bnIdle.startWatching(10).subscribe((isTimedOut: boolean) => {
         if (isTimedOut) {

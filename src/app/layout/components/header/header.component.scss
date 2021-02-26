@@ -36,3 +36,10 @@ $topnav-background-color: #222;
         }
     }
 }
+.navbar h5{
+  float: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

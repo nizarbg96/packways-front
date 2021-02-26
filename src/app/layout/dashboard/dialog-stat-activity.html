@@ -1,0 +1,103 @@
+<h1 mat-dialog-title>Activity de jour {{data.jour | date}} </h1>
+<div mat-dialog-content>
+  <div class="row  border rounded" style="max-height:40vh;overflow-y:scroll">
+  <div style="width: 100%;">
+    <p  style="display:block;" class="ml-2 pt-2">
+    Entrepot: <strong>{{data.entrepot.nom}}</strong>
+    </p>
+    <mat-divider style="width: 100%;"></mat-divider>
+  </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Nombre de colis non livrés: <strong>{{data.nbColisNonLivree}}</strong>
+      </p>
+      <ul style="display:block;" class="ml-4 pt-2">
+        <li>
+          <p>Nombre de colis Retour: <strong>{{data.nbColisNLRetour}}</strong></p>
+        </li>
+        <li>
+          <p>Nombre de colis Chez Livreur: <strong>{{data.nbColisNLALivree}}</strong></p>
+        </li>
+      </ul>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div><div style="width: 100%;">
+    <p  style="display:block;" class="ml-2 pt-2">
+      Nombre de colis Livrés: <strong>{{data.nbColisLivree}}</strong>
+    </p>
+    <mat-divider style="width: 100%;"></mat-divider>
+  </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Nombre de colis Retournés: <strong>{{data.nbColisRetournee}}</strong>
+      </p>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Nombre de colis en cours de livraison: <strong>{{data.nbColisEncours}}</strong>      </p>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Nombre de colis dans l'entrepot à 10H: <strong>{{data.nbColisEntrepot}}</strong>
+      </p>
+      <ul  style="display:block;" class="ml-4 pt-1">
+        <li><p>Colis Chez Livreur: <strong>{{data.nbColisEntrepotChezLivreur}}</strong></p></li>
+        <li><p>Colis Retour: <strong>{{data.nbColisEntrepotRetour}}</strong></p></li>
+      </ul>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Nombre de colis ramassés: <strong>{{data.nbColisPickUp}}</strong>      </p>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Nombre de colis pick up non traités: <strong>{{data.nbColisPUNonTreated}}</strong>      </p>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Nombre de colis Chez Livreur réçus par M.U: <strong>{{data.nbColisMUInALivree}}</strong>      </p>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Nombre de colis Retour réçus par M.U: <strong>{{data.nbColisMUInRetour}}</strong>      </p>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Nombre de colis sorties transit livraison: <strong>{{data.nbColisMUOutALivree}}</strong>      </p>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Nombre de colis sorties transit retour: <strong>{{data.nbColisMUOutRetour}}</strong>      </p>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Nombre de colis sorties transit retour: <strong>{{data.nbColisMUOutRetour}}</strong>      </p>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Valeur des colis livrés: <strong>{{data.valColisLivree}} TND</strong>      </p>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Valeur des dépenses: <strong>{{data.valDepenses}} TND</strong>      </p>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+    <div style="width: 100%;">
+      <p  style="display:block;" class="ml-2 pt-2">
+        Valeur des montants récoltés: <strong>{{data.valMontantRecoltee}} TND</strong>      </p>
+      <mat-divider style="width: 100%;"></mat-divider>
+    </div>
+
+
+</div>
+</div>

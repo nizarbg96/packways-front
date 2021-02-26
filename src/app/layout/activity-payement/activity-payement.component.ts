@@ -11,6 +11,7 @@ import {EntrepotService} from '../entrepot/entrepot.service';
 import {UserService} from '../users/users.service';
 import {TripExcelService} from '../trips/excel-trip.service';
 import {PickUp} from '../../model/pickup.model';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-activity-payement',
@@ -39,7 +40,8 @@ export class ActivityPayementComponent implements OnInit {
 
 
   constructor(public dialog: MatDialog, private router: Router, private tripService: TripService, private userService: UserService,
-              private activityPayementService: ActivityPayementService, private snackBar: MatSnackBar, private tripExcelService: TripExcelService) { }
+              private activityPayementService: ActivityPayementService, private snackBar: MatSnackBar, private tripExcelService: TripExcelService,
+              private datePipe: DatePipe) { }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
@@ -196,8 +198,10 @@ export class ActivityPayementComponent implements OnInit {
           costTrip = costTrip + jTemp.costTrip;
           valpack = valpack + jTemp.packageTrip.valPackage;
           const tab: any = [];
-          tab.push(jTemp.refTrip, jTemp.statusTrip, jTemp.costTrip, jTemp.destTrip.cityAdr, this.splitDateFormatMDY2(jTemp.createdday),
-            this.splitDateFormatMDY2(jTemp.livredday), jTemp.descriptionTrip, jTemp.packageTrip.valPackage);
+          const livreeDay = this.datePipe.transform(jTemp.livredday, 'yyyy-MM-dd')  ;
+          const createdDay = this.datePipe.transform(jTemp.createdday, 'yyyy-MM-dd')
+          tab.push(jTemp.refTrip, jTemp.statusTrip, jTemp.costTrip, jTemp.destTrip.cityAdr, this.splitDateFormatMDY2(createdDay),
+            this.splitDateFormatMDY2(livreeDay), jTemp.descriptionTrip, jTemp.packageTrip.valPackage);
           tripsByUser.push(tab);
         }
 
@@ -214,8 +218,8 @@ export class ActivityPayementComponent implements OnInit {
     let dformat = '';
     if (dd != null) {
       const d = '' + dd;
-      const arr = d.split(' ');
-      dformat = arr[1] + ' ' + arr[0] + ' ' + arr[2];
+      const arr = d.split('-');
+      dformat = arr[1] + '/' + arr[0] + '/' + arr[2];
     }
     return dformat;
   }

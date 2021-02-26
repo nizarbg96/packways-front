@@ -14,6 +14,8 @@ import {MaterialLibModule} from './material/material.module';
 import { PopUpDeleteComponent } from './shared/pop-up-delete/pop-up-delete.component';
 import {PopUpDeleteModule} from './shared/pop-up-delete/pop-up-delete.module';
 import {LoginService} from '../login/login.service';
+import { StatesticsComponent } from './statestics/statestics.component';
+import { DepensesComponent } from './depenses/depenses.component';
 
 
 

@@ -13,3 +13,10 @@
   100% {transform: scale(1)}
 }
 
+.mat-tab-body-content{
+  height: 100%;
+  overflow: hidden !important;
+}
+.list-wrapper{
+  max-height: 550px !important;
+}

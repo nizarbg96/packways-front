@@ -196,7 +196,7 @@ export class RunsheetEditComponent implements OnInit, OnDestroy {
             if (this.runsheet.type === 'livraison' ){
               if (obj.statusTrip === 'Chez Livreur') {
                 this.ListScan.push(obj);
-                this.tservice.updateRunsheet(obj.idTrip, new RunsheetHistory(this.runsheet.id,this.user.idAdmin,new Date)).subscribe(() => {
+                this.tservice.updateRunsheet(obj.idTrip, new RunsheetHistory(this.runsheet.id,this.user.name,new Date)).subscribe(() => {
                   this.tservice.getTripscanListById(obj.idTrip).subscribe((resT) => {
                     const trip = resT.body;
                     this.playSuccessAudio();
@@ -238,7 +238,7 @@ export class RunsheetEditComponent implements OnInit, OnDestroy {
                   const tripRes = resTrip.body;
                   this.runsheet.listColis.push(new ColisRunsheet(tripRes.idTrip, false, this.user.idAdmin,
                     new Date(), false));
-                  this.tservice.updateRunsheet(tripRes.idTrip, new RunsheetHistory(this.runsheet.id,this.user.idAdmin,new Date)).subscribe(() => {
+                  this.tservice.updateRunsheet(tripRes.idTrip, new RunsheetHistory(this.runsheet.id,this.user.name,new Date)).subscribe(() => {
                     this.runsheetService.update(this.runsheet).subscribe();
                   });
                 });
@@ -339,7 +339,7 @@ confirmRunsheet() {
               this.runsheet.listColis.push(new ColisRunsheet(trip.idTrip, false, this.user.idAdmin,
                 new Date(), false));
               this.playSuccessAudio();
-              this.tservice.updateRunsheet(trip.idTrip, new RunsheetHistory(this.runsheet.id, this.user.idAdmin, new Date)).subscribe(() => {
+              this.tservice.updateRunsheet(trip.idTrip, new RunsheetHistory(this.runsheet.id, this.user.name, new Date)).subscribe(() => {
                 this.tservice.getTripscanListById(trip.idTrip).subscribe((resT2) => {
                   const trip2 = resT2.body;
                   this.runsheetService.update(this.runsheet).subscribe(() => {
@@ -360,7 +360,7 @@ confirmRunsheet() {
                 this.runsheet.listColis.push(new ColisRunsheet(trip.idTrip, false, this.user.idAdmin,
                   new Date(), false));
                 this.playSuccessAudio();
-                this.tservice.updateRunsheet(trip.idTrip, new RunsheetHistory(this.runsheet.id, this.user.idAdmin, new Date)).subscribe(() => {
+                this.tservice.updateRunsheet(trip.idTrip, new RunsheetHistory(this.runsheet.id, this.user.name, new Date)).subscribe(() => {
                   this.tservice.getTripscanListById(trip.idTrip).subscribe((resT2) => {
                     const trip2 = resT2.body;
                     this.runsheetService.update(this.runsheet).subscribe(() => {

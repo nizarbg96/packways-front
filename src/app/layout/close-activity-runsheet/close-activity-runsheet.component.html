@@ -43,6 +43,14 @@
               {{activityRunsheet.status}} - Driver: <strong>
               {{(!!activityRunsheet.driver) ? activityRunsheet.driver.nameDriver + " " + activityRunsheet.driver.surnameDriver : "n'est pas assigné"}}
             </strong></p>
+            <p *ngIf="activityRunsheet.status === 'confirmed'" style="color: grey; font-style: italic;">
+               <strong>
+                 Date de confirmation : {{activityRunsheet.confirmedDate | date:'medium'}}
+            </strong></p>
+            <p *ngIf="activityRunsheet.status === 'closed'" style="color: grey; font-style: italic;">
+              <strong>
+                Date de confirmation : {{activityRunsheet.confirmedDate | date:'medium'}} | Date de clôture : {{activityRunsheet.closedDate | date:'medium'}}
+              </strong></p>
             <p style="color: grey; font-style: italic;" *ngIf="activityRunsheet.status === 'closed'"> Closed by : {{activityRunsheet.closedByName}} </p>
             <p style="color: grey; font-style: italic;" *ngIf="activityRunsheet.status === 'confirmed'"> Confirmed by : {{activityRunsheet.confirmedByName}} </p>
             <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>

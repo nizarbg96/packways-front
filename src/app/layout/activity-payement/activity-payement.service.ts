@@ -6,6 +6,7 @@ import {Trip} from '../trips/Trip';
 import {ActivityPayement, IActivityPayement} from '../../model/activity-payement.model';
 import {ActivityPayementInfo} from './activity-payement.component';
 import {IActivityPickUp} from '../../model/activity-pickUp.model';
+import {DatePipe} from '@angular/common';
 type EntityResponseType = HttpResponse<IActivityPayement>;
 type EntityArrayResponseType = HttpResponse<IActivityPayement[]>;
 

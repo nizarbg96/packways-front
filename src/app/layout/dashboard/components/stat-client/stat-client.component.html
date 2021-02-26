@@ -1,0 +1,273 @@
+<div  class="container-scroller" style="margin-top: -100px;margin-left: -20px;margin-right: -20px">
+  <!-- partial:partials/_navbar.html -->
+  <!-- partial -->
+  <div class="container-fluid page-body-wrapper">
+    <!-- partial:partials/_sidebar.html -->
+    <!-- partial -->
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="row">
+          <div class="col-md-12 grid-margin">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h4 class="font-weight-bold mb-0">Statestiques générales des colis</h4>
+              </div>
+              <div>
+                <button type="button" class="btn btn-primary btn-icon-text btn-rounded">
+                  <i class="ti-clipboard btn-icon-prepend"></i>Report
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title text-md-center text-xl-left">Nombre de colis totale</p>
+                <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+                  <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{!!statClient?statClient.nbColisTotale:'-'}}</h3>
+                  <i class="ti-calendar icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+                </div>
+                <p class="mb-0 mt-2 text-danger"><span class="text-black ml-1"><small>jusqu'à aujourd'hui</small></span></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title text-md-center text-xl-left">Nombre totale de colis livrés</p>
+                <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+                  <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{!!statClient?statClient.nbColisLivreeTotale:'-'}}</h3>
+                  <i class="ti-user icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+                </div>
+                <p class="mb-0 mt-2 text-danger"><span class="text-black ml-1"><small>jusqu'à aujourd'hui</small></span></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title text-md-center text-xl-left">Valeur des colis livrés</p>
+                <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+                  <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{!!statClient?statClient.valColisLivreeTotale +' TND':'-'}}</h3>
+                  <i class="ti-agenda icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+                </div>
+                <p class="mb-0 mt-2 text-success"><span class="text-black ml-1"><small>jusqu'à aujourd'hui</small></span></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title text-md-center text-xl-left">Taux de livraison totale</p>
+                <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+                  <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{!!statClient?statClient.tauxLivraisonTotale.toFixed(2) + ' %':'-'}}</h3>
+                  <i class="ti-layers-alt icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+                </div>
+                <p class="mb-0 mt-2 text-success"><span class="text-black ml-1"><small>jusqu'à aujourd'hui</small></span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 grid-margin">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h4 class="font-weight-bold mb-0">Vos colis chez packways maintenant</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-7 grid-margin stretch-card">
+            <div class="card position-relative">
+              <div class="card-body">
+                <p class="card-title">Details des colis le {{date | date:'short'}}</p>
+                <div class="row">
+                  <div class="col-md-6 d-flex flex-column justify-content-center">
+                    <div class="ml-xl-4">
+                      <h1>{{!!statClient?statClient.tripsLivreeRT:'-'}}</h1>
+                      <h3 class="font-weight-light mb-xl-4">Colis Livrés</h3>
+                      <p class="text-muted mb-2 mb-xl-0">nombre de vos colis livrés chez packways maintenant</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="col-md-12 mt-3">
+                        <canvas id="north-america-chart"></canvas>
+                        <div id="north-america-legend"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5 grid-margin stretch-card">
+            <div class="card position-relative">
+              <div class="card-body">
+                <p class="card-title">Activité d'aujourd'hui</p>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-12 ">
+                        <div class="table-responsive mb-3 mb-md-0">
+                          <table class="table table-borderless report-table">
+                            <tr>
+                              <td class="text-muted">Colis affecté "en cours de livraison"</td>
+                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsEnCoursDeLivraison:'-'}}</h5></td>
+                            </tr>
+                            <tr>
+                              <td class="text-muted">Colis affecté "en cours de retour"</td>
+                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsEnCoursDeRetour:'-'}}</h5></td>
+                            </tr>
+                            <tr>
+                              <td class="text-muted">Colis affecté "transit livraion"</td>
+                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsTransitLivraison:'-'}}</h5></td>
+                            </tr>
+                            <tr>
+                              <td class="text-muted">Colis affecté "transit retour"</td>
+                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsTransitRetour:'-'}}</h5></td>
+                            </tr>
+                            <tr>
+                              <td class="text-muted">Colis affecté "livré" </td>
+                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsLivree:'-'}}</h5></td>
+                            </tr>
+                            <tr>
+                              <td class="text-muted">Colis affecté "retour" </td>
+                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsRetour:'-'}}</h5></td>
+                            </tr>
+                            <tr>
+                              <td class="text-muted">Colis affecté à une autre tentative</td>
+                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsChezLivreur:'-'}}</h5></td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title">Colis livrés</p>
+                <p class="text-muted font-weight-light">La charte vous permet de visualiser le nombre de vos colis livrés par jour, semaine et par mois </p>
+                <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
+                <canvas id="sales-chart"></canvas>
+              </div>
+              <div class="card border-right-0 border-left-0 border-bottom-0">
+                <div class="d-flex justify-content-center justify-content-md-end">
+                  <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
+                    <button class="btn btn-lg btn-outline-light dropdown-toggle rounded-0 border-top-0 border-bottom-0" type="button" id="dropdownMenuDate2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                      Today
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuDate2">
+                      <a class="dropdown-item" href="#">January - March</a>
+                      <a class="dropdown-item" href="#">March - June</a>
+                      <a class="dropdown-item" href="#">June - August</a>
+                      <a class="dropdown-item" href="#">August - November</a>
+                    </div>
+                  </div>
+                  <button class="btn btn-lg btn-outline-light text-primary rounded-0 border-0 d-none d-md-block" type="button"> View all </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 grid-margin stretch-card">
+            <div class="card border-bottom-0">
+              <div class="card-body pb-0">
+                <p class="card-title">Taux de réussite</p>
+                <p class="text-muted font-weight-light">La charte vous permet de visualiser le taux de réussite de livraison  de vos colis  par jour, semaine et par mois</p>
+                <div class="d-flex flex-wrap mb-5">
+                  <div class="mr-5 mt-3">
+                    <h4>Formule de taux de réussite</h4>
+                    <p class="text-muted">Nombre de colis affectés livré / (nombre de colis livrés + nombre de colis affectés retour)</p>
+                  </div>
+                </div>
+              </div>
+              <canvas id="order-chart" class="w-100"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title mb-0">Colis en cours de livraison</p>
+                <div class="table-responsive">
+                  <table class="table table-hover" >
+                    <thead>
+                    <tr>
+                      <th>Nombre de Colis</th>
+                      <th>Type de  Message</th>
+                      <th>Voir Liste</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let msg of PreMessagesAction; index as i">
+                      <td>{{nbColisMesg[i]}}</td>
+                      <td><label class="badge badge-danger">{{msg}}</label></td>
+                      <td><button type="button" class="btn btn-outline-secondary btn-rounded btn-icon" (click)="getTripsMessage(msg)">
+                        <i class="ti-eye text-dark"></i>
+                      </button></td>
+                    </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Colis avec message : <strong>{{messageSelectionee}}</strong></h4>
+                <div class="list-wrapper pt-2">
+                  <table class="table table-sm" id="contentToConvert" style="font-size:12px !important; height: 500px ">
+                    <thead class="thead">
+                    <tr class="thead-light text-center">
+                      <th style="width:1%">Ref</th>
+                      <th style="width:1%">Status</th>
+                      <th style="width:1%">Expéditeur</th>
+                      <th style="width:1%">Destinataire</th>
+                      <th style="width:1%">Msg</th>
+                    </tr>
+                    </thead>
+                    <tbody style="font-size:14px !important;">
+                    <tr *ngFor="let trp of listColisMessage" class="table-active text-center" style="background-color: #ffffff;">
+                      <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey">{{trp.refTrip}}</td>
+                      <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey">{{trp.statusTrip }}</td>
+                      <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
+                      <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}"  *ngIf="!trp.survey">{{trp.destTrip.contactAdr }}</td>
+                      <td  [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey &&trp.msgTrip && trp.msgTrip.length > 0">
+                        <ul>
+                          <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
+                          <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg | date }}</li>
+                        </ul>
+                      </td>
+                      <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="!trp.survey && trp.msgTrip && trp.msgTrip.length === 0">-</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+      <!-- partial:partials/_footer.html -->
+      <!-- partial -->
+    </div>
+    <!-- main-panel ends -->
+  </div>
+  <!-- page-body-wrapper ends -->
+</div>

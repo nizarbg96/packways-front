@@ -949,6 +949,11 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
         this.activityRunsheet.confirmedBy = this.user.idAdmin;
         this.activityRunsheet.confirmedByName = this.user.name;
         this.activityRunsheet.confirmedDate = new Date();
+        this.activityRunsheet.nbColisNonLivree = this.ListScanFailure.length;
+        this.activityRunsheet.nbColisNLALivree = listLivraisonEnCoursIds.length;
+        this.activityRunsheet.nbColisNLRetour = this.ListScanFailure.length - listLivraisonEnCoursIds.length;
+        this.activityRunsheet.nbColisLivree = listSuccessTripsIds.length - listSuccessTripsRetourneeIds.length;
+        this.activityRunsheet.nbColisEncours = this.listColisNonTreated.length;
           this.tripService.updateTripsWhenDeleteRunsheet(listTreatedTripsIds).subscribe(() => {
             this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
               this.tripService.getListOfTips(listChercheUnLivreur).subscribe((resTrips) => {
@@ -1071,12 +1076,10 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       this.snackBar.open('Message envoyé avec succès.', 'Fermer', {
         duration: 5000,
       });
-      this.tripService.getTripscanListById(obj.idTrip).subscribe((resTrip) => {
-        obj = resTrip.body;
-        obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
-          'Success'));
         this.tripService.getTripscanListById(obj.idTrip).subscribe((res) => {
           obj = res.body;
+          obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
+            'Success'));
           this.tripService.updateOneTrip(obj).subscribe();
           const index = this.listColisNonTreated.indexOf(obj);
           this.listColisNonTreated = this.listColisNonTreated.filter((trip) => trip.idTrip !== obj.idTrip);
@@ -1085,8 +1088,6 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
           this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
           });
         });
-      });
-
     }, error => {
       console.log(error); // Error getting the data
     });

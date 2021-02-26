@@ -26,6 +26,8 @@ export interface IMoveableUnit {
   listColis?: IColisRunsheet[];
   listHistoriques?: any[];
   matricule?: string;
+  nbColisAlivree?: number;
+  nbColisRetour?: number;
 }
 
 export class MoveableUnit implements IMoveableUnit {
@@ -53,7 +55,9 @@ export class MoveableUnit implements IMoveableUnit {
     public driver?: any,
     public listColis?: IColisRunsheet[],
     public listHistoriques?: any[],
-    public matricule?: string
+    public matricule?: string,
+    public nbColisAlivree?: number,
+    public nbColisRetour?: number
   ) {
     this.deleted = this.deleted || false;
   }

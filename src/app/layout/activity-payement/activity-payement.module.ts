@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, DatePipe} from '@angular/common';
 import {ActivityPayementComponent, DialogClientToActivityPayementComponent} from './activity-payement.component';
 import {ActivityPayementRoutingModule} from './activity.payement.routing.module';
 import {TripService} from '../trips/trips.service';
@@ -33,6 +33,6 @@ import {
     MatTableModule, MatPaginatorModule, MatFormFieldModule, UiSwitchModule,
     NgxSpinnerModule, MatSnackBarModule, Ng2CompleterModule, MaterialLibModule
   ],
-  providers: [TripService]
+  providers: [TripService, DatePipe]
 })
 export class ActivityPayementModule { }

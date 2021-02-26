@@ -1412,13 +1412,20 @@ export class TripsComponent implements OnInit {
         }
 
         console.log('this.objTrip.msgTrip: ', this.objTrip.msgTrip.length);
+        let runsheetList: any[] = []
 
         this.runsheetService.getList(trip.runsheetsHistory.filter((runsheetHistory) => runsheetHistory !== null).map(runsheetHistory => runsheetHistory.runsheetId)).subscribe((res) => {
           this.runsheetsHistory = res.body;
           for(let i = 0; i < this.runsheetsHistory.length; i++){
-            this.runsheetPrintHistory.push({runsheetRef: this.runsheetsHistory[i].ref, runsheetHistory: trip.runsheetsHistory[i]});
+            runsheetList.push({runsheetRef: this.runsheetsHistory[i].ref, runsheetHistory: trip.runsheetsHistory[i]});
           }
-          this.historiqueScan = trip.historiqueScans;
+          this.runsheetPrintHistory = runsheetList.sort((a, b) => {
+            return a.runsheetHistory.addedDate > b.runsheetHistory.addedDate ? -1 : 1;
+          })
+          this.historiqueScan = trip.historiqueScans.sort((a: IHistoriqueScan, b:IHistoriqueScan) => {
+            return ((a.scannedDate > b.scannedDate) ? -1 : 1);
+          });
+
         });
 
 

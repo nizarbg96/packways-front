@@ -134,6 +134,7 @@
               <th style="width:1%">Status</th>
               <th style="width:1%">Expéditeur</th>
               <th style="width:1%">Destinataire</th>
+              <th style="width:1%">Etat financière</th>
               <th style="width:1%">Msg</th>
             </tr>
             </thead>
@@ -143,6 +144,7 @@
               <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}">{{trp.statusTrip }}</td>
               <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
               <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" >{{trp.destTrip.contactAdr }}</td>
+              <td>{{ showFinancialStatus(trp) }}</td>
               <td [ngStyle]="{'background-color':inNonTreatedList(trp)?'#ffffff':'#00aa88'}" *ngIf="trp.msgTrip && trp.msgTrip.length > 0">
                 <ul>
                   <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>

@@ -1,4 +1,4 @@
-import { IRunsheet } from './runsheet.model';
+import {IRunsheet} from './runsheet.model';
 import {ColisFailureRunsheet} from './colis-failure-runsheet.model';
 import {ColisSuccessRunsheet} from './colis-success-runsheet.model';
 import {DepenseActivity} from './depense-activity.model';
@@ -29,6 +29,8 @@ export interface IActivityMu {
   entrepot?: Entrepot;
   listColisException?: string[];
   listSurvey?: string[];
+  nbColisAlivree?: number;
+  nbColisRetour?: number;
 }
 
 export class ActivityMu implements IActivityMu {
@@ -54,8 +56,10 @@ export class ActivityMu implements IActivityMu {
     public ref?: string,
     public entrepot?: Entrepot,
     public listColisException?: string[],
-    public listSurvey?: string[]
-) {
+    public listSurvey?: string[],
+    public nbColisAlivree?: number,
+    public nbColisRetour?: number
+  ) {
     this.deleted = this.deleted || false;
   }
 }
