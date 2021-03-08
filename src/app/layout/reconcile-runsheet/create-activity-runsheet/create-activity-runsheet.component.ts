@@ -56,7 +56,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
   closedRunsheets: InProgressRunsheet[] = [];
   closeResult: string;
   selectedInProgressTrips: Trip[] = [];
-  @ViewChild('stepper') private myStepper: MatStepper;
+  @ViewChild('stepper')  myStepper: MatStepper;
   failureStepper = false;
   successStepper = false;
   user: any;
@@ -95,6 +95,10 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
   scannedTrip: Trip = null;
   listConflit: Conflit[] = [];
   actions = ['lost', 'non expédié', 'damaged'];
+  private scanForceLivree = false;
+  private scanForceRetour = false;
+  private scanForceRetournee = false;
+  nbStop = 0;
 
 
 
@@ -159,9 +163,14 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
             this.successStepper = false;
             this.pickUpStepper = false;
             this.finalStep = true;
+            this.calculateNbStops();
             this.valeurDepense = parseFloat(this.activityRunsheet.depenses.autreValue) + parseFloat(this.activityRunsheet.depenses.avance) + parseFloat(this.activityRunsheet.depenses.carteTel) + parseFloat(this.activityRunsheet.depenses.gasoilCarteValue) + parseFloat(this.activityRunsheet.depenses.gasoilEspece);
             this.valeurColis = this.activityRunsheet.sommeColis;
+            console.log(this.valeurColis);
+            console.log(this.valeurDepense);
             this.activityRunsheet.argentRecolte = this.valeurColis - this.valeurDepense;
+            console.log(this.activityRunsheet.argentRecolte);
+
           }
         } else if (res === 4) {
           this.firstStep = false;
@@ -177,7 +186,15 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
           this.finalStep = true;
           this.calculeDepenses();
           this.calculeValeurColis();
+          this.calculateNbStops();
+          console.log(this.valeurColis);
+          console.log(this.valeurDepense);
+
+
           this.activityRunsheet.argentRecolte = this.valeurColis - this.valeurDepense;
+          console.log(this.activityRunsheet.argentRecolte);
+
+
         } else {
           this.firstStep = false;
           this.failureStepper = false;
@@ -185,7 +202,9 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
           this.pickUpStepper = false;
           this.finalStep = false;
         }
+
       });
+    console.log(this.activityRunsheet.argentRecolte);
   }
 
   getRunsheets() {
@@ -271,7 +290,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
           if (!!obj.entrepot) {
             if (obj.entrepot.id !== this.activityRunsheet.entrepot.id) {
               const msg = 'impossible de scanner le colis! colis n\'appartient pas à ce Hub';
-              this.snackBar.open(msg, 'Fermer', {duration: 8000,});
+              this.snackBar.open(msg, 'Fermer', {duration: 8000, });
               this.playFailureAudio();
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet: - Liste des colis (non Livrés / non Retournés):' + this.activityRunsheet.ref,
                 'Exception : ' + msg));
@@ -307,14 +326,16 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
               deliveryDate.setHours(0);
               deliveryDate.setMinutes(0);
               deliveryDate.setSeconds(0);
-              if (obj.msgTrip.length === 0) {
-                this.scannedTrip = obj;
-                this.openSms(obj);
-                return;
-              }  else if(obj.msgTrip[obj.msgTrip.length - 1].dateMsg < deliveryDate){
-                this.scannedTrip = obj;
-                this.openSms(obj);
-                return;
+              if (!obj.refJumia) {
+                if (obj.msgTrip.length === 0) {
+                  this.scannedTrip = obj;
+                  this.openSms(obj);
+                  return;
+                }  else if (obj.msgTrip[obj.msgTrip.length - 1].dateMsg < deliveryDate) {
+                  this.scannedTrip = obj;
+                  this.openSms(obj);
+                  return;
+                }
               }
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
                 'Success'));
@@ -333,17 +354,21 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
                 duration: 8000,
               });
               this.playFailureAudio();
-              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
-                'Exception : ' + msg));
-              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
-                const admin = resUser.json();
-                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet',  this.activityRunsheet.ref);
-                this.conflitService.create(conflit).subscribe();
-              });
-              this.tripService.updateOneTrip(obj).subscribe((res) => {
-                this.activityRunsheetService.sacannedTrip = res.body;
-                this.openForceStatusFailure('forceFailure');
-              })
+              if (!this.scanForceRetour) {
+                this.scanForceRetour = true;
+                obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
+                  'Exception : ' + msg));
+                this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                  const admin = resUser.json();
+                  const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet',  this.activityRunsheet.ref);
+                  this.conflitService.create(conflit).subscribe();
+                });
+                this.tripService.updateOneTrip(obj).subscribe((res) => {
+                  this.activityRunsheetService.sacannedTrip = res.body;
+                  this.openForceStatusFailure('forceFailure');
+                });
+              }
+
             }
           } else {
             const msg = 'impossible de scanner le colis! Ce colis n\'existe pas dans une runsheet en cours. Etat de colis scanné : ' + obj.statusTrip;
@@ -522,7 +547,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
           if (!!obj.entrepot) {
             if (obj.entrepot.id !== this.activityRunsheet.entrepot.id) {
               const msg = 'impossible de scanner le colis! colis n\'appartient pas à ce Hub';
-              this.snackBar.open(msg, 'Fermer', {duration: 8000,});
+              this.snackBar.open(msg, 'Fermer', {duration: 8000, });
               this.playFailureAudio();
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet - Liste des colis (Livrés / Retournés): ' + this.activityRunsheet.ref,
                 'Exception : ' + msg));
@@ -567,29 +592,44 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
               });
 
             } else if (obj.statusTrip === 'En cours de retour') {
-              const msg = 'L\'état de colis doit être " Livré " ! Etat de colis scanné : ' + obj.statusTrip;
+              const msg = 'L\'état de colis doit être " Retourné " ! Etat de colis scanné : ' + obj.statusTrip;
               this.snackBar.open(msg, 'Fermer', {
                 duration: 8000,
               });
               this.playFailureAudio();
-              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste des colis (Livrés / Retournés)',
-                'Exception : ' + msg));
-              this.tripService.updateOneTrip(obj).subscribe((res) => {
-                this.activityRunsheetService.sacannedTrip = res.body;
-                this.openForceStatusReturned('forceReturned');
-              });
+              if (!this.scanForceRetournee) {
+                this.scanForceRetournee = true;
+                obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste des colis (Livrés / Retournés)',
+                  'Exception : ' + msg));
+                this.tripService.updateOneTrip(obj).subscribe((res) => {
+                  this.activityRunsheetService.sacannedTrip = res.body;
+                  this.openForceStatusReturned('forceReturned');
+                });
+              }
+
             } else {
-              const msg = 'L\'état de colis doit être " Livré " ! Etat de colis scanné : ' + obj.statusTrip;
-              this.snackBar.open(msg, 'Fermer', {
-                duration: 8000,
-              });
-              this.playFailureAudio();
-              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste des colis (Livrés / Retournés)',
-                'Exception : ' + msg));
-              this.tripService.updateOneTrip(obj).subscribe((resTrip) => {
-                this.activityRunsheetService.sacannedTrip = resTrip.body;
-                this.openForceStatusSuccess('forceSuccess');
-              });
+              if(!!obj.refJumia){
+                this.activityRunsheetService.sacannedTrip = obj;
+                this.successJumia();
+              }else{
+                const msg = 'L\'état de colis doit être " Livré " ! Etat de colis scanné : ' + obj.statusTrip;
+                this.snackBar.open(msg, 'Fermer', {
+                  duration: 8000,
+                });
+                this.playFailureAudio();
+                if (!this.scanForceLivree) {
+                  this.scanForceLivree = true;
+                  obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste des colis (Livrés / Retournés)',
+                    'Exception : ' + msg));
+                  this.tripService.updateOneTrip(obj).subscribe((resTrip) => {
+                    this.activityRunsheetService.sacannedTrip = resTrip.body;
+                    this.openForceStatusSuccess('forceSuccess');
+                  });
+                }
+              }
+
+
+
 
             }
             // this.runsheetService.find(obj.currentRunsheetId).subscribe((res) => {
@@ -672,6 +712,28 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       });
     });
   }
+  successJumia(){
+    this.tripService.updateTripsStatus('Livree',
+      [this.activityRunsheetService.sacannedTrip.idTrip], this.user.name, '').subscribe((res) => {
+      const trip: Trip = Array.of(JSON.parse(res['_body']).trips)[0][0];
+      this.scanForceLivree = false;
+      const indexNonTreated = this.listColisNonTreated.map((trp) => trp.idTrip).indexOf(trip.idTrip);
+      const indexFailure = this.ListScanFailure.map((trp) => trp.idTrip).indexOf(trip.idTrip);
+      if (indexNonTreated >= 0) {
+        this.listColisNonTreated = this.listColisNonTreated.filter((nonTreatedTrip) => nonTreatedTrip.idTrip !== trip.idTrip);
+        this.activityRunsheet.listColisNonTreated = this.listColisNonTreated.map((resTrip) => resTrip.idTrip);
+      }
+      if (indexFailure >= 0) {
+        this.ListScanFailure = this.ListScanFailure.filter((sucessTrip) => sucessTrip.idTrip !== trip.idTrip);
+        this.activityRunsheet.listColisFailure = this.activityRunsheet.listColisFailure.filter((colis) => colis.idTrip !== trip.idTrip);
+      }
+      this.ListScanSuccess.push(trip);
+      this.playSuccessAudio();
+      this.activityRunsheet.listColisSuccess.push(new ColisFailureRunsheet(trip.idTrip, this.user.idAdmin, new Date(), false));
+      this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
+      });
+    });
+  }
 
   getListColisLength(listColis: ColisRunsheet[]): number {
     return listColis.slice()
@@ -682,7 +744,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
   calculeValeurColis() {
       let somme = 0;
       this.ListScanSuccess.forEach((trip) => {
-        console.log("--");
+        console.log('--');
         console.log(trip);
         if (trip.statusTrip === 'Livree') {
           somme = somme + parseFloat(trip.packageTrip.valPackage);
@@ -747,13 +809,13 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       return `with: ${reason}`;
     }
   }
-  playSuccessAudio(){
+  playSuccessAudio() {
     const audio = new Audio();
     audio.src = '../../../../assets/audio/zapsplat_public_places_supermarket_checkout_beep_002_44357.wav';
     audio.load();
     audio.play();
   }
-  playFailureAudio(){
+  playFailureAudio() {
     const audio = new Audio();
     audio.src = '../../../../assets/audio/zapsplat_multimedia_game_sound_error_incorrect_001_30721.wav';
     audio.load();
@@ -799,9 +861,8 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
     this.modalService.open(MODALS[name]).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
       this.tripService.updateTripsStatus(this.activityRunsheetService.newStatus,
-        [this.activityRunsheetService.sacannedTrip.idTrip], this.user.name, '').subscribe(() => {
-        this.tripService.getTripscanListById(this.activityRunsheetService.sacannedTrip.idTrip).subscribe((res) => {
-          const trip = res.body;
+        [this.activityRunsheetService.sacannedTrip.idTrip], this.user.name, '').subscribe((res) => {
+          const trip: Trip = Array.of(JSON.parse(res['_body']).trips)[0][0];
           trip.statusTrip = this.activityRunsheetService.newStatus;
           trip.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
             'Success : forced status'));
@@ -818,15 +879,15 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
           }
           trip.statusTrip = this.activityRunsheetService.newStatus;
           this.ListScanFailure.push(trip);
+          this.scanForceRetour = false;
           this.activityRunsheet.listColisFailure.push(new ColisFailureRunsheet(trip.idTrip, this.user.idAdmin, new Date(), false));
           this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
           });
-        });
       });
 
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      console.log(this.closeResult);
+      this.scanForceRetour = false;
     });
   }
 
@@ -834,10 +895,10 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
     this.modalService.open(MODALS[name]).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
       this.tripService.updateTripsStatus('Livree',
-        [this.activityRunsheetService.sacannedTrip.idTrip], this.user.name, '').subscribe(() => {
-          this.tripService.getTripscanListById(this.activityRunsheetService.sacannedTrip.idTrip).subscribe((resT) => {
-            const trip = resT.body;
-            const indexNonTreated = this.listColisNonTreated.map((trp) => trp.idTrip).indexOf(trip.idTrip);
+        [this.activityRunsheetService.sacannedTrip.idTrip], this.user.name, '').subscribe((res) => {
+          const trip: Trip = Array.of(JSON.parse(res['_body']).trips)[0][0];
+        this.scanForceLivree = false;
+        const indexNonTreated = this.listColisNonTreated.map((trp) => trp.idTrip).indexOf(trip.idTrip);
             const indexFailure = this.ListScanFailure.map((trp) => trp.idTrip).indexOf(trip.idTrip);
             if (indexNonTreated >= 0) {
               this.listColisNonTreated = this.listColisNonTreated.filter((nonTreatedTrip) => nonTreatedTrip.idTrip !== trip.idTrip);
@@ -852,11 +913,11 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
             this.activityRunsheet.listColisSuccess.push(new ColisFailureRunsheet(trip.idTrip, this.user.idAdmin, new Date(), false));
             this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
             });
-          });
       });
 
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      this.scanForceLivree = false;
       console.log(this.closeResult);
     });
   }
@@ -865,9 +926,8 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
     this.modalService.open(MODALS[name]).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
       this.tripService.updateTripsStatus('Retournee',
-        [this.activityRunsheetService.sacannedTrip.idTrip], this.user.name, '').subscribe(() => {
-        this.tripService.getTripscanListById(this.activityRunsheetService.sacannedTrip.idTrip).subscribe((resT) => {
-          const trip = resT.body;
+        [this.activityRunsheetService.sacannedTrip.idTrip], this.user.name, '').subscribe((res) => {
+        const trip: Trip = Array.of(JSON.parse(res['_body']).trips)[0][0];
           trip.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste des colis (Livrés / Retournés)',
             'Success: forced status'));
           this.tripService.updateOneTrip(trip).subscribe();
@@ -883,15 +943,14 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
           }
           this.ListScanSuccess.push(trip);
           this.playSuccessAudio();
+          this.scanForceRetournee = false;
           this.activityRunsheet.listColisSuccess.push(new ColisFailureRunsheet(trip.idTrip, this.user.idAdmin, new Date(), false));
           this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
           });
-        });
       });
-
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      console.log(this.closeResult);
+      this.scanForceRetournee = false;
     });
   }
 
@@ -909,7 +968,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       const listTreatedTripsIds = this.ListScanSuccess.map((trp) => trp.idTrip).concat(this.ListScanFailure.map((trp) => trp.idTrip));
       const runsheetsToUpdate = this.activityRunsheet.listRunsheets;
       const newRunsheets: Runsheet[] = [];
-      this.tripService.getListOfTips(listConflitTripsIds).subscribe((resTripsConflit) =>{
+      this.tripService.getListOfTips(listConflitTripsIds).subscribe((resTripsConflit) => {
         const surveyTrips: Trip[] =  [];
         resTripsConflit.body.forEach((trip) => {
           trip.survey = true;
@@ -966,7 +1025,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
                   this.tripService.updateTripsStatus('Chez Livreur', listToUpdateChezLivreur, this.user.name, 'EntrepotGafsa').subscribe(() => {
                     this.tripService.updateTripsStatus('Retour', listEnCoursDeRetourIds, this.user.name, '').subscribe(() => {
                       this.tripService.updateTripsPreRecolte(listSuccessTripsIds, this.user.idAdmin).subscribe(() => {
-                        if (listSuccessTripsRetourneeIds.length > 0){
+                        if (listSuccessTripsRetourneeIds.length > 0) {
                           this.tripService.updateTripsStatus('Retournee', listSuccessTripsRetourneeIds, this.user.name, '').subscribe(() => {
                               this.activityRunsheetService.update(this.activityRunsheet).subscribe(() => {
                                 this.conflitService.createList(this.listConflit).subscribe(() => {
@@ -974,7 +1033,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
                                 });
                               });
                           });
-                        }else {
+                        } else {
                           this.activityRunsheetService.update(this.activityRunsheet).subscribe(() => {
                             this.conflitService.createList(this.listConflit).subscribe(() => {
                               this.openCheckSuccess('activityConfirmed');
@@ -1180,6 +1239,28 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
 
     return financialStatus;
   }
+
+  private calculateNbStops() {
+    this.activityRunsheet.nbStop = 0;
+    this.nbStop = 0;
+    const trips: Trip[] = this.ListScanSuccess;
+    const listClientsJumia = [];
+    trips.forEach(trip => {
+      if (!!trip.refJumia) {
+         if (listClientsJumia.indexOf(trip.destTrip.contactAdr) < 0) {
+           listClientsJumia.push(trip.destTrip.contactAdr);
+           this.activityRunsheet.nbStop++;
+           this.nbStop = this.nbStop + 1;
+           this.activityRunsheet.fraisSoutraitant = this.activityRunsheet.fraisSoutraitant + trip.fraisSoutraitant;
+         }
+      } else {
+        this.activityRunsheet.nbStop++;
+        this.nbStop = this.nbStop + 1;
+        this.activityRunsheet.fraisSoutraitant = this.activityRunsheet.fraisSoutraitant + trip.fraisSoutraitant;
+      }
+    });
+  }
+
 }
 
 @Component({

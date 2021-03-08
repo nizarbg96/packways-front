@@ -50,6 +50,7 @@ export class RunsheetEditComponent implements OnInit, OnDestroy {
   runsheetInfo: RunsheetInfo;
   private affectedMatricule: string;
   private closeResult: string;
+   cout: number;
 
   constructor(private tservice: TripService, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
     private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,
@@ -68,7 +69,9 @@ export class RunsheetEditComponent implements OnInit, OnDestroy {
         }
         this.affectedMatricule = this.runsheet.matricule;
         this.driver = this.runsheet.driver;
-        this.runsheetService.runsheetInfo = {driver: this.driver, matricule: this.affectedMatricule, type: this.runsheet.type};
+        this.cout = this.runsheet.cout
+        this.runsheetService.runsheetInfo = {driver: this.driver, matricule: this.affectedMatricule, type: this.runsheet.type,
+        cout: this.runsheet.cout};
         this.runsheetService.runsheetConfirmed = (this.runsheet.status === 'confirmed')
         const listOfIds: string[] = this.runsheet.listColis.slice()
           .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)  )
@@ -100,8 +103,10 @@ export class RunsheetEditComponent implements OnInit, OnDestroy {
         this.runsheetService.runsheetInfo = this.runsheetInfo;
         this.affectedMatricule = this.runsheetInfo.matricule;
         this.driver = this.runsheetInfo.driver;
+        this.cout = this.runsheetInfo.cout;
         this.runsheet.matricule = this.affectedMatricule;
         this.runsheet.driver = this.driver;
+        this.runsheet.cout = this.cout;
         this.runsheetService.update(this.runsheet).subscribe((res) => {
           this.runsheet = res.body;
         });
@@ -402,10 +407,8 @@ confirmRunsheet() {
   }
 
 ngOnDestroy(): void {
-    if (!this.confirmed) {
-            this.runsheetService.update(this.runsheet).subscribe();
-}
-     this.routeSub.unsubscribe();
+  this.runsheetService.update(this.runsheet).subscribe();
+  this.routeSub.unsubscribe();
 }
 
 
@@ -421,7 +424,7 @@ ngOnDestroy(): void {
   affectedDriverNgModel = '';
   entrepots: Entrepot[] = [];
   matricule: string;
-  runsheetInfo: RunsheetInfo = {driver: null, matricule: null, type: null};
+  runsheetInfo: RunsheetInfo = {driver: null, matricule: null, type: null, cout: null};
 
 
   constructor(
@@ -441,6 +444,9 @@ ngOnDestroy(): void {
       }
       if(!!this.runsheetService.runsheetInfo.matricule){
         this.runsheetInfo.matricule = this.runsheetService.runsheetInfo.matricule;
+      }
+      if(!!this.runsheetService.runsheetInfo.cout){
+        this.runsheetInfo.cout = this.runsheetService.runsheetInfo.cout;
       }
     }
   }

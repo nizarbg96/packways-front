@@ -43,6 +43,7 @@ export class RunsheetComponent implements OnInit {
   private selectedRunsheet: Runsheet;
   private affectedMatricule: string;
   private closeResult: string;
+  private cout: number;
 
 
   constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private modalService: NgbModal,
@@ -65,6 +66,7 @@ export class RunsheetComponent implements OnInit {
       if ( !!result ) {
         this.affectedDriver = result.driver;
         this.affectedMatricule = result.matricule;
+        this.cout = result.cout;
         this.runsheetService.runsheetInfo = result;
         this.router.navigate(['/runsheet/create']);
       } else {
@@ -78,7 +80,7 @@ export class RunsheetComponent implements OnInit {
       this.runsheets = res.body;
       this.runsheets = this.runsheets.filter((runsheet: Runsheet) =>
       ((runsheet.status === 'draft' || runsheet.status === 'confirmed') && runsheet.deleted === false) );
-      if(this.user.role !== 'superAdmin'){
+      if (this.user.role !== 'superAdmin') {
         this.runsheets = this.runsheets.filter((runsheet: Runsheet) => runsheet.entrepot.id === this.user.entrepot.id ||
         runsheet.createdBy === this.user.idAdmin);
       }
@@ -100,8 +102,8 @@ export class RunsheetComponent implements OnInit {
         this.runsheets[index] = runsheet;
         const listTripsToUpdate = runsheet.listColis.slice()
           .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
-        this.tripService.updateTripsWhenDeleteRunsheet(listTripsToUpdate).subscribe(()=>{
-          this.snackBar.open("Runsheet "+runsheet.ref+" has been successfuly deleted", 'Fermer', {
+        this.tripService.updateTripsWhenDeleteRunsheet(listTripsToUpdate).subscribe(() => {
+          this.snackBar.open('Runsheet ' + runsheet.ref + ' has been successfuly deleted', 'Fermer', {
             duration: 8000,
           });
         });
@@ -148,10 +150,26 @@ export class RunsheetComponent implements OnInit {
         .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map((colis) => colis.idTrip);
       console.log(this.user);
       this.tripService.updateTripsDriver(this.selectedRunsheet.driver.idDriver, listTrips, this.user.name).subscribe(() => {
-        if(this.selectedRunsheet.type === 'livraison') {
-          this.tripService.updateTripsStatus('livraison en cours', listTrips,  this.user.name, '').subscribe();
-        } else if (this.selectedRunsheet.type === 'retour'){
-          this.tripService.updateTripsStatus('En cours de retour', listTrips,  this.user.name, '').subscribe();
+        if (this.selectedRunsheet.type === 'livraison') {
+          this.tripService.updateTripsStatus('livraison en cours', listTrips,  this.user.name, '').subscribe(() => {
+            this.tripService.getListOfTips(listTrips).subscribe((resTrips) => {
+              const trips = resTrips.body;
+              for (let i = 0; i < trips.length; i++) {
+                trips[i].fraisSoutraitant = this.selectedRunsheet.cout;
+              }
+              this.tripService.updateListOfTips(trips).subscribe();
+            });
+          });
+        } else if (this.selectedRunsheet.type === 'retour') {
+          this.tripService.updateTripsStatus('En cours de retour', listTrips,  this.user.name, '').subscribe(() => {
+            this.tripService.getListOfTips(listTrips).subscribe((resTrips) => {
+              const trips = resTrips.body;
+              for (let i = 0; i < trips.length; i++) {
+                trips[i].fraisSoutraitant = this.selectedRunsheet.cout;
+              }
+              this.tripService.updateListOfTips(trips).subscribe();
+            });
+          });
         }
       });
     });
@@ -169,8 +187,8 @@ export class RunsheetComponent implements OnInit {
         this.runsheets[index] = this.selectedRunsheet;
         const listTripsToUpdate = this.selectedRunsheet.listColis.slice()
           .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
-        this.tripService.updateTripsWhenDeleteRunsheet(listTripsToUpdate).subscribe(()=>{
-          this.snackBar.open("Runsheet "+this.selectedRunsheet.ref+" has been successfuly deleted", 'Fermer', {
+        this.tripService.updateTripsWhenDeleteRunsheet(listTripsToUpdate).subscribe(() => {
+          this.snackBar.open('Runsheet ' + this.selectedRunsheet.ref + ' has been successfuly deleted', 'Fermer', {
             duration: 5000,
           });
         });
@@ -191,10 +209,9 @@ export class RunsheetComponent implements OnInit {
   }
     applyFilter(filterValue: any) {
       const filterValueUpper = filterValue.toUpperCase();
-      if(filterValue === '' ) {
+      if (filterValue === '' ) {
         this.filtredRunsheets = this.runsheets;
-      }
-      else {
+      } else {
         this.filtredRunsheets = this.runsheets.slice().filter((item) => item.ref.includes(filterValueUpper));
       }
     }
@@ -211,8 +228,8 @@ export class DialogAddDriverToRunsheetComponent implements OnInit {
   affectedDriverNgModel = '';
   entrepots: Entrepot[] = [];
   matricule: string;
-  runsheetInfo: RunsheetInfo = {driver: null, matricule: null, type: null};
-  typeRunsheet = new FormControl('draft', Validators.required);;
+  runsheetInfo: RunsheetInfo = {driver: null, matricule: null, type: null, cout: null};
+  typeRunsheet = new FormControl('draft', Validators.required);
   typeRunsheetValue: string = null;
 
 
@@ -291,5 +308,6 @@ const MODALS: { [name: string]: Type<any> } = {
 export interface RunsheetInfo {
   driver: any;
   matricule: string;
+  cout: number;
   type: string;
 }

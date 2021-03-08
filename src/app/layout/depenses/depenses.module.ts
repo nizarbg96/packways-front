@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, DatePipe} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {PageHeaderModule} from '../../shared/modules';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -12,11 +12,15 @@ import {UiSwitchModule} from 'ngx-toggle-switch';
 import {NgxSpinnerModule} from 'ngx-spinner';
 import {Ng2CompleterModule} from 'ng2-completer';
 import {MaterialLibModule} from '../material/material.module';
-import {DepensesComponent} from './depenses.component';
+import {AddDepenseComponent, DepensesComponent} from './depenses.component';
 import {DepensesRoutingModule} from './depenses.routing.module';
+import {TripService} from '../trips/trips.service';
+import {DriversService} from '../drivers/drivers.service';
+import {DepenseDetailsComponent} from './depense-details/depense-details.component';
 
 @NgModule({
-  declarations: [DepensesComponent],
+  declarations: [DepensesComponent, AddDepenseComponent, DepenseDetailsComponent],
+  entryComponents: [AddDepenseComponent, DepenseDetailsComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -25,7 +29,9 @@ import {DepensesRoutingModule} from './depenses.routing.module';
     PageHeaderModule, NgbModule, HttpModule,
     HttpClientModule, DataTableModule, FormsModule, MatCardModule, NgxQRCodeModule,
     MatTableModule, MatPaginatorModule, MatFormFieldModule, UiSwitchModule,
-    NgxSpinnerModule, MatSnackBarModule, Ng2CompleterModule, MaterialLibModule
-  ]
+    NgxSpinnerModule, MatSnackBarModule, Ng2CompleterModule, MaterialLibModule,
+    ReactiveFormsModule
+  ],
+  providers:[DatePipe, TripService, DriversService]
 })
 export class DepensesModule { }

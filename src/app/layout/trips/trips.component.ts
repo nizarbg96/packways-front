@@ -1411,22 +1411,23 @@ export class TripsComponent implements OnInit {
             this.objTrip.image = null;
         }
 
-        console.log('this.objTrip.msgTrip: ', this.objTrip.msgTrip.length);
-        let runsheetList: any[] = []
+        let runsheetList: any[] = [];
+        if(!!trip.rubsheetsHistory){
+          this.runsheetService.getList(trip.runsheetsHistory.filter((runsheetHistory) => runsheetHistory !== null).map(runsheetHistory => runsheetHistory.runsheetId)).subscribe((res) => {
+            this.runsheetsHistory = res.body;
+            for(let i = 0; i < this.runsheetsHistory.length; i++){
+              runsheetList.push({runsheetRef: this.runsheetsHistory[i].ref, runsheetHistory: trip.runsheetsHistory[i]});
+            }
+            this.runsheetPrintHistory = runsheetList.sort((a, b) => {
+              return a.runsheetHistory.addedDate > b.runsheetHistory.addedDate ? -1 : 1;
+            })
+            this.historiqueScan = trip.historiqueScans.sort((a: IHistoriqueScan, b:IHistoriqueScan) => {
+              return ((a.scannedDate > b.scannedDate) ? -1 : 1);
+            });
 
-        this.runsheetService.getList(trip.runsheetsHistory.filter((runsheetHistory) => runsheetHistory !== null).map(runsheetHistory => runsheetHistory.runsheetId)).subscribe((res) => {
-          this.runsheetsHistory = res.body;
-          for(let i = 0; i < this.runsheetsHistory.length; i++){
-            runsheetList.push({runsheetRef: this.runsheetsHistory[i].ref, runsheetHistory: trip.runsheetsHistory[i]});
-          }
-          this.runsheetPrintHistory = runsheetList.sort((a, b) => {
-            return a.runsheetHistory.addedDate > b.runsheetHistory.addedDate ? -1 : 1;
-          })
-          this.historiqueScan = trip.historiqueScans.sort((a: IHistoriqueScan, b:IHistoriqueScan) => {
-            return ((a.scannedDate > b.scannedDate) ? -1 : 1);
           });
+        }
 
-        });
 
 
         this.open(content);

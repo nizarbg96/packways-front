@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">Details</h4>
+  <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <p><strong>Type:</strong> {{depense.type}}</p>
+  <p><strong>Date de Création:</strong> {{depense.createdDate | date:'long'}}</p>
+  <p><strong>Creé par:</strong> {{depense.createdByName}}</p>
+  <p *ngIf="depense.deleted"><strong>Date de suppression:</strong> {{depense.deletedDate | date:'long'}}</p>
+  <p *ngIf="depense.deleted"><strong>Supprimé par:</strong> {{depense.deletedByName}}</p>
+  <p *ngIf="depense.type === 'Avance'"><strong>Mois d'avance: </strong>{{depense.depenseActivity.avanceMois}}</p>
+  <p *ngIf="depense.type === 'Autre'"><strong>Autre Description: </strong>{{depense.depenseActivity.autreDesc}}</p>
+  <p><strong>Montant:</strong> {{depense.montant}} TND</p>
+  <p><strong>Prelevé de:</strong> {{depense.depenseFrom}}</p>
+  <p *ngIf="!!depense.affectedTo"><strong>Bénéficiaire:</strong> {{depense.affectedTo.nameDriver + ' ' + depense.affectedTo.surnameDriver}}</p>
+  <p><strong>Commentaires:</strong> {{depense.description}}</p>
+</div>
+  <div class="modal-footer">
+    <button type="button" ngbAutofocus class="btn btn-success" (click)="modal.close('Ok click')">D'accord</button>
+  </div>
+

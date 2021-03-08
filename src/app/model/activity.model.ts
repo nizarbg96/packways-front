@@ -38,8 +38,8 @@ export interface IActivity {
   nbColisNLRetour?: number;
   nbColisNLALivree?: number;
   nbColisEncours?: number;
-
-
+  fraisSoutraitant?: number;
+  nbStop?: number;
 }
 
 export class Activity implements IActivity {
@@ -75,7 +75,9 @@ export class Activity implements IActivity {
     public nbColisNonLivree?: number,
     public nbColisNLRetour?: number,
     public nbColisNLALivree?: number,
-    public nbColisEncours?: number
+    public nbColisEncours?: number,
+    public fraisSoutraitant?: number,
+    public nbStop?: number
   ) {
     this.deleted = this.deleted || false;
   }

@@ -27,18 +27,17 @@
         <fieldset class="scheduler-border-1">
           <legend class="scheduler-border-1">Scan QR-Code</legend>
           <form class="form-inline mr-auto">
-                  <input class="form-control" type="text" id="myInput" [(ngModel)]="searchTermscan" [ngModelOptions]="{standalone: true}" placeholder="Chercher" aria-label="Search" width="100%">
+                  <input autocomplete="off" class="form-control" type="text" id="myInput" [(ngModel)]="searchTermscan" [ngModelOptions]="{standalone: true}" placeholder="Chercher" aria-label="Search" width="100%">
                   <button class="btn btn-mdb-color btn-rounded btn-sm my-0 ml-sm-2" (click)="scanList()" type="submit" hidden><i class="fa fa-search"></i></button>
           </form>
   </fieldset>
   <small class="form-text text-primary ml-3" style="font-size:12px !important;">Nombre des colis selectionnées:  <b>{{(!!runsheet) ? getListColisLength(runsheet.listColis) : 0}}</b></small>
-
       </div>
       <div class="col-md-4 Aligner ">
         <button  mat-raised-button [ngStyle]="{'width': confirmed?'100%':'50%'}" (click)="openDialog()">
           Modifier Infos</button>
         <button *ngIf="!confirmed" mat-raised-button color="primary" style="width: 50%;"
-         class="ml-2" [disabled]="(ListScan.length === 0 || !driver || !affectedMatricule)"
+         class="ml-2" [disabled]="(ListScan.length === 0 || !driver || !affectedMatricule || !cout)"
          (click)="confirmRunsheet()">Confirmer</button>
       </div>
     </div>

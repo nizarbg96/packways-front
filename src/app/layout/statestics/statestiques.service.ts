@@ -9,6 +9,7 @@ import {Trip} from '../trips/Trip';
 import {IStatActivityDriver} from '../../model/stat-activity-driver.model';
 import {IStatActivityJourClient} from '../../model/stat-activity-jour-client.model';
 import {IClassementDrivers} from '../../model/classement-drivers.model';
+import {JumiaTrip} from '../../model/jumia.trip.model';
 
 type EntityResponseType = HttpResponse<IStatActivityJour>;
 type EntityArrayResponseType = HttpResponse<IStatActivityJour[]>;
@@ -88,6 +89,10 @@ export class StatestiquesService {
   }
   getClientStatsRetour(clientId: string, fromDate: Date): Observable<HttpResponse<Trip[]>> {
     return this.http.post<Trip[]>(`${this.resourceUrl}/client/${clientId}/retour`, fromDate, {observe: 'response'});
+  }
+  postJumiaTrips(trips: JumiaTrip[]): Observable<HttpResponse<Trip[]>> {
+    return this.http.post<Trip[]>(`${this.resourceUrl}/external-trips/`, trips, {observe: 'response'});
+
   }
 
 }

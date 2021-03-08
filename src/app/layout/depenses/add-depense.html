@@ -1,0 +1,160 @@
+<div class="row">
+  <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm" style="width: 100%">
+  <mat-horizontal-stepper [linear]="false" labelPosition="bottom" #stepper style="width:100%">
+    <mat-step >
+      <ng-template matStepLabel>Type</ng-template>
+      <mat-form-field style="width: 100%;">
+        <mat-label>Type de Depense</mat-label>
+        <mat-select formControlName="type" (selectionChange)="affectDepenseType($event.value)" required >
+          <mat-option *ngFor="let typ of depensesTypes" [value]="typ">
+            {{typ}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div>
+        <button mat-button type="button" matStepperNext>Suivant</button>
+      </div>
+    </mat-step>
+    <mat-step >
+      <ng-template matStepLabel>Valeur de dépense</ng-template>
+      <div class="row" style="width: 100%">
+        <div class="col-md-12 mb-3">
+          <ng2-completer  *ngIf="affectedType === depensesTypes[0] || affectedType === depensesTypes[1] || affectedType === depensesTypes[4] || affectedType === depensesTypes[6]"
+                          [inputClass]="'form-control form-control-inline'" [datasource]="Listdriverauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
+                         [textNoResults]="'Pas trouvé.'" [placeholder]="'Employé'" (selected)="getSelectedDriver($event)" [(ngModel)]="affectedDriverNgModel" >
+          </ng2-completer>
+        <div class="col-md-12" *ngIf="affectedType === depensesTypes[0]">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Valeur d'avance</mat-label>
+            <input formControlName="value" style="width: 100%;" matInput  placeholder="Montant"
+                   required>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12" *ngIf="affectedType === depensesTypes[0]">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Mois d'avance</mat-label>
+            <mat-select formControlName="month" required>
+              <mat-option *ngFor="let month of months" [value]="month">
+                {{month}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12" *ngIf="affectedType === depensesTypes[1]">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Valeur Gasoil Espèce</mat-label>
+            <input type="number" formControlName="gasoilEspece" style="width: 100%;" matInput  placeholder="gasoil espèces"
+                   required>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field style="width: 100%;" *ngIf="affectedType === depensesTypes[4]">
+            <mat-label>Valeur de Recharge Carte Téléphonique</mat-label>
+            <input type="number" formControlName="carteTel" style="width: 100%;" matInput  placeholder="valeur de recharge"
+                   required>
+          </mat-form-field>
+        </div>
+          <div class="col-md-12" *ngIf="affectedType === depensesTypes[3]">
+            <mat-form-field style="width: 100%;">
+              <mat-label>Maintenance Voiture</mat-label>
+              <input type="number" formControlName="carMaintaining" style="width: 100%;" matInput  placeholder="valeur de maintenance"
+                     required>
+            </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field style="width: 100%;" *ngIf="affectedType === depensesTypes[5]">
+            <mat-label>Dépense Bureau</mat-label>
+            <input type="number" formControlName="desktopCharge" style="width: 100%;" matInput  placeholder="valeur de dépense"
+                   required>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+<!--          <mat-form-field style="width: 100%;" *ngIf="affectedType === depensesTypes[2]">-->
+<!--            <mat-label>Carnet Gasoil</mat-label>-->
+<!--            <input type="number" formControlName="carnetGasoil" style="width: 100%;" matInput  placeholder="valeur de dépense"-->
+<!--                   required>-->
+<!--          </mat-form-field>-->
+        </div>
+        <div class="col-md-12" *ngIf="affectedType === depensesTypes[6]">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Autre Description</mat-label>
+            <input type="text" formControlName="autreDesc" style="width: 100%;" matInput  placeholder="description de dépense"
+                   required>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12" *ngIf="affectedType === depensesTypes[6]">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Autre Valeur</mat-label>
+            <input type="number" formControlName="autreValue" style="width: 100%;" matInput  placeholder="valeur de dépense"
+                   required>
+          </mat-form-field>
+        </div>
+          <div class="col-md-12" *ngIf="affectedType === depensesTypes[2]">
+            <div class="row">
+              <button type="button" mat-stroked-button color="primary" (click)="createItem()">Nouveau Carnet <span style="margin-top: 20px"><mat-icon>add</mat-icon></span></button>
+            </div>
+            <div class="row mt-3" style="width: 100%" *ngFor="let item of items; let i=index">
+              <div class="row">
+                 <div class="col-md-3">
+                   <mat-form-field style="width: 100%;">
+                     <mat-label>Type de Depense</mat-label>
+                     <mat-select  required [id]="'typeBorderau'+item.id" (selectionChange)="affectCarnetType($event.value, i)" >
+                       <mat-option [value]="15">
+                         15 TND
+                       </mat-option>
+                       <mat-option [value]="30">
+                         30 TND
+                       </mat-option>
+                       <mat-option [value]="50">
+                         50 TND
+                       </mat-option>
+                     </mat-select>
+                   </mat-form-field>
+                 </div>
+                <div class="col-md-3">
+                  <mat-form-field style="width: 100%;">
+                  <mat-label>N° de 1er bordereau</mat-label>
+                  <input type="number" [id]="'premierBorderau'+item.id"  style="width: 100%;" matInput  placeholder="numéro de 1er bordereau"
+                         required>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                  <mat-form-field style="width: 100%;">
+                  <mat-label>N° de dernier bordereau</mat-label>
+                  <input type="number" [id]="'dernierBordereau'+item.id" style="width: 100%;" matInput  placeholder="numéro de dernier bordereau"
+                         required>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                  <button mat-mini-fab color="warn"  >
+                    <mat-icon  [ngStyle]="{'cursor':'pointer'}"  (click)="deleteItem(item.id, i)">delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <div class="col-md-12">
+          <mat-form-field class="example-full-width"  style="width: 100%;">
+            <mat-label>Ajouter une Description</mat-label>
+            <textarea formControlName="description" class="mt-3" style="width: 100%;" matInput placeholder="description..."></textarea>
+          </mat-form-field>
+        </div>
+
+        </div>
+      </div>
+      <div>
+        <button mat-button type="button" (click)="resetStepper()" matStepperPrevious>Précédent</button>
+        <button mat-button type="button" matStepperNext>Suivant</button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Terminer</ng-template>
+      <p>Voulez vous Enregistrer cette dépense?</p>
+      <div>
+        <button mat-button type="button" matStepperPrevious>Précédent</button>
+        <button mat-button type="button" (click)="save()" [mat-dialog-close]="null">Enregistrer</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+  </form>
+</div>

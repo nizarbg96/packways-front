@@ -49,6 +49,7 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
   ListScanNB = 0;
   //
   driver: any = null;
+  cout: number = null;
   user: any;
   runsheet: Runsheet = null;
   routeSub: Subscription;
@@ -86,9 +87,11 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
         this.runsheetService.runsheetInfo = this.runsheetInfo;
         this.affectedMatricule = this.runsheetInfo.matricule;
         this.driver = this.runsheetInfo.driver;
+        this.cout = this.runsheetInfo.cout
         console.log(this.driver + ' ' + this.affectedMatricule);
         this.runsheet.driver = this.driver;
         this.runsheet.matricule = this.affectedMatricule;
+        this.runsheet.cout = this.cout
         this.runsheetService.update(this.runsheet).subscribe((res) => {
           this.runsheet = res.body;
         });
@@ -297,8 +300,10 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
       if (!!this.runsheetInfo) {
         this.affectedMatricule = this.runsheetInfo.matricule;
         this.driver = this.runsheetInfo.driver;
+        this.cout = this.runsheetInfo.cout;
         draftRunsheet.matricule = this.affectedMatricule;
         draftRunsheet.driver = this.driver;
+        draftRunsheet.cout = this.cout;
         draftRunsheet.type = this.runsheetInfo.type;
       }
       this.runsheetService.create(draftRunsheet).subscribe((resRunsheet) => {
@@ -424,7 +429,7 @@ export class DialogAddDriverToCreateRunsheetComponent implements OnInit {
   affectedDriverNgModel = '';
   entrepots: Entrepot[] = [];
   matricule: string;
-  runsheetInfo: RunsheetInfo = {driver: null, matricule: null, type: null};
+  runsheetInfo: RunsheetInfo = {driver: null, matricule: null, type: null, cout: null};
 
 
   constructor(
@@ -445,6 +450,9 @@ export class DialogAddDriverToCreateRunsheetComponent implements OnInit {
       }
       if (!!this.runsheetService.runsheetInfo.matricule) {
         this.runsheetInfo.matricule = this.runsheetService.runsheetInfo.matricule;
+      }
+      if (!!this.runsheetService.runsheetInfo.cout) {
+        this.runsheetInfo.cout = this.runsheetService.runsheetInfo.cout;
       }
     }
   }

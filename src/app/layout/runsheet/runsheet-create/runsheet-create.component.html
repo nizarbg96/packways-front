@@ -27,7 +27,7 @@
         <fieldset class="scheduler-border-1">
           <legend class="scheduler-border-1">Scan QR-Code</legend>
           <form class="form-inline mr-auto">
-                  <input class="form-control" type="text" id="myInput" [(ngModel)]="searchTermscan" [ngModelOptions]="{standalone: true}" placeholder="Chercher" aria-label="Search" width="100%">
+                  <input autocomplete="off" class="form-control" type="text" id="myInput" [(ngModel)]="searchTermscan" [ngModelOptions]="{standalone: true}" placeholder="Chercher" aria-label="Search" width="100%">
                   <button class="btn btn-mdb-color btn-rounded btn-sm my-0 ml-sm-2" (click)="scanList()" type="submit" hidden><i class="fa fa-search"></i></button>
           </form>
   </fieldset>
@@ -36,7 +36,7 @@
       <div class="col-md-4 Aligner ">
         <button  mat-raised-button style="width: 50%;"  (click)="openDialog()">
           Modifier Infos</button>
-        <button mat-raised-button  style="width: 50%;"  class="ml-2" [disabled]="ListScan.length === 0 || !driver || !affectedMatricule"
+        <button mat-raised-button  style="width: 50%;"  class="ml-2" [disabled]="ListScan.length === 0 || !driver || !affectedMatricule || !cout"
          (click)="confirmRunsheet()" color="primary">Confirmer</button>
       </div>
     </div>

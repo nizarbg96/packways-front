@@ -11,6 +11,12 @@
 <app-stat-client *ngIf="id !== 'admin'"></app-stat-client>
   <div *ngIf="id === 'admin'">
     <div class="row">
+      <div align="right" class="col-xl-1 text-xs-center">
+        <label for="file-upload" class="custom-file-upload btn-sm"><i class="fa fa-cloud-upload" title="Importer du fichier excel."></i></label>
+        <input id="file-upload" type="file" (change)="onFileChange($event, contentImport);" style="display: none;"/>
+</div>
+    </div>
+    <div class="row">
       <div class="col-md-3 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
@@ -60,8 +66,12 @@
         </div>
       </div>
     </div>
-
-    <div class="row">
+    <div class="row mb-3">
+      <div class="col-md-12">
+          <app-real-time-stats></app-real-time-stats>
+      </div>
+    </div>
+    <div class="row ">
       <div class="col-md-12">
         <mat-card class="mat-elevation-z8">
           <mat-tab-group [color]="'primary'" [backgroundColor]="'primary'" mat-align-tabs="center">
@@ -163,7 +173,7 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </div>
-                <div class="nav-content" tabindex="0">
+                <div class="nav-content" tabindex="0" style="overflow: scroll">
                   <ul>
                     <li><mat-form-field appearance="fill">
                       <mat-label>Date de début</mat-label>
@@ -341,9 +351,17 @@
       </div>
     </div>
     <div class="row mt-3">
+      <div class="col-md-12 grid-margin">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h4 class="font-weight-bold mb-0">Classement cumulé des livreurs dans la semaine en cours</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
       <div class="col-md-12">
         <mat-card class="mat-elevation-z8">
-          <h4 class="card-title">Classement cumulé des livreurs dans la semaine en cours</h4>
           <div class="table-responsive">
             <table class="table table-bordered">
               <thead>
@@ -397,8 +415,16 @@
     </div>
     <div class="row mt-3">
       <div class="col-md-5">
-        <mat-card class="mat-elevation-z8">
-          <h4 class="card-title">Dernières dates de postulations par clients dans les 30 dérniers jours  </h4>
+        <div class="row">
+          <div class="col-md-12 grid-margin">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h4 class="font-weight-bold mb-0">Dernières dates de postulations par clients dans les 30 dérniers jours</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <mat-card class="mat-elevation-z8 mt-3">
           <div id="style-1" class="table-responsive"  style="height: 400px;overflow: scroll">
             <table class="table table-bordered">
               <thead>
@@ -426,8 +452,16 @@
         </mat-card>
       </div>
       <div class="col-md-7">
-        <mat-card class="mat-elevation-z8">
-          <h4 class="card-title">Classement des clients par nombre des colis postulés dans le mois en cours</h4>
+        <div class="row">
+          <div class="col-md-12 grid-margin">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h4 class="font-weight-bold mb-0">Classement des clients par nombre des colis postulés dans le mois en cours</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <mat-card class="mat-elevation-z8 mt-3">
           <div id="style-2" class="table-responsive" style="height: 400px;overflow: scroll">
             <table class="table table-bordered" >
               <thead>
@@ -442,7 +476,7 @@
                   Nombre de colis ramassés
                 </th>
                 <th>
-                  taux de livraison
+                  Taux de livraison
                 </th>
               </tr>
               </thead>
@@ -562,4 +596,38 @@
   </div>
 
 </div>
+<ng-template #contentImport let-modal id="contentImport">
+  <div class="modal-header">
+          <!-- <h5 class="modal-title">Importation des colis à partir d'un fichier excel.</h5> <br> -->
+          <div class="row">
+                  <div class="col-xl-12 text-xs-center">
+                          <div class="form-group">
+                                  <small class="form-text text-primary" style="font-size:10px !important;">Choisissez une adresse source déjà enregistrée.</small>
+                                  <select id="inputExpAdresseNameExcel" class="form-control" [(ngModel)]="selectedAdresseExpExcel" (change)="tripsFromExcelAdrLatLng()">
+                                          <option *ngFor="let adresse of Adresses" [ngValue]="adresse">
+                                                  {{ adresse.labelAdr }}
+                                          </option>
+                                  </select>
+                          </div>
+                  </div>
+          </div>
+  </div>
+  <div class="modal-body" hidden>
+          <table class="table table-sm" style="background-color: #ffffff;">
+                  <tbody style="background-color: #ece8e8;">
+                          <tr *ngFor="let row of tripsFromExcelTemp" class="table-active text-center">
+                                  <td *ngFor="let val of row">
+                                          {{val}}
+                                  </td>
+                          </tr>
+                  </tbody>
+          </table>
+  </div>
+
+  <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" (click)="modal.close('Save click')">Annuler</button>  <!-- showArrayTrip() -->
+          <button type="button" class="btn btn-primary btn-sm" (click)="addTripsFromExcelFile();modal.close('Save click');">Confirmer</button>
+  </div>
+
+</ng-template>
 

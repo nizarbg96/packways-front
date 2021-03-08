@@ -8,6 +8,10 @@ export interface IDepenseActivity {
   avance?: string;
   autreDesc?: string;
   autreValue?: string;
+  avanceMois?: string;
+  carMaintaining?: string;
+  desktopCharge?: string;
+
 }
 
 export class DepenseActivity implements IDepenseActivity {
@@ -18,7 +22,10 @@ export class DepenseActivity implements IDepenseActivity {
     public carteTel?: string,
     public avance?: string,
     public autreDesc?: string,
-    public autreValue?: string
-) {}
+    public autreValue?: string,
+    public avanceMois?: string,
+    public carMaintaining?: string,
+    public desktopCharge?: string
+  ) {}
 
 }

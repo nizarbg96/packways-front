@@ -23,6 +23,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {Ng2CompleterModule} from 'ng2-completer';
 import {TripService} from '../trips/trips.service';
 import {DriversService} from '../drivers/drivers.service';
+import { RealTimeStatsComponent } from './components/real-time-stats/real-time-stats.component';
 
 @NgModule({
   imports: [
@@ -47,7 +48,8 @@ import {DriversService} from '../drivers/drivers.service';
     NotificationComponent,
     ChatComponent,
     StatClientComponent,
-    DialogStatActivityComponent
+    DialogStatActivityComponent,
+    RealTimeStatsComponent
   ],
   entryComponents: [
     DialogStatActivityComponent

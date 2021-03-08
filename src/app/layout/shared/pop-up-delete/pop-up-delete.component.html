@@ -5,8 +5,9 @@
   </button>
 </div>
 <div class="modal-body">
-  <p><strong>L'Etat de le/la {{!!activityName?activityName:'-'}} que vous venez de supprimer est <span class="text-primary">"{{!!activity?activity.status:'-'}}"</span></strong></p>
-  <p>Voulez vous supprimer le/la {{!!activityName?activityName:'-'}} de référence  <span class="text-danger">" {{activity.ref}} "</span>?
+  <p *ngIf="activityName === 'dépense'">Voulez vous supprimer cette dépense ?</p>
+  <p *ngIf="activityName !== 'dépense'"><strong>L'Etat de le/la {{!!activityName?activityName:'-'}} que vous venez de supprimer est <span class="text-primary">"{{!!activity?activity.status:'-'}}"</span></strong></p>
+  <p *ngIf="activityName !== 'dépense'">Voulez vous supprimer le/la {{!!activityName?activityName:'-'}} de référence  <span class="text-danger">" {{activity.ref}} "</span>?
   </p>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Annuler</button>

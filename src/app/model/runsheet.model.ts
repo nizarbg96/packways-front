@@ -31,6 +31,7 @@ export interface IRunsheet {
   matricule?: string;
   entrepot?: Entrepot;
   type?: string;
+  cout?: number;
 }
 
 export class Runsheet implements IRunsheet {
@@ -62,7 +63,8 @@ export class Runsheet implements IRunsheet {
 	  public currentRunsheetId?: string,
     public matricule?: string,
     public entrepot?: Entrepot,
-    public type?: string
+    public type?: string,
+    public cout?: number
   ) {
     this.deleted = this.deleted || false;
   }

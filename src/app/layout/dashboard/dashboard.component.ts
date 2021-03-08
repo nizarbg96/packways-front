@@ -27,6 +27,10 @@ import {TripService} from '../trips/trips.service';
 import {DriversService} from '../drivers/drivers.service';
 import {ActivityPayement} from '../../model/activity-payement.model';
 import {TripExcelService} from '../trips/excel-trip.service';
+import * as XLSX from 'xlsx';
+import {User} from '../users/User';
+import {JumiaTrip} from '../../model/jumia.trip.model';
+type AOA = any[][];
 
 
 @Component({
@@ -112,6 +116,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   dateDebut: Date;
   dateFin: Date;
   @ViewChild('button1') button1: ElementRef<HTMLElement>;
+  private tripsFromExcelTemp: AOA;
+  private tripsFromExcel: AOA;
 
 
 
@@ -739,6 +745,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
 
   }
+
   splitDateFormatMDY2(dd) {
     let dformat = '';
     if (dd != null) {
@@ -748,6 +755,159 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
     return dformat;
   }
+  onFileChange(evt: any, contentImport) {
+		/* wire up file reader */
+		const target: DataTransfer = <DataTransfer>(evt.target);
+        if (target.files.length !== 1) { throw new Error('Cannot use multiple files'); }
+        console.log('type', target.files[0].type);
+        const typeFile = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+       /* if (target.files[0].type !== typeFile) {
+           /* this.snackBar.open('Échec, le fichier est invalide, les extensions autorisées sont: .xlsx et xls.', 'Fermer', {
+                duration: 5000,
+            });
+            return;
+        } else {*/
+            const reader: FileReader = new FileReader();
+            reader.onload = (e: any) => {
+                /* read workbook */
+                const bstr: string = e.target.result;
+                const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+
+                /* grab first sheet */
+                const wsname: string = wb.SheetNames[0];
+                const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+
+                /* save data */
+                this.tripsFromExcelTemp = <AOA>(XLSX.utils.sheet_to_json(ws, {header: 1}));
+                this.tripsFromExcel = this.tripsFromExcelTemp;
+                this.tripsFromExcel.shift();
+                console.log(this.tripsFromExcel);
+              this.addTripsFromExcelFile();
+            };
+            reader.readAsBinaryString(target.files[0]);
+    //         // }
+    }
+
+  openSm(content) {
+    this.modalService.open(content, { size: 'sm' }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+    addTripsFromExcelFile() {
+    const trips: Trip[] = [];
+    this.tripsFromExcel.forEach(value => {
+      const trip = new JumiaTrip();
+      trip.ref = value[0];
+      trip.clientName = value[6];
+      trip.clientSurname = value[7];
+      trip.numMobile = value[8];
+      trip.street = value[9];
+      trip.city = value[10];
+      trip.region = value[11];
+      if(!!value[15]){
+        trip.valColis = value[15];
+      }else{
+        trip.valColis = '0';
+      }
+      trip.statusTrip = value[21];
+      trip.nomLivreur = value[23];
+      trip.collectedDate = value[29];
+      trip.deliveredDate = value[31];
+      trips.push(trip);
+    });
+    this.statestiquesService.postJumiaTrips(trips).subscribe();
+
+      const that = this;
+      console.log('Test2');
+      const nowd = new Date();
+  const tripType = 'pack';
+      const sizePack = null;
+      const poidsTrip = 0;
+  const modeLiv = '24H';
+      const labelAdrD = '';
+  const pricePack = 6;
+      const typePaiement = 'Contre remboursement';
+      // const regex = /^[0-9]+$/;
+      const regex = /^-?(?:\d+|\d{0,9}(?:,\d{9})+)(?:(\.|,)\d+)?$/;
+      let checkValidFile = true;
+      if (this.tripsFromExcel !== null && this.tripsFromExcel.length > 0) {
+
+          console.log('aaaaaaa111111111aa', this.tripsFromExcel);
+          for (let i = 0; i < this.tripsFromExcel.length; i++) {
+              // let valueTrip: any; let telContAdresseDest: any;
+              const contactAdresseDest = this.tripsFromExcel[i][0];
+              const telContAdresseDest = this.tripsFromExcel[i][1];
+              const descriptionTrip = this.tripsFromExcel[i][6];
+              const valueTrip = this.tripsFromExcel[i][7];
+              const cityGlobalDest = this.tripsFromExcel[i][8];
+              const latGlobalDest = this.tripsFromExcel[i][9];
+              // const latGlobalDest = 36.81897;
+              const lngGlobalDest = this.tripsFromExcel[i][10];
+              // const lngGlobalDest = 10.16579;
+
+              console.log('aaaaaaaaa');
+              if ((descriptionTrip === undefined) || (valueTrip === undefined) || (telContAdresseDest === undefined)
+              || (contactAdresseDest === undefined) || (cityGlobalDest === undefined)) {
+                  checkValidFile = false;
+                  this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
+                      duration: 5000,
+                  });
+                  //this.openDialog();
+
+                  return;
+              } else if ((descriptionTrip === null || descriptionTrip === '') || (valueTrip === null || valueTrip === '')
+              || (telContAdresseDest === null || telContAdresseDest === '')
+              || (contactAdresseDest === null || contactAdresseDest === '') || (cityGlobalDest === null || cityGlobalDest === '')) {
+                  checkValidFile = false;
+                  this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
+                      duration: 5000,
+                  });
+                 // this.openDialog();
+                  return;
+              }
+
+              // valueTrip = valueTrip.replace(/,/g, '.');
+              /*this.tripDataFromExcel = this.tservice.addTripFromExcel(
+                  this.dataUser.nameUser, this.dataUser.emailUser, this.dataUser.rateUser, this.dataUser.idUser,
+                  this.dataUser.nbrateUser, this.dataUser.nbrdeliveryUser, this.dataUser.mobileUser, this.dataUser.surnameUser,
+                  this.selectedAdresseExpExcel.geolocAdr.lat, this.selectedAdresseExpExcel.geolocAdr.lng, this.selectedAdresseExpExcel.contactAdr,
+                  this.selectedAdresseExpExcel.mobileAdr, contactAdresseDest,
+                  telContAdresseDest, null, nowd, 'UT' + this.dataUser.idUser, this.dataUser.idUser,
+                  nowd, latGlobalDest, lngGlobalDest, modeLiv,
+                  this.dataUser.cout, tripType, valueTrip, poidsTrip,
+                  sizePack, typePaiement, 'REF', 'cherche un livreur',
+                  this.selectedAdresseExpExcel.cityAdr, cityGlobalDest, null, descriptionTrip,
+                  null, this.selectedAdresseExpExcel.labelAdr, labelAdrD);
+                this.listTripDataFromExcel.push(this.tripDataFromExcel);*/
+          }
+          // this.spinner.hide();
+          // window.location.reload();
+          /*this.tservice.addListTripsFromExel(this.listTripDataFromExcel);*/
+
+      } else {
+          this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
+              duration: 5000,
+          });
+      }
+/*
+      this.out = this.tripsFromExcel.length * 1000;
+*/
+      /*
+      setTimeout(function() {
+          /* that.getFiltredTrips1(this.startDateFilter, this.endDateFilter, this.searchTerm, this.clientFilter2,
+              this.stateFilter, this.enRetardFilter, this.payementStatusFilter, null);
+              window.location.reload();
+     }, this.out);
+     */
+
+  }
+
+
+
+
 }
 @Component({
   selector: 'dialog-stat-acivity-dialog',

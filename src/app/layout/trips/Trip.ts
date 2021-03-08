@@ -95,7 +95,10 @@ export class Trip {
   pickUpHistory?: string;
   transitLivraisonDate?: any;
   transitRetourDate?: any;
+  retourDate?: Date;
   survey?: any;
+  refJumia?: string;
+  fraisSoutraitant?: number;
 
 
   constructor() {
