@@ -260,9 +260,7 @@ export class RamassageCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (!this.confirmed) {
-        this.ramassageService.update(this.pickUp).subscribe();
-    }
+    this.ramassageService.update(this.pickUp).subscribe();
     this.routeSub.unsubscribe();
 
 

@@ -27,6 +27,8 @@ import {environment} from '../../../../environments/environment';
 import {Conflit} from '../../../model/conflit.model';
 import {ConflitService} from '../../conflict-trips/conflit.service';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {Depenses} from '../../../model/depenses.model';
+import {DepensesService} from '../../depenses/depenses.service';
 
 @Component({
   selector: 'app-create-activity-runsheet',
@@ -99,13 +101,17 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
   private scanForceRetour = false;
   private scanForceRetournee = false;
   nbStop = 0;
+  private depensesGasoileEspece: { createdByName: any; depenseFrom: string; affectedTo: any; description: string; montant: any; type: string; deletedBy?: string; createdDate: Date; deleted?: boolean; deletedByName?: string; createdBy: string; deletedDate?: Date; carnetGasoil?: string; id?: string; depenseActivity: { gasoilEspece: any; autreValue: null; avanceMois: null; avance: null; autreDesc: null; carMaintaining: null; gasoilCarteValue?: string; carteTel: null; gasoilCarteNumber?: string; desktopCharge: null } };
+  private depensesCarteTel: { createdByName: any; depenseFrom: string; affectedTo: any; description: string; montant: any; type: string; deletedBy?: string; createdDate: Date; deleted?: boolean; deletedByName?: string; createdBy: string; deletedDate?: Date; carnetGasoil?: string; id?: string; depenseActivity: { gasoilEspece: null; autreValue: null; avanceMois: null; avance: null; autreDesc: null; carMaintaining: null; gasoilCarteValue?: string; carteTel: any; gasoilCarteNumber?: string; desktopCharge: null } };
+  private depensesAvance: { createdByName: any; depenseFrom: string; affectedTo: any; description: string; montant: any; type: string; deletedBy?: string; createdDate: Date; deleted?: boolean; deletedByName?: string; createdBy: string; deletedDate?: Date; carnetGasoil?: string; id?: string; depenseActivity: { gasoilEspece: null; autreValue: null; avanceMois: null; avance: any; autreDesc: null; carMaintaining: null; gasoilCarteValue?: string; carteTel: null; gasoilCarteNumber?: string; desktopCharge: null } };
+  private depensesAutre: { createdByName: any; depenseFrom: string; affectedTo: any; description: string; montant: any; type: string; deletedBy?: string; createdDate: Date; deleted?: boolean; deletedByName?: string; createdBy: string; deletedDate?: Date; carnetGasoil?: string; id?: string; depenseActivity: { gasoilEspece: null; autreValue: any; avanceMois: null; avance: null; autreDesc: any; carMaintaining: null; gasoilCarteValue?: string; carteTel: null; gasoilCarteNumber?: string; desktopCharge: null } };
 
 
 
   constructor(private activityRunsheetService: ActivityRunsheetService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
               private fb: FormBuilder, private ramassageService: RamassageService, private userService: UserService, private http: Http,
-              private conflitService: ConflitService) {
+              private conflitService: ConflitService, private depensesService: DepensesService) {
   }
 
   ngOnInit() {
@@ -205,6 +211,20 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
 
       });
     console.log(this.activityRunsheet.argentRecolte);
+  }
+  saveDepenses(){
+    if (this.depensesAvance.montant > 0){
+      this.depensesService.create(this.depensesAvance).subscribe();
+    }
+    if (this.depensesAutre.montant > 0){
+      this.depensesService.create(this.depensesAutre).subscribe();
+    }
+    if (this.depensesCarteTel.montant > 0){
+      this.depensesService.create(this.depensesCarteTel).subscribe();
+    }
+    if (this.depensesGasoileEspece.montant > 0){
+      this.depensesService.create(this.depensesGasoileEspece).subscribe();
+    }
   }
 
   getRunsheets() {
@@ -768,6 +788,98 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       const activityDepenses = new DepenseActivity(gasoilEspece + '', gasoilCarteNumber + '', gasoilCarteValue + '', carteTel + '', avance + '', autreDesc + '', autreValue + '');
       this.valeurDepense = gasoilEspece + gasoilCarteValue + carteTel + avance + autreValue;
       this.activityRunsheet.depenses = activityDepenses;
+      this.depensesGasoileEspece = {
+      ...new Depenses(),
+        createdDate: new Date(),
+        createdBy: this.user.idAdmin,
+        createdByName: this.user.name,
+        type: 'Espèces gasoil',
+        depenseActivity: {
+          ...new DepenseActivity(),
+          avance: null,
+          avanceMois: null,
+          gasoilEspece: gasoilEspece,
+          carteTel: null,
+          carMaintaining: null,
+          desktopCharge: null,
+          autreDesc: null,
+          autreValue: null
+        },
+        affectedTo: this.activityRunsheet.driver,
+        depenseFrom: 'activity runsheet ' + this.activityRunsheet.ref,
+        description: '',
+        montant: gasoilEspece
+      }
+      this.depensesCarteTel = {
+        ...new Depenses(),
+        createdDate: new Date(),
+        createdBy: this.user.idAdmin,
+        createdByName: this.user.name,
+        type: 'Recharge Carte Téléphonique',
+        depenseActivity: {
+          ...new DepenseActivity(),
+          avance: null,
+          avanceMois: null,
+          gasoilEspece: null,
+          carteTel: carteTel,
+          carMaintaining: null,
+          desktopCharge: null,
+          autreDesc: null,
+          autreValue: null
+        },
+        affectedTo: this.activityRunsheet.driver,
+        depenseFrom: 'activity runsheet ' + this.activityRunsheet.ref,
+        description: '',
+        montant: carteTel
+      }
+      this.depensesAvance = {
+        ...new Depenses(),
+        createdDate: new Date(),
+        createdBy: this.user.idAdmin,
+        createdByName: this.user.name,
+        type: 'Avance',
+        depenseActivity: {
+          ...new DepenseActivity(),
+          avance: avance,
+          avanceMois: null,
+          gasoilEspece: null,
+          carteTel: null,
+          carMaintaining: null,
+          desktopCharge: null,
+          autreDesc: null,
+          autreValue: null
+        },
+        affectedTo: this.activityRunsheet.driver,
+        depenseFrom: 'activity runsheet ' + this.activityRunsheet.ref,
+        description: '',
+        montant: avance
+      }
+      this.depensesAutre = {
+        ...new Depenses(),
+        createdDate: new Date(),
+        createdBy: this.user.idAdmin,
+        createdByName: this.user.name,
+        type: 'Autre',
+        depenseActivity: {
+          ...new DepenseActivity(),
+          avance: null,
+          avanceMois: null,
+          gasoilEspece: null,
+          carteTel: null,
+          carMaintaining: null,
+          desktopCharge: null,
+          autreDesc: autreDesc,
+          autreValue: autreValue
+        },
+        affectedTo: this.activityRunsheet.driver,
+        depenseFrom: 'activity runsheet ' + this.activityRunsheet.ref,
+        description: '',
+        montant: autreValue
+      };
+      console.log(this.depensesAvance);
+      console.log(this.depensesGasoileEspece)
+      console.log(this.depensesAutre)
+      console.log(this.depensesCarteTel);
     } else {
       this.valeurDepense = parseFloat(this.activityRunsheet.depenses.autreValue) + parseFloat(this.activityRunsheet.depenses.avance) + parseFloat(this.activityRunsheet.depenses.carteTel) + parseFloat(this.activityRunsheet.depenses.gasoilCarteValue) + parseFloat(this.activityRunsheet.depenses.gasoilEspece);
     }
@@ -1030,6 +1142,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
                               this.activityRunsheetService.update(this.activityRunsheet).subscribe(() => {
                                 this.conflitService.createList(this.listConflit).subscribe(() => {
                                   this.openCheckSuccess('activityConfirmed');
+                                  this.saveDepenses();
                                 });
                               });
                           });
@@ -1037,6 +1150,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
                           this.activityRunsheetService.update(this.activityRunsheet).subscribe(() => {
                             this.conflitService.createList(this.listConflit).subscribe(() => {
                               this.openCheckSuccess('activityConfirmed');
+                              this.saveDepenses();
                             });
                           });
                         }
@@ -1260,6 +1374,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
 
 }
 
