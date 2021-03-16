@@ -133,10 +133,18 @@
             <i class="fa fa-exchange"></i>&nbsp;
             <span>PickUp</span>
         </a>
+      <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/car']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-car"></i>&nbsp;
+        <span>Véhicules</span>
+      </a>
         <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/entrepot']" [routerLinkActive]="['router-link-active']" class="list-group-item">
           <i class="fa fa-building"></i>&nbsp;
           <span>Entrepot</span>
         </a>
+      <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/employee']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-user"></i>&nbsp;
+        <span>Employés</span>
+      </a>
         <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/conflicts']" [routerLinkActive]="['router-link-active']" class="list-group-item">
           <i class="fa fa-building"></i>&nbsp;
           <span>Colis de conflits</span>

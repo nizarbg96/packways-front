@@ -1,0 +1,74 @@
+
+<div class="modal-header">
+  <h4 class="modal-title">Détails de l'employé : <strong>{{employee.firstName+' '+employee.lastName}}</strong></h4>
+
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+          (click)="cancel()">&times;</button>
+</div>
+
+<div class="modal-body">
+  <div class="row justify-content-center">
+    <div class="col-md-9">
+      <div *ngIf="employee">
+        <h2><span>Employee</span> {{ employee.id }}</h2>
+        <hr>
+        <dl class="row-md jh-entity-details">
+          <dt><span >First Name</span></dt>
+          <dd>
+            <span>{{ employee.firstName }}</span>
+          </dd>
+          <dt><span >Last Name</span></dt>
+          <dd>
+            <span>{{ employee.lastName }}</span>
+          </dd>
+          <dt><span >Cin</span></dt>
+          <dd>
+            <span>{{ employee.cin }}</span>
+          </dd>
+          <dt><span >Phone Number</span></dt>
+          <dd>
+            <span>{{ employee.phoneNumber }}</span>
+          </dd>
+          <dt><span>Role</span></dt>
+          <dd>
+            <span>{{ employee.role }}</span>
+          </dd>
+          <dt><span >Deleted</span></dt>
+          <dd>
+            <span>{{ employee.deleted }}</span>
+          </dd>
+          <dt><span>Deleted By</span></dt>
+          <dd>
+            <span>{{ !!employee.deletedBy?employee.deletedBy:'-'}}</span>
+          </dd>
+          <dt><span>Deleted By Name</span></dt>
+          <dd>
+            <span>{{ !!employee.deletedByName?employee.deletedByName:'-' }}</span>
+          </dd>
+          <dt><span>Deleted Date</span></dt>
+          <dd>
+            <span>{{ !!employee.deletedDate?employee.deletedDate:'-' }}</span>
+          </dd>
+          <dt><span>Created By</span></dt>
+          <dd>
+            <span>{{ employee.createdBy }}</span>
+          </dd>
+          <dt><span>Created By Name</span></dt>
+          <dd>
+            <span>{{ employee.createdByName }}</span>
+          </dd>
+          <dt><span>Created Date</span></dt>
+          <dd>
+            <span>{{ employee.createdDate }}</span>
+          </dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="cancel()">
+    <mat-icon>check</mat-icon>&nbsp;<span >D'accords</span>
+  </button>
+</div>

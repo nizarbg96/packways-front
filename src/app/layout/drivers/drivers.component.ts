@@ -1,11 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import { DriversService } from './drivers.service';
 import { routerTransition } from '../../router.animations';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ExcelService } from 'src/app/layout/drivers/excel.service';
 import { Driver } from 'src/app/layout/drivers/Driver';
-
+import {Car} from '../../model/car.model';
+import {CarService} from '../car/car.service';
+import {MatListOption, MatSelectionList} from '@angular/material';
+import {HttpResponse} from '@angular/common/http';
+import {IRunsheet} from '../../model/runsheet.model';
+type EntityResponseType = HttpResponse<Driver>;
+type EntityArrayResponseType = HttpResponse<IRunsheet[]>;
 
 @Component({
   selector: 'app-drivers',
@@ -33,11 +39,17 @@ export class DriversComponent implements OnInit {
   fraixTotal: any;
   valeurTotal: any;
   totalTripGetted: any;
+  cars: Car[] = [];
+  affectedCars = [];
+  @ViewChild(MatSelectionList)
+  selectionList: MatSelectionList;
+  affectedCarsIds = [];
 
-  constructor(public driverService:DriversService,private modalService: NgbModal,private excelService: ExcelService) { }
+  constructor(public driverService:DriversService,private modalService: NgbModal,private excelService: ExcelService, private carServices: CarService) { }
 
   ngOnInit() {
     this.getDrivers();
+    this.getCars();
   }
 
   getDrivers() {
@@ -53,6 +65,11 @@ export class DriversComponent implements OnInit {
         }
         this.itemsSearch = this.items;
         console.log("test",this.items);
+    });
+  }
+  getCars(){
+    this.carServices.query().subscribe((res)=>{
+      this.cars = res.body.filter(value => !value.deleted)
     });
   }
 
@@ -359,9 +376,42 @@ Update(){
     const min = d.getMinutes();
     // var sec = d.getSeconds();
     const dformat = [day, month, year].join('/') + ' ' + [hour, min].join(':');
-
     return dformat;
 }
 
 
+  openAffectCar(affectCar: TemplateRef<any>, driver: any) {
+     this.affectedCars = driver.affectedCars;
+     this.affectedCarsIds = this.affectedCars.map(value => value.id)
+     this.objDriver = driver;
+    this.modalService.open(affectCar, { size: 'lg' }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+
+
+  }
+
+
+  saveCars(objDriver: Driver, carsSelection: MatSelectionList) {
+    this.driverService.getOneDriver(objDriver.idDriver).subscribe((res) => {
+      objDriver = res.json();
+      objDriver.affectedCars = this.cars.slice().filter((car) => this.affectedCarsIds.indexOf(car.id) >= 0);
+      this.driverService.updateOneDriver(objDriver).subscribe(() => {
+        this.getDrivers();
+      });
+    });
+  }
+
+  onAreaListControlChanged(car_option: MatListOption, car: Car) {
+    if(car_option.selected){
+      this.affectedCars.push(car);
+      this.affectedCarsIds = this.affectedCars.map(value => value.id);
+    } else {
+      this.affectedCars.splice(this.affectedCars.indexOf(car),1);
+      this.affectedCarsIds = this.affectedCars.map(value => value.id);
+    }
+    console.log(this.affectedCars);
+  }
 }

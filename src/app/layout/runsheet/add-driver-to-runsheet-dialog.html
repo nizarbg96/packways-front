@@ -17,6 +17,15 @@
   <ng2-completer [inputClass]="'form-control form-control-inline'" [datasource]="Listdriverauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
                  [textNoResults]="'Pas trouvé.'" [placeholder]="'Livreur'" (selected)="getSelectedDriver($event)" [(ngModel)]="affectedDriverNgModel">
   </ng2-completer>
+  <mat-form-field appearance="fill" style="display: block; width: 100%">
+    <mat-label>Véhicule</mat-label>
+    <mat-select  required (selectionChange)="affectCar($event.value)">
+      <mat-option>--</mat-option>
+      <mat-option *ngFor="let car of cars" [value]="car" >
+        {{car.nom}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
   <div class="input-group  mt-4 mb-3">
     <input type="text" class="form-control" placeholder="Matricule de voiture"  aria-describedby="basic-addon1" [ngModel]="runsheetInfo?.matricule" (ngModelChange)="runsheetInfo.matricule = $event">
   </div>

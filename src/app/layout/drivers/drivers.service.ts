@@ -1,9 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 // import { HttpClient } from '@angular/common/http';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import {environment} from '../../../environments/environment';
+import {IRunsheet} from '../../model/runsheet.model';
+import {Driver} from './Driver';
 
 
 @Injectable()
@@ -24,6 +26,15 @@ export class DriversService {
       'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
       'Authorization': `Bearer ${this.jwt}`
     });
+  headerOptions2 = new  HttpHeaders({
+    'Content-Type':  'application/json',
+    'Access-Control-Allow-Credentials' : 'true',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+    'Authorization': `Bearer ${this.jwt}`
+  });
+
 
 
   getDriversFromServe() {
@@ -53,6 +64,12 @@ export class DriversService {
         return this.http.put(this.url + '/update/' + id, driverData, {headers: this.headerOptions});
         console.log('updated suscess');
       }
+      updateOneDriver(driver: Driver): Observable<HttpResponse<Driver>> {
+        return this.httpc
+          .put<Driver>(this.url + 'updateOneDriver/', driver, { observe: 'response', headers: this.headerOptions2 });
+      }
+
+
 
 
       BlockDriver(idDriver, driverData) {

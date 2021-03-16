@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { DataTableModule } from 'angular-6-datatable';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { MatCardModule, MatTableModule, MatPaginatorModule, MatFormFieldModule } from '@angular/material';
+import {MaterialLibModule} from '../material/material.module';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { MatCardModule, MatTableModule, MatPaginatorModule, MatFormFieldModule }
     MatTableModule,
     MatPaginatorModule,
     MatFormFieldModule,
+    MaterialLibModule
   ],
   providers: [DriversService]
 })

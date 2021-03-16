@@ -31,6 +31,8 @@ const routes: Routes = [
       {path: 'users', loadChildren: './users/users.module#UsersModule'},
       {path: 'drivers', loadChildren: './drivers/drivers.module#DriversModule'},
       {path: 'pickup', loadChildren: './pickup/pickup.module#PickUpModule'},
+      {path: 'car', loadChildren: './car/car.module#CarModule'},
+      {path: 'employee', loadChildren: './employee/employee.module#EmployeeModule'},
       {path: 'profile', loadChildren: './profile/profile.module#ProfileModule'},
       {path: 'courbeille', loadChildren: './courbeille/courbeille.module#CourbeilleModule'},
       {path: 'caisse', loadChildren: './caisse/caisse.module#CaisseModule'},

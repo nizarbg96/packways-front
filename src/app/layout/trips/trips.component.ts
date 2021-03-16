@@ -1412,7 +1412,7 @@ export class TripsComponent implements OnInit {
         }
 
         let runsheetList: any[] = [];
-        if(!!trip.rubsheetsHistory){
+        if(!!trip.runsheetsHistory){
           this.runsheetService.getList(trip.runsheetsHistory.filter((runsheetHistory) => runsheetHistory !== null).map(runsheetHistory => runsheetHistory.runsheetId)).subscribe((res) => {
             this.runsheetsHistory = res.body;
             for(let i = 0; i < this.runsheetsHistory.length; i++){
@@ -1421,12 +1421,11 @@ export class TripsComponent implements OnInit {
             this.runsheetPrintHistory = runsheetList.sort((a, b) => {
               return a.runsheetHistory.addedDate > b.runsheetHistory.addedDate ? -1 : 1;
             })
-            this.historiqueScan = trip.historiqueScans.sort((a: IHistoriqueScan, b:IHistoriqueScan) => {
-              return ((a.scannedDate > b.scannedDate) ? -1 : 1);
-            });
-
           });
         }
+      this.historiqueScan = trip.historiqueScans.sort((a: IHistoriqueScan, b:IHistoriqueScan) => {
+        return ((a.scannedDate > b.scannedDate) ? -1 : 1);
+      });
 
 
 

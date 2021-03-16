@@ -1,3 +1,5 @@
+import {Car} from '../../model/car.model';
+
 export class Driver{
     idDriver:any;
     login :any;
@@ -20,5 +22,11 @@ export class Driver{
     updateby:any;
     updateday:any;
     lastUpdate:any;
-    vehicleDriver:any;
+  changedDateDriver:Date;
+  vehicleDriver:any[];
+  status:any;
+  tagverifOpen:any;
+  affectedCars:Car[];
+
+
 }

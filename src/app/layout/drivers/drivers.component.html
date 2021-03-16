@@ -22,12 +22,12 @@
                                 </div>
                             -->
                             </div>
-  
+
                         </div>
                     </div>
-  
+
                 </div>
-  
+
                 <div class="card-body table-responsive">
                     <table class="table" [mfData]="items" #mf="mfDataTable" [mfRowsOnPage]="10">
                         <thead>
@@ -57,11 +57,14 @@
                                     <button type="button" class="mat-mini-fab" (click)="open(content2)" hidden>
                                             <i class="material-icons" (click)="editDriver(driver)"> open_in_new </i>
                                     </button>
-                                    
+
                                     <button type="button" class="mat-mini-fab" title="Rapport de livraison" (click)="openRl(content5, driver)">
                                             <i class="material-icons"> chrome_reader_mode </i>
                                     </button>
-                                   
+                                  <button type="button" class="mat-mini-fab" title="Affecter Véhicules" (click)="openAffectCar(affectCar, driver)">
+                                    <i class="material-icons">directions_car</i>
+                                  </button>
+
                                     <button mat-icon-button="" type="button" class="mat-icon-button" *ngIf="driver.accountActive==true" (click)="openRl(contentBlock, driver)">
                                         <i class="material-icons" style="color:green"> block </i>
                                     </button>
@@ -69,7 +72,7 @@
                                         <i class="material-icons" style="color:red"> block </i>
                                     </button>
                                 </td>
-  
+
                             </tr>
                         </tbody>
                         <tfoot>
@@ -81,7 +84,7 @@
                         </tfoot>
                     </table>
                     <ngx-spinner bdColor = "rgba(255,255,255,0.8)" size = "large" color = "#000000" type = "ball-square-clockwise-spin"></ngx-spinner>
-  
+
                     <div class="row" hidden>
                         <div class="col-md-12">
                             <div class="text-center">
@@ -190,14 +193,14 @@
             <button type="button" class="close" aria-label="Close" (click)="modal.close('Save click')">
             <span aria-hidden="true">&times;</span>
             </button>
-    </div>  
+    </div>
     <div class="modal-body">
             <div class="row">
                     <div class="col-xl-6 text-xs-center">
                             <fieldset class="scheduler-border">
                                     <legend class="scheduler-border">Date de début</legend>
                                     <div class="control-group">
-                                            <input id="startDate" type="date" class="form-control" name="startDate" [(ngModel)]="startDate">                                                                                                                             
+                                            <input id="startDate" type="date" class="form-control" name="startDate" [(ngModel)]="startDate">
                                     </div>
                             </fieldset>
                     </div>
@@ -205,16 +208,16 @@
                             <fieldset class="scheduler-border">
                                     <legend class="scheduler-border">Date de fin</legend>
                                     <div class="control-group">
-                                            <input id="endDate" type="date" class="form-control" name="endDate" [(ngModel)]="endDate">                                                                                                                             
+                                            <input id="endDate" type="date" class="form-control" name="endDate" [(ngModel)]="endDate">
                                     </div>
                             </fieldset>
                     </div>
             </div>
-                            
 
-    </div>      
-    
-    <div class="modal-footer">                                                
+
+    </div>
+
+    <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="modal.close('Save click')">Fermer</button>
             <button type="button" class="btn btn-primary" (click)="getListTripByDriverAndDate(content6);modal.close('Save click')">Générer</button>
     </div>
@@ -224,10 +227,10 @@
     <div class="modal-body">
             <div class="row">
                     <h5>Etes-vous sur de bien vouloir supprimer ce compte ?</h5>
-            </div> 
+            </div>
     </div>
     <div class="modal-footer">
-            <button type="button" class="btn btn-danger" (click)="(c('Close click'))">Annuler</button>                
+            <button type="button" class="btn btn-danger" (click)="(c('Close click'))">Annuler</button>
             <button type="button" class="btn btn-primary" (click)="deleteDriver(objDriver);(c('Close click'))">Supprimer</button>
     </div>
 </ng-template>
@@ -238,60 +241,81 @@
             <div class="row">
                     <h5 *ngIf="objDriver.accountActive===true" >Etes-vous sur de bien vouloir désactiver ce compte ?</h5>
                     <h5 *ngIf="objDriver.accountActive===false">Etes-vous sur de bien vouloir activer ce compte ?</h5>
-            </div> 
+            </div>
     </div>
     <div class="modal-footer">
-            <button type="button" class="btn btn-danger" (click)="(c('Close click'))">Annuler</button>                
+            <button type="button" class="btn btn-danger" (click)="(c('Close click'))">Annuler</button>
             <button type="button" class="btn btn-primary" (click)="OnBlock(objDriver);(c('Close click'))" *ngIf="objDriver.accountActive===true" >Bloquer</button>
             <button type="button" class="btn btn-primary" (click)="OnDeBlock(objDriver);(c('Close click'))" *ngIf="objDriver.accountActive===false">Débloquer</button>
 
     </div>
 </ng-template>
+<ng-template #affectCar let-c="close" let-d="dismiss">
+  <div class="modal-body">
+    <div class="row">
+      <h5 *ngIf="objDriver.accountActive===true" >Séléctionner les véhicules à affecter au condecteur</h5>
+    </div>
+    <div class="row" style="width: 100%">
+      <div class="col-md-12">
+        <mat-selection-list #carsSelection style="width: 100%">
+          <mat-list-option #car_option *ngFor="let car of cars" [selected]="affectedCarsIds.indexOf(car.id) >= 0" (click)="onAreaListControlChanged(car_option, car)">
+            {{car.marqueVehicle}}-{{car.modelVehicle}}-{{car.matVehicle}}
+          </mat-list-option>
+        </mat-selection-list>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="(c('Close click'))">Annuler</button>
+    <button type="button" class="btn btn-primary" (click)="saveCars(objDriver, carsSelection);(c('Close click'))" >Enregistrer</button>
+
+  </div>
+</ng-template>
 
 <ng-template #content6 let-modal>
         <div class="modal-header">
-                <h6 class="modal-title" id="modal-basic-title">Liste des colis affectés au livreur {{objDriver.nameDriver}} {{objDriver.surnameDriver}} du: {{changeDateFormatDMY(startDate)}} au: {{changeDateFormatDMY(endDate)}}. </h6>            
+                <h6 class="modal-title" id="modal-basic-title">Liste des colis affectés au livreur {{objDriver.nameDriver}} {{objDriver.surnameDriver}} du: {{changeDateFormatDMY(startDate)}} au: {{changeDateFormatDMY(endDate)}}. </h6>
                 <button type="button" class="btn btn-primary" hidden>Générer</button>
         </div>
-        <div class="modal-body">                        
+        <div class="modal-body">
                         <table class="table table-sm" id="contentToConvert" style="font-size:12px !important;">
-                                <thead class="thead">   
-                                        <tr style="border-style:hidden; border-width: 0px;">                                                                         
+                                <thead class="thead">
+                                        <tr style="border-style:hidden; border-width: 0px;">
                                                 <th colspan="1"></th>
-                                                <th colspan="3"></th>                                                
+                                                <th colspan="3"></th>
                                                 <th colspan="5" class="text-right"><u>Total des colis:</u>&nbsp;{{totalTripGetted}}</th>
-                                        </tr>                                                                             
+                                        </tr>
                                         <tr class="thead-light text-center">
                                         <th style="width:2%">Ref</th>
-                                        <th style="width:10%">Déstinataire</th>    
-                                        <th style="width:10%">Téléphone</th>                                    
+                                        <th style="width:10%">Déstinataire</th>
+                                        <th style="width:10%">Téléphone</th>
                                         <th style="width:40%">Adresse</th>
                                         <th style="width:20%">Description</th>
                                         <th style="width:32%">Date création</th>
                                         <th style="width:3%">Fr</th>
-                                        <th style="width:3%">Val</th>                                        
+                                        <th style="width:3%">Val</th>
                                         </tr>
                                 </thead>
                                 <tbody style="font-size:14px !important;">
                                         <tr *ngFor="let trp of tripsByDriverAndDate" class="table-active text-center" style="background-color: #ffffff;">
-                                                <td style="background-color: #ffffff;">{{trp.refTrip}}</td>   
-                                                <td style="background-color: #ffffff;">{{trp.destTrip.contactAdr}}</td>                                                
-                                                <td style="background-color: #ffffff;">{{trp.destTrip.mobileAdr}}</td>                                                                                           
-                                                <td style="background-color: #ffffff;">{{trp.destTrip.cityAdr}}</td>                                                                                                
+                                                <td style="background-color: #ffffff;">{{trp.refTrip}}</td>
+                                                <td style="background-color: #ffffff;">{{trp.destTrip.contactAdr}}</td>
+                                                <td style="background-color: #ffffff;">{{trp.destTrip.mobileAdr}}</td>
+                                                <td style="background-color: #ffffff;">{{trp.destTrip.cityAdr}}</td>
                                                 <td style="background-color: #ffffff;">{{trp.descriptionTrip}}</td>
-                                                <td style="background-color: #ffffff;">{{changeDateFormat(trp.createdday)}}</td> 
+                                                <td style="background-color: #ffffff;">{{changeDateFormat(trp.createdday)}}</td>
                                                 <td style="background-color: #ffffff;">{{trp.costTrip }}</td>
-                                                <td style="background-color: #ffffff;">{{trp.packageTrip.valPackage }}</td>                                                                                                
-                                        </tr>                                        
+                                                <td style="background-color: #ffffff;">{{trp.packageTrip.valPackage }}</td>
+                                        </tr>
                                 </tbody>
                                 <tfoot>
                                         <tr style="background-color: #e9ecef;">
-                                                <td colspan="8"><b>Fraix total:</b> {{fraixTotal}} &nbsp;&nbsp; <b>Valeur total:</b> {{valeurTotal}}</td>                                                                                                                                                
-                                        </tr>                                        
+                                                <td colspan="8"><b>Fraix total:</b> {{fraixTotal}} &nbsp;&nbsp; <b>Valeur total:</b> {{valeurTotal}}</td>
+                                        </tr>
                                 </tfoot>
-                        </table>                        
+                        </table>
         </div>
-        <div class="modal-footer">                
+        <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="modal.close('Save click')">Fermer</button>
         </div>
 </ng-template>

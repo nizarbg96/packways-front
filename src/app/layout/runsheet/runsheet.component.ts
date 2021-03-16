@@ -22,6 +22,8 @@ import {
   NgbdModalConfirmNonLivree, NgbdModalConfirmReturned
 } from '../reconcile-runsheet/create-activity-runsheet/create-activity-runsheet.component';
 import {ColisFailureRunsheet} from '../../model/colis-failure-runsheet.model';
+import {CarService} from '../car/car.service';
+import {ICar} from '../../model/car.model';
 
 @Component({
   selector: 'app-runsheet',
@@ -44,10 +46,11 @@ export class RunsheetComponent implements OnInit {
   private affectedMatricule: string;
   private closeResult: string;
   private cout: number;
+  private cars: ICar[] = [];
 
 
   constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private modalService: NgbModal,
-              private router: Router, private tripService: TripService, private snackBar: MatSnackBar) { }
+              private router: Router, private tripService: TripService, private snackBar: MatSnackBar, private carService: CarService) { }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
@@ -88,6 +91,11 @@ export class RunsheetComponent implements OnInit {
       this.spinner = false;
       this.filtredRunsheets = this.runsheets;
     });
+  }
+  getCars(){
+    this.carService.query().subscribe((res) => {
+      this.cars = res.body.filter(value => value.deleted === false);
+    })
   }
   deleteRunsheet(runsheet: Runsheet) {
     this.runsheetService.scannedRunsheet = runsheet;
@@ -280,6 +288,10 @@ export class DialogAddDriverToRunsheetComponent implements OnInit {
   affectTypeRunsheet(value: any) {
     this.typeRunsheetValue = value;
     this.runsheetInfo.type = this.typeRunsheetValue;
+  }
+
+  affectCar(value: any) {
+    
   }
 }
 @Component({

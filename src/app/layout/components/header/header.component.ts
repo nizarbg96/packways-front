@@ -134,7 +134,7 @@ export class HeaderComponent implements OnInit {
         } else {
           this.entrepots = res.body.filter((entrepot) => (entrepot.deleted === false));
         }
-      })
+      });
     }
   open(content) {
     this.getEntrepots();
