@@ -24,6 +24,8 @@ import {HistoriqueScan} from '../../../model/historique-scan.model';
 import {ConflitService} from '../../conflict-trips/conflit.service';
 import {Conflit} from '../../../model/conflit.model';
 import {RamassageService} from '../../ramassage/ramassage.service';
+import {Car, ICar} from '../../../model/car.model';
+import {CarService} from '../../car/car.service';
 
 @Component({
   selector: 'app-runsheet-create',
@@ -32,11 +34,13 @@ import {RamassageService} from '../../ramassage/ramassage.service';
 })
 export class RunsheetCreateComponent implements OnInit, OnDestroy {
   private closeResult: string;
+  private car: Car;
 
   constructor(private tservice: TripService, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
               private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,
               public dialog: MatDialog, private userService: UserService, private modalService: NgbModal,
-              private conflitService: ConflitService, private ramassageService: RamassageService, private moveableUnitService: MoveableUnitService) {
+              private conflitService: ConflitService, private ramassageService: RamassageService, private moveableUnitService: MoveableUnitService,
+              private carService: CarService) {
   }
 
   date: Date;
@@ -87,11 +91,13 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
         this.runsheetService.runsheetInfo = this.runsheetInfo;
         this.affectedMatricule = this.runsheetInfo.matricule;
         this.driver = this.runsheetInfo.driver;
-        this.cout = this.runsheetInfo.cout
+        this.cout = this.runsheetInfo.cout;
+        this.car = this.runsheetInfo.car;
         console.log(this.driver + ' ' + this.affectedMatricule);
         this.runsheet.driver = this.driver;
         this.runsheet.matricule = this.affectedMatricule;
-        this.runsheet.cout = this.cout
+        this.runsheet.cout = this.cout;
+        this.runsheet.car = this.car;
         this.runsheetService.update(this.runsheet).subscribe((res) => {
           this.runsheet = res.body;
         });
@@ -123,7 +129,7 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
           if (!!obj.entrepot) {
             if (obj.entrepot.id !== this.runsheet.entrepot.id) {
               const msg = 'impossible de scanner le colis! colis n\'appartient pas à ce Hub';
-              this.snackBar.open(msg, 'Fermer', {duration: 8000,});
+              this.snackBar.open(msg, 'Fermer', {duration: 8000});
               this.playFailureAudio();
               obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  runsheet: ' + this.runsheet.ref,
                 'Exception : ' + msg));
@@ -301,11 +307,14 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
         this.affectedMatricule = this.runsheetInfo.matricule;
         this.driver = this.runsheetInfo.driver;
         this.cout = this.runsheetInfo.cout;
+        this.car = this.runsheetInfo.car
         draftRunsheet.matricule = this.affectedMatricule;
         draftRunsheet.driver = this.driver;
         draftRunsheet.cout = this.cout;
         draftRunsheet.type = this.runsheetInfo.type;
+        draftRunsheet.car = this.runsheetInfo.car;
       }
+
       this.runsheetService.create(draftRunsheet).subscribe((resRunsheet) => {
         this.runsheet = resRunsheet.body;
       });
@@ -412,10 +421,7 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
     if (!!this.runsheetInfo) {
       this.routeSub.unsubscribe();
     }
-
   }
-
-
 }
 
 @Component({
@@ -429,17 +435,21 @@ export class DialogAddDriverToCreateRunsheetComponent implements OnInit {
   affectedDriverNgModel = '';
   entrepots: Entrepot[] = [];
   matricule: string;
-  runsheetInfo: RunsheetInfo = {driver: null, matricule: null, type: null, cout: null};
+  runsheetInfo: RunsheetInfo = {driver: null, matricule: null, type: null, cout: null, car: null};
+  carValue: Car;
+  cars: ICar[] = [];
 
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToCreateRunsheetComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService,
-    private entrepotService: EntrepotService, private runsheetService: RunsheetService, private driverService: DriversService) {
+    private entrepotService: EntrepotService, private runsheetService: RunsheetService, private driverService: DriversService,
+    private carService: CarService) {
   }
 
   ngOnInit(): void {
     this.getAllDrivers();
+    this.getCars();
     this.getEntrepots();
     if (!!this.runsheetService.runsheetInfo) {
       if (!!this.runsheetService.runsheetInfo.driver) {
@@ -453,6 +463,9 @@ export class DialogAddDriverToCreateRunsheetComponent implements OnInit {
       }
       if (!!this.runsheetService.runsheetInfo.cout) {
         this.runsheetInfo.cout = this.runsheetService.runsheetInfo.cout;
+      }
+      if (!!this.runsheetService.runsheetInfo.car) {
+        this.runsheetInfo.car = this.runsheetService.runsheetInfo.car;
       }
     }
   }
@@ -475,13 +488,35 @@ export class DialogAddDriverToCreateRunsheetComponent implements OnInit {
     });
   }
 
+  getCars() {
+    this.carService.query().subscribe((res) => {
+      this.cars = res.body.filter(value => !value.deleted);
+    });
+  }
+  affectCar(car: Car) {
+    this.carService.find(car.id).subscribe((res) => {
+      this.carValue = res.body;
+      this.runsheetInfo.car = this.carValue;
+      this.runsheetInfo.matricule = this.carValue.matVehicle;
+    });
+  }
+
   getSelectedDriver(driver: any) {
+
     if (driver != null) {
       const ind = this.Listdriverauto.indexOf(driver.title);
       this.affectedDriver = this.Listdriver[ind];
       this.driverService.getOneDriver(this.affectedDriver.idDriver).subscribe((oneDriver) => {
-        this.runsheetInfo.driver = oneDriver.json();
+        this.runsheetInfo.driver =  oneDriver.json();
+        this.cars = this.affectedDriver.affectedCars;
+        if(oneDriver.json().soutraitant){
+          this.runsheetInfo.cout = oneDriver.json().fraisSoutraitance;
+        }
       });
+    }else{
+      this.affectedDriver = null;
+      this.runsheetInfo.driver = null;
+      this.cars = [];
     }
   }
 
@@ -490,7 +525,6 @@ export class DialogAddDriverToCreateRunsheetComponent implements OnInit {
       this.entrepots = res.body.filter((entrepot) => entrepot.deleted === false);
     });
   }
-
 }
 
 @Component({

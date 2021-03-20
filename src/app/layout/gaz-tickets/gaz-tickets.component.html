@@ -1,0 +1,58 @@
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;">
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Borderaux Gasoiles'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Affecter Bordereaux Gasoiles</h5>
+        <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-10 Aligner">
+      </div>
+      <div class="col-md-2 Aligner">
+        <button style="width: 100%" mat-raised-button   color="primary" (click)="openDialog()">Affecter bordereau</button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+<div class="row">
+  <mat-spinner *ngIf="isLoadingResults" class="center"></mat-spinner>
+  <mat-selection-list style="width:100%"  #tickets_list>
+    <div *ngFor="let ticket of filtredTickets">
+      <mat-list-option #ticket_option *ngIf="ticket.consumed === true || ticket.deleted === false" (click)="onAreaListControlChanged(ticket_option, ticket)" >
+        <div class="row mt-1" >
+          <div class="col-md-10">
+            <p>Bordereau_gasoile_{{ticket.numero}} </p>
+            <p style="color: grey; font-style: italic;">
+              Valeur: {{ticket.value}} TND - Employé: <strong>
+              {{(!!ticket.consumedBy) ?  ticket.consumedByName : "n'est pas assigné"}}
+            </strong> - Véhicule: <strong>{{ticket.affectedCar.marqueVehicle+'-'+ticket.affectedCar.modelVehicle+'-'+
+              ticket.affectedCar.matVehicle}}</strong></p>
+            <p style="color: grey; font-style: italic;"> Date de Consomation: {{ticket.consumedDate | date:'long'}}</p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+            <button style="z-index: 10;" type="button" class="mat-mini-fab mt-2" title="Modifier" (click)="viewDetails(ticket)" > <!-- (click)="open(content)" -->
+              <i class="material-icons">list</i>
+            </button>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+            <p style="color: grey; font-style: italic;" class="mt-2">
+              {{ ticket.consumedDate | date:'dd/MM/yyyy'}}
+            </p>
+            <p style="color: grey; font-style: italic;" [ngClass]="{'text-success': true }" class="mt-2">
+              <strong>{{ calculateDiff(ticket.consumedDate)}} Jours</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+        </div>
+        <mat-divider ></mat-divider>
+      </mat-list-option>
+    </div>
+  </mat-selection-list>
+</div>

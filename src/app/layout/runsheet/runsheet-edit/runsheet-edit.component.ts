@@ -24,6 +24,8 @@ import {Conflit} from '../../../model/conflit.model';
 import {UserService} from '../../users/users.service';
 import {ConflitService} from '../../conflict-trips/conflit.service';
 import {RamassageService} from '../../ramassage/ramassage.service';
+import {Car, ICar} from '../../../model/car.model';
+import {CarService} from '../../car/car.service';
 
 
 @Component({
@@ -51,6 +53,7 @@ export class RunsheetEditComponent implements OnInit, OnDestroy {
   private affectedMatricule: string;
   private closeResult: string;
    cout: number;
+  private car: Car;
 
   constructor(private tservice: TripService, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
     private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,
@@ -69,9 +72,10 @@ export class RunsheetEditComponent implements OnInit, OnDestroy {
         }
         this.affectedMatricule = this.runsheet.matricule;
         this.driver = this.runsheet.driver;
-        this.cout = this.runsheet.cout
+        this.cout = this.runsheet.cout;
+        this.car = this.runsheet.car
         this.runsheetService.runsheetInfo = {driver: this.driver, matricule: this.affectedMatricule, type: this.runsheet.type,
-        cout: this.runsheet.cout};
+        cout: this.runsheet.cout, car: this.runsheet.car};
         this.runsheetService.runsheetConfirmed = (this.runsheet.status === 'confirmed')
         const listOfIds: string[] = this.runsheet.listColis.slice()
           .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)  )
@@ -107,11 +111,11 @@ export class RunsheetEditComponent implements OnInit, OnDestroy {
         this.runsheet.matricule = this.affectedMatricule;
         this.runsheet.driver = this.driver;
         this.runsheet.cout = this.cout;
+        this.runsheet.car = this.car;
         this.runsheetService.update(this.runsheet).subscribe((res) => {
           this.runsheet = res.body;
         });
       }
-
     });
   }
 
@@ -424,17 +428,19 @@ ngOnDestroy(): void {
   affectedDriverNgModel = '';
   entrepots: Entrepot[] = [];
   matricule: string;
-  runsheetInfo: RunsheetInfo = {driver: null, matricule: null, type: null, cout: null};
+  runsheetInfo: RunsheetInfo = {driver: null, matricule: null, type: null, cout: null, car: null};
+  cars: Car[] = [];
+  carValue: ICar;
 
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToEditRunsheetComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService,
-    private entrepotService: EntrepotService, private runsheetService: RunsheetService, private  driverService: DriversService) {}
+    private entrepotService: EntrepotService, private runsheetService: RunsheetService, private  driverService: DriversService,
+    private carService: CarService) {}
 
   ngOnInit(): void {
     this.getAllDrivers();
-    this.getEntrepots();
     if(!!this.runsheetService.runsheetInfo){
       if ( !!this.runsheetService.runsheetInfo.driver){
         this.affectedDriverNgModel = this.runsheetService.runsheetInfo.driver.nameDriver + ' ' + this.runsheetService.runsheetInfo.driver.surnameDriver;
@@ -447,6 +453,9 @@ ngOnDestroy(): void {
       }
       if(!!this.runsheetService.runsheetInfo.cout){
         this.runsheetInfo.cout = this.runsheetService.runsheetInfo.cout;
+      }
+      if (!!this.runsheetService.runsheetInfo.car) {
+        this.runsheetInfo.car = this.runsheetService.runsheetInfo.car;
       }
     }
   }
@@ -468,20 +477,34 @@ ngOnDestroy(): void {
     }, error => {
     });
   }
+  getCars() {
+    this.carService.query().subscribe((res) => {
+      this.cars = res.body.filter(value => !value.deleted);
+    });
+  }
+  affectCar(car: Car) {
+    this.carService.find(car.id).subscribe((res) => {
+      this.carValue = res.body;
+      this.runsheetInfo.car = this.carValue;
+      this.runsheetInfo.matricule = this.carValue.matVehicle;
+    });
+  }
   getSelectedDriver(driver: any) {
     if (driver != null) {
       const ind = this.Listdriverauto.indexOf(driver.title);
       this.affectedDriver = this.Listdriver[ind];
       this.driverService.getOneDriver(this.affectedDriver.idDriver).subscribe((oneDriver) => {
-        this.runsheetInfo.driver =  oneDriver.json();
+        this.runsheetInfo.driver = oneDriver.json();
+        this.cars = this.affectedDriver.affectedCars;
+        if (oneDriver.json().soutraitant) {
+          this.runsheetInfo.cout = oneDriver.json().fraisSoutraitance;
+        }
       });
+    } else {
+      this.affectedDriver = null;
+      this.runsheetInfo.driver = null;
+      this.cars = [];
     }
-  }
-
-  getEntrepots() {
-    this.entrepotService.query().subscribe((res) => {
-      this.entrepots = res.body.filter((entrepot) => entrepot.deleted === false);
-    });
   }
 
 

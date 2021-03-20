@@ -23,6 +23,7 @@ export class EmployeeDeleteDialogComponent {
   this.employee.deletedByName = this.user.name;
   this.employee.deletedBy = this.user.idAdmin;
     this.employeeService.update(this.employee).subscribe(() => {
+      this.employeeService.employeeSubject.next(true);
       this.activeModal.close();
     });
   }

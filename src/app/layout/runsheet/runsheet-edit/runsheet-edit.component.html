@@ -37,7 +37,7 @@
         <button  mat-raised-button [ngStyle]="{'width': confirmed?'100%':'50%'}" (click)="openDialog()">
           Modifier Infos</button>
         <button *ngIf="!confirmed" mat-raised-button color="primary" style="width: 50%;"
-         class="ml-2" [disabled]="(ListScan.length === 0 || !driver || !affectedMatricule || !cout)"
+         class="ml-2" [disabled]="(ListScan.length === 0 || !driver || !affectedMatricule || !cout || !car)"
          (click)="confirmRunsheet()">Confirmer</button>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import {Entrepot} from './entrepot.model';
+import {Car} from './car.model';
 
 export interface IEmployee {
   id?: string;
@@ -17,6 +18,8 @@ export interface IEmployee {
   login?: string;
   password?: string;
   entrepot?: Entrepot;
+  affectedCars?: Car[];
+  fraisSoutraitance?: number;
 }
 
 export class Employee implements IEmployee {
@@ -36,7 +39,9 @@ export class Employee implements IEmployee {
     public createdDate?: Date,
     public login?: string,
     public password?: string,
-    public entrepot?: Entrepot
+    public entrepot?: Entrepot,
+    public affectedCars?: Car[],
+    public fraisSoutraitance?: number
 ) {
     this.deleted = this.deleted || false;
   }

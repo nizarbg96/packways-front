@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">Details</h4>
+  <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <p><strong>N° de bordereau:</strong> {{gasTicket.numero.slice(1)}}</p>
+  <p><strong>Valeur de bordereau:</strong> {{gasTicket.value}} TND</p>
+  <p><strong>Date d'affectaion:</strong> {{gasTicket.affectedByDate | date:'long'}}</p>
+  <p><strong>Affecter par:</strong> {{gasTicket.affectedByName}}</p>
+  <p><strong>Consommé par:</strong> {{gasTicket.consumedByName}}</p>
+  <p><strong>Véhicule associé:</strong> {{gasTicket.affectedCar.marqueVehicle + '-' + gasTicket.affectedCar.modelVehicle + '-' + gasTicket.affectedCar.matVehicle}} TND</p>
+  <p *ngIf="gasTicket.deleted"><strong>Date de suppression:</strong> {{gasTicket.deletedDate | date:'long'}}</p>
+  <p *ngIf="gasTicket.deleted"><strong>Supprimé par:</strong> {{gasTicket.deletedByName}}</p>
+</div>
+<div class="modal-footer">
+  <button type="button" ngbAutofocus class="btn btn-success" (click)="modal.close('Ok click')">D'accord</button>
+</div>

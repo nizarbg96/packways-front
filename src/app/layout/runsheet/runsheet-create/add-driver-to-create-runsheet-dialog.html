@@ -3,11 +3,20 @@
   <ng2-completer [inputClass]="'form-control form-control-inline'" [datasource]="Listdriverauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
                  [textNoResults]="'Pas trouvé.'" [placeholder]="'Livreur'" (selected)="getSelectedDriver($event)" [(ngModel)]="affectedDriverNgModel">
   </ng2-completer>
-  <div class="input-group  mt-4 mb-3">
-    <input type="text" class="form-control" placeholder="Matricule de voiture"  aria-describedby="basic-addon1" [ngModel]="runsheetInfo?.matricule" (ngModelChange)="runsheetInfo.matricule = $event">
+  <mat-form-field appearance="fill" class="mt-3" style="display: block; width: 100%">
+    <mat-label>Véhicule</mat-label>
+    <mat-select  required (selectionChange)="affectCar($event.value)">
+      <mat-option>--</mat-option>
+      <mat-option *ngFor="let car of cars" [value]="car" >
+        {{car.marqueVehicle}}-{{car.modelVehicle}}-{{car.matVehicle}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div class="input-group">
+    <input type="text" class="form-control" [hidden]="true" placeholder="Matricule de voiture"  aria-describedby="basic-addon1" [ngModel]="runsheetInfo?.matricule" (ngModelChange)="runsheetInfo.matricule = $event">
   </div>
-  <div class="input-group mb-3">
-    <input type="number" class="form-control" placeholder="Frais de soutraitant, exmeple: 3000 "  aria-describedby="basic-addon1" [ngModel]="runsheetInfo?.cout" (ngModelChange)="runsheetInfo.cout = $event">
+  <div class="input-group">
+    <input type="number" class="form-control" [hidden]="true" placeholder="Frais de soutraitant, exmeple: 3000 "  aria-describedby="basic-addon1" [ngModel]="runsheetInfo?.cout" (ngModelChange)="runsheetInfo.cout = $event">
   </div>
 </div>
 <div mat-dialog-actions class="mt-3">

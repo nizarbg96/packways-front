@@ -1,29 +1,29 @@
 import { NgModule } from '@angular/core';
 import {CommonModule, DatePipe} from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {DialogAffecterBordereauComponent, GazTicketsComponent} from './gaz-tickets.component';
+import {GasTicketsRoutingModule} from './gas-tickets.routing.module';
 import {PageHeaderModule} from '../../shared/modules';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {HttpModule} from '@angular/http';
 import {HttpClientModule} from '@angular/common/http';
 import {DataTableModule} from 'angular-6-datatable';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatCardModule, MatFormFieldModule, MatPaginatorModule, MatSnackBarModule, MatTableModule} from '@angular/material';
 import {NgxQRCodeModule} from 'ngx-qrcode2';
 import {UiSwitchModule} from 'ngx-toggle-switch';
 import {NgxSpinnerModule} from 'ngx-spinner';
 import {Ng2CompleterModule} from 'ng2-completer';
 import {MaterialLibModule} from '../material/material.module';
-import {AddDepenseComponent, DepensesComponent} from './depenses.component';
-import {DepensesRoutingModule} from './depenses.routing.module';
 import {TripService} from '../trips/trips.service';
 import {DriversService} from '../drivers/drivers.service';
-import {DepenseDetailsComponent} from './depense-details/depense-details.component';
+import {GazTicketDetailsComponent} from './gaz-ticket-details/gaz-ticket-details.component';
 
 @NgModule({
-  declarations: [DepensesComponent, AddDepenseComponent, DepenseDetailsComponent],
-  entryComponents: [AddDepenseComponent, DepenseDetailsComponent],
+  declarations: [GazTicketsComponent, DialogAffecterBordereauComponent, GazTicketDetailsComponent],
+  entryComponents: [DialogAffecterBordereauComponent, GazTicketDetailsComponent],
   imports: [
     CommonModule,
-    DepensesRoutingModule,
+    GasTicketsRoutingModule,
     PageHeaderModule,
     PageHeaderModule, NgbModule, HttpModule,
     HttpClientModule, DataTableModule, FormsModule, MatCardModule, NgxQRCodeModule,
@@ -32,5 +32,6 @@ import {DepenseDetailsComponent} from './depense-details/depense-details.compone
     ReactiveFormsModule
   ],
   providers:[DatePipe, TripService, DriversService]
+
 })
-export class DepensesModule { }
+export class GazTicketsModule { }

@@ -23,7 +23,7 @@ import {
 } from '../reconcile-runsheet/create-activity-runsheet/create-activity-runsheet.component';
 import {ColisFailureRunsheet} from '../../model/colis-failure-runsheet.model';
 import {CarService} from '../car/car.service';
-import {ICar} from '../../model/car.model';
+import {Car, ICar} from '../../model/car.model';
 
 @Component({
   selector: 'app-runsheet',
@@ -46,7 +46,8 @@ export class RunsheetComponent implements OnInit {
   private affectedMatricule: string;
   private closeResult: string;
   private cout: number;
-  private cars: ICar[] = [];
+   cars: ICar[] = [];
+   car: null
 
 
   constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private modalService: NgbModal,
@@ -70,6 +71,7 @@ export class RunsheetComponent implements OnInit {
         this.affectedDriver = result.driver;
         this.affectedMatricule = result.matricule;
         this.cout = result.cout;
+        this.car = result.car
         this.runsheetService.runsheetInfo = result;
         this.router.navigate(['/runsheet/create']);
       } else {
@@ -181,7 +183,6 @@ export class RunsheetComponent implements OnInit {
         }
       });
     });
-
   }
   deleteSelectedRunsheet() {
     this.modalService.open(MODALS['deleteRunsheet']).result.then(
@@ -236,19 +237,23 @@ export class DialogAddDriverToRunsheetComponent implements OnInit {
   affectedDriverNgModel = '';
   entrepots: Entrepot[] = [];
   matricule: string;
-  runsheetInfo: RunsheetInfo = {driver: null, matricule: null, type: null, cout: null};
+  runsheetInfo: RunsheetInfo = {driver: null, matricule: null, type: null, cout: null, car: null};
   typeRunsheet = new FormControl('draft', Validators.required);
   typeRunsheetValue: string = null;
+  cars: ICar[] = [];
+  private entrepotValue: Car;
+  private carValue: Car;
 
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToRunsheetComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService,
-    private entrepotService: EntrepotService, private driverService: DriversService) {}
+    private entrepotService: EntrepotService, private driverService: DriversService, private carService: CarService) {}
 
   ngOnInit(): void {
     this.getAllDrivers();
     this.getEntrepots();
+    this.getCars();
   }
 
   onNoClick(): void {
@@ -268,13 +273,26 @@ export class DialogAddDriverToRunsheetComponent implements OnInit {
     }, error => {
     });
   }
+  getCars(){
+    this.carService.query().subscribe((res) => {
+      this.cars = res.body.filter(value => !value.deleted);
+    });
+  }
   getSelectedDriver(driver: any) {
     if (driver != null) {
       const ind = this.Listdriverauto.indexOf(driver.title);
       this.affectedDriver = this.Listdriver[ind];
       this.driverService.getOneDriver(this.affectedDriver.idDriver).subscribe((oneDriver) => {
         this.runsheetInfo.driver =  oneDriver.json();
+        this.cars = this.affectedDriver.affectedCars;
+        if(oneDriver.json().soutraitant){
+          this.runsheetInfo.cout = oneDriver.json().fraisSoutraitance;
+        }
       });
+    }else{
+      this.affectedDriver = null;
+      this.runsheetInfo.driver = null;
+      this.cars = [];
     }
   }
 
@@ -290,9 +308,14 @@ export class DialogAddDriverToRunsheetComponent implements OnInit {
     this.runsheetInfo.type = this.typeRunsheetValue;
   }
 
-  affectCar(value: any) {
-    
+  affectCar(car: Car) {
+    this.carService.find(car.id).subscribe((res) => {
+      this.carValue = res.body;
+      this.runsheetInfo.car = this.carValue;
+      this.runsheetInfo.matricule = this.carValue.matVehicle;
+    });
   }
+
 }
 @Component({
   selector: 'delete-runsheet-modal',
@@ -322,4 +345,5 @@ export interface RunsheetInfo {
   matricule: string;
   cout: number;
   type: string;
+  car: Car;
 }

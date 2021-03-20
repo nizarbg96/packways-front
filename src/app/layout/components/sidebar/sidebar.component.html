@@ -101,6 +101,10 @@
         <i class="fa fa-money"></i>&nbsp;
         <span>Récolter Activité</span>
       </a>
+      <a *ngIf="isVisible" [routerLink]="['/gas-tickets']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-ticket"></i>&nbsp;
+        <span>Bordereaux Gasoile</span>
+      </a>
       <a *ngIf="isVisible" [routerLink]="['/depenses']" [routerLinkActive]="['router-link-active']" class="list-group-item">
         <i class="fa fa-wallet"></i>&nbsp;
         <span>Depenses</span>

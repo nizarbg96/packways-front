@@ -22,7 +22,7 @@
         </p>
       </div>
       <div class="col-md-2 Aligner ">
-          <button mat-raised-button style="width:100%;" (click)="openDialog()" *ngIf="runsheets_list.selectedOptions.selected.length === 0 " class="ml-2">Créer</button>
+          <button mat-raised-button style="width:100%;" color="primary" (click)="openDialog()" *ngIf="runsheets_list.selectedOptions.selected.length === 0 " class="ml-2">Créer</button>
         <button mat-raised-button style="width:50%;"  class="ml-2" (click)="dispatchRunsheet()"
                 *ngIf="runsheets_list.selectedOptions.selected.length>0 && checkedRunsheetStatus==='confirmed'">Expédier</button>
         <button mat-raised-button color="warn"  class="ml-2" [ngStyle]="{'width': checkedRunsheetStatus==='draft'?'100%':'50%'}"

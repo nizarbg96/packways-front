@@ -1,6 +1,7 @@
 import { IActivity } from './activity.model';
 import { IColisRunsheet } from './colis-runsheet.model';
 import {Entrepot} from './entrepot.model';
+import {Car} from './car.model';
 
 
 export interface IRunsheet {
@@ -32,6 +33,7 @@ export interface IRunsheet {
   entrepot?: Entrepot;
   type?: string;
   cout?: number;
+  car?: Car;
 }
 
 export class Runsheet implements IRunsheet {
@@ -64,7 +66,8 @@ export class Runsheet implements IRunsheet {
     public matricule?: string,
     public entrepot?: Entrepot,
     public type?: string,
-    public cout?: number
+    public cout?: number,
+    public car?: Car
   ) {
     this.deleted = this.deleted || false;
   }

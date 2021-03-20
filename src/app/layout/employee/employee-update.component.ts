@@ -29,12 +29,15 @@ export class EmployeeUpdateComponent implements OnInit {
     role: [],
     deleted: [],
     login: [],
-    password: []
+    password: [],
+    fraisSoutraitance: []
   });
   private user: any;
   roleAppUser = false;
   roleAppDriver =  false;
-   entrepots: IEntrepot[] = [];
+  roleSoutraitant =  false;
+
+  entrepots: IEntrepot[] = [];
    employee: Employee;
    selectedEntrepot: Entrepot;
    roles: any[] = [];
@@ -76,7 +79,9 @@ export class EmployeeUpdateComponent implements OnInit {
       roles: employee.roles,
       deleted: employee.deleted,
       entrepot: employee.entrepot,
-      
+      login: employee.login,
+      password: employee.password,
+      fraisSoutraitance: employee.fraisSoutraitance,
     });
     if(employee.roles.indexOf('ROLE_USER') >= 0){
       this.roleAppUser = true;
@@ -86,7 +91,10 @@ export class EmployeeUpdateComponent implements OnInit {
     if(employee.roles.indexOf('ROLE_DRIVER') >= 0){
       this.roleAppDriver = true;
       this.roles.push('ROLE_DRIVER');
-
+    }
+    if(employee.roles.indexOf('ROLE_SOUTRAITANT') >= 0) {
+      this.roleSoutraitant = true;
+      this.roles.push('ROLE_SOUTRAITANT');
     }
   }
 
@@ -124,6 +132,15 @@ export class EmployeeUpdateComponent implements OnInit {
         }
       }
     }
+    if(this.roleSoutraitant){
+      if(this.roles.indexOf('ROLE_SOUTRAITANT') < 0) {
+        this.roles.push('ROLE_SOUTRAITANT');
+      }else {
+        if(this.roles.indexOf('ROLE_SOUTRAITANT') >= 0){
+          this.roles.splice(this.roles.indexOf('ROLE_SOUTRAITANT'), 1);
+        }
+      }
+    }
     console.log(this.employee.entrepot);
 
     return {
@@ -143,7 +160,8 @@ export class EmployeeUpdateComponent implements OnInit {
       createdBy: this.user.idAdmin,
       createdByName: this.user.name,
       createdDate: new Date(),
-      entrepot: this.selectedEntrepot
+      entrepot: this.selectedEntrepot,
+      fraisSoutraitance: this.editForm.get(['fraisSoutraitance'])!.value,
     };
   }
 

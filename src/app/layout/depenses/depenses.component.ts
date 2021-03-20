@@ -15,6 +15,12 @@ import {User} from '../users/User';
 import {PopUpDeleteComponent} from '../shared/pop-up-delete/pop-up-delete.component';
 import {PopUpDeleteService} from '../shared/pop-up-delete/pop-up-delete.service';
 import {DepenseDetailsComponent} from './depense-details/depense-details.component';
+import {EmployeeService} from '../employee/employee.service';
+import {Employee, IEmployee} from '../../model/employee.model';
+import {Car, ICar} from '../../model/car.model';
+import {CarService} from '../car/car.service';
+import {GasTicket} from '../../model/gas-ticket.model';
+import {GasTicketService} from './gas-ticket.service';
 
 @Component({
   selector: 'app-depenses',
@@ -29,7 +35,8 @@ export class DepensesComponent implements OnInit, AfterViewInit {
 
 
   constructor(private depensesService: DepensesService, private modalService: NgbModal, private fb: FormBuilder,
-              public dialog: MatDialog, private popUpDeleteService: PopUpDeleteService) {
+              public dialog: MatDialog, private popUpDeleteService: PopUpDeleteService,
+              private employeeService: EmployeeService, private gasTicketService: GasTicketService) {
   }
 
   displayedColumns: string[] = ['createdDate', 'createdBy', 'type', 'montant', 'depenseFrom', 'depenseTo', 'action'];
@@ -85,6 +92,7 @@ export class DepensesComponent implements OnInit, AfterViewInit {
           this.getDepenses();
         });
       }, (reason) => {
+
       }
     );
   }
@@ -95,6 +103,7 @@ export class DepensesComponent implements OnInit, AfterViewInit {
       (result) => {
 
       }, (reason) => {
+
       }
     );
   }
@@ -107,9 +116,14 @@ export class DepensesComponent implements OnInit, AfterViewInit {
 export class AddDepenseComponent implements OnInit {
   private user: any;
    idBorderau = 0;
+  private listEmployee: IEmployee[] = [];
+  private listEmployeeAuto: string[] = [];
+  private affectedEmployee: any;
+  private carValue: ICar;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private depensesService: DepensesService, private fb: FormBuilder,
-              private tservice: TripService, private driverService: DriversService, private snackBar: MatSnackBar) {
+              private tservice: TripService, private driverService: DriversService, private snackBar: MatSnackBar,
+              private employeeService: EmployeeService, private carService: CarService, private gasTicketService: GasTicketService) {
   }
 
   isSaving = false;
@@ -119,6 +133,7 @@ export class AddDepenseComponent implements OnInit {
   Listdriver = [];
   affectedDriver: any;
   affectedDriverNgModel = '';
+  affectedEmployeeNgModel = '';
   affectedType = null;
 
   editForm = this.fb.group({
@@ -148,25 +163,35 @@ export class AddDepenseComponent implements OnInit {
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
     'August', 'September', 'October', 'November', 'December'];
   items = [];
+  cars: ICar[] = [] ;
 
   ngOnInit() {
     this.getAllDrivers();
+    this.getAllEmployes();
+    this.getCars();
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
 
   }
 
   save(): void {
-    if (this.affectedType === this.depensesTypes[2]) {
-      this.items.forEach((item, i) => {
-        const premierBorderau = parseFloat((<HTMLInputElement>document.getElementById('premierBorderau' + item.id)).value);
-        const dernierBordereau = parseFloat((<HTMLInputElement>document.getElementById('dernierBordereau' + item.id)).value);
-        this.items[i].value.premierBorderau = premierBorderau;
-        this.items[i].value.dernierBordereau = dernierBordereau;
-      });
-    }
+
     const depenses = this.createFromForm();
-    console.log(this.items);
-    // this.subscribeToSaveResponse(this.depensesService.create(depenses));
+    if(depenses.type === 'Carnet gasoil'){
+      const gasTickets: GasTicket[] = [];
+      this.items.forEach(item => {
+        for(let i = item.value.premierBorderau; i <= item.value.dernierBordereau; i++){
+          gasTickets.push({...new GasTicket(), value: item.value.typeBorderau, numero: 'n°: ' + i, createdByName: this.user.name,
+          createdBy: this.user.idAdmin, createdByDate: new Date()});
+        }
+      });
+      this.gasTicketService.createList(gasTickets).subscribe(() => {
+        console.log(this.items);
+        this.subscribeToSaveResponse(this.depensesService.create(depenses));
+      })
+    }else{
+      console.log(this.items);
+      this.subscribeToSaveResponse(this.depensesService.create(depenses));
+    }
   }
 
   private createFromForm(): IDepenses {
@@ -196,8 +221,26 @@ export class AddDepenseComponent implements OnInit {
     carnetGasoil = (carnetGasoil !== 'null') ? carnetGasoil : '0';
 
 
-    const montant = parseFloat(avance) + parseFloat(gasoilEspece) + parseFloat(carMaintaining) + parseFloat(desktopCharge) + parseFloat(autreValue)
+    let montant = parseFloat(avance) + parseFloat(gasoilEspece) + parseFloat(carMaintaining) + parseFloat(desktopCharge) + parseFloat(autreValue)
       + parseFloat(carnetGasoil);
+    if (this.affectedType === this.depensesTypes[2]) {
+      montant = 0;
+      this.items.forEach((item, i) => {
+        const premierBorderau = parseFloat((<HTMLInputElement>document.getElementById('premierBorderau' + item.id)).value);
+        const dernierBordereau = parseFloat((<HTMLInputElement>document.getElementById('dernierBordereau' + item.id)).value);
+        this.items[i].value.premierBorderau = premierBorderau;
+        this.items[i].value.dernierBordereau = dernierBordereau;
+        if(this.items[i].value.typeBorderau === 15){
+          montant = montant + parseFloat('356.40');
+        }
+        if(this.items[i].value.typeBorderau === 30){
+          montant = montant + parseFloat('712.80');
+        }
+        if(this.items[i].value.typeBorderau === 50){
+          montant = montant + parseFloat('1188');
+        }
+      });
+    }
     const activityDepense = {
       ...new DepenseActivity(),
       avance: avance,
@@ -217,10 +260,11 @@ export class AddDepenseComponent implements OnInit {
       createdByName: this.user.name,
       type: this.editForm.get(['type'])!.value,
       depenseActivity: activityDepense,
-      affectedTo: this.affectedDriver,
+      affectedTo: this.affectedEmployee,
       depenseFrom: 'caisse',
       description: this.editForm.get(['description'])!.value,
-      montant: montant + ''
+      montant: montant + '',
+      affectedCar: this.carValue
     };
   }
 
@@ -266,6 +310,18 @@ export class AddDepenseComponent implements OnInit {
       this.affectedDriver = null;
     }
   }
+  getSelectedEmployee(employee: any) {
+    if (employee != null) {
+      const ind = this.listEmployeeAuto.indexOf(employee.title);
+      this.affectedEmployee = this.listEmployee[ind];
+      this.cars = this.affectedEmployee.affectedCars;
+
+      console.log(this.affectedEmployee);
+    } else {
+      this.affectedEmployee = null;
+      this.cars = [];
+    }
+  }
 
   affectDepenseType(value: any) {
     this.affectedType = value;
@@ -303,6 +359,30 @@ export class AddDepenseComponent implements OnInit {
 
   resetStepper() {
     this.editForm.controls['gasoilEspece'].setValue(null);
+  }
+
+  private getAllEmployes() {
+    this.employeeService.query().subscribe((res) => {
+      this.listEmployee =  res.body.filter(value => value.deleted === false);
+      this.listEmployeeAuto = this.listEmployee.map(value => value.firstName + ' ' + value.lastName);
+    });
+  }
+  getCars() {
+    this.carService.query().subscribe((res) => {
+      this.cars = res.body.filter(value => !value.deleted);
+    });
+  }
+
+  affectCar(car: Car) {
+    this.carService.find(car.id).subscribe((res) => {
+      this.carValue = res.body;
+    });
+  }
+
+  onKeyPress($event: KeyboardEvent, id: any) {
+    let value = (<HTMLInputElement>event.target).value;
+    console.log(value);
+
   }
 }
 const MODALS: { [name: string]: Type<any> } = {

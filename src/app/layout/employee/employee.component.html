@@ -82,19 +82,24 @@
                   <button type="submit"
                           class="btn btn-info btn-sm">
                     <mat-icon>visibility</mat-icon>
-                    <span class="d-none d-md-inline" (click)="viewDetails(employee)">View</span>
+                    <span class="d-none d-md-inline" (click)="viewDetails(employee)">Détails</span>
                   </button>
 
                   <button type="submit"
                           class="btn btn-primary btn-sm">
                     <mat-icon>create</mat-icon>
-                    <span class="d-none d-md-inline"  (click)="updateEmployee(employee)">Edit</span>
+                    <span class="d-none d-md-inline"  (click)="updateEmployee(employee)">Editer</span>
                   </button>
 
                   <button type="submit" (click)="delete(employee)"
                           class="btn btn-danger btn-sm">
                     <mat-icon>delete</mat-icon>
-                    <span class="d-none d-md-inline" >Delete</span>
+                    <span class="d-none d-md-inline" >Supprimer</span>
+                  </button>
+                  <button type="submit" (click)="openAffectCar(affectCar, employee)"
+                          class="btn btn-warning btn-sm">
+                    <mat-icon>directions_car</mat-icon>
+                    <span class="d-none d-md-inline">Véhicule</span>
                   </button>
                 </div>
               </td>
@@ -115,3 +120,24 @@
 
   </div>
 </div>
+<ng-template #affectCar let-c="close" let-d="dismiss">
+  <div class="modal-body">
+    <div class="row">
+      <h5 >Séléctionner les véhicules à affecter à l'employé</h5>
+    </div>
+    <div class="row" style="width: 100%">
+      <div class="col-md-12">
+        <mat-selection-list #carsSelection style="width: 100%">
+          <mat-list-option #car_option *ngFor="let car of cars" [selected]="affectedCarsIds.indexOf(car.id) >= 0" (click)="onAreaListControlChanged(car_option, car)">
+            {{car.marqueVehicle}}-{{car.modelVehicle}}-{{car.matVehicle}}
+          </mat-list-option>
+        </mat-selection-list>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="(c('Close click'))">Annuler</button>
+    <button type="button" class="btn btn-primary" (click)="saveCars(selectedEmployee, carsSelection);(c('Close click'))" >Enregistrer</button>
+
+  </div>
+</ng-template>

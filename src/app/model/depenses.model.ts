@@ -1,5 +1,6 @@
 import { Moment } from 'moment';
 import {DepenseActivity} from './depense-activity.model';
+import {Car} from './car.model';
 
 export interface IDepenses {
   id?: string;
@@ -17,6 +18,7 @@ export interface IDepenses {
   description?: string;
   carnetGasoil?: string;
   montant?: string;
+  affectedCar?: Car;
 }
 
 export class Depenses implements IDepenses {
@@ -35,7 +37,8 @@ export class Depenses implements IDepenses {
     public depenseFrom?: string,
     public description?: string,
     public carnetGasoil?: string,
-    public montant?: string
+    public montant?: string,
+    public affectedCar?: Car
   ) {
     this.deleted = this.deleted || false;
   }

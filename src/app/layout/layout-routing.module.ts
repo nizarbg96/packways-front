@@ -24,6 +24,7 @@ const routes: Routes = [
       {path: 'depenses', loadChildren: './depenses/depenses.module#DepensesModule'},
       {path: 'payements', loadChildren: './activity-payement/activity-payement.module#ActivityPayementModule'},
       {path: 'entrepot', loadChildren: './entrepot/entrepot.module#EntrepotModule'},
+      {path: 'gas-tickets', loadChildren: './gaz-tickets/gaz-tickets.module#GazTicketsModule'},
       {path: 'statestics', loadChildren: './statestics/statestics.module#StatesticsModule'},
       {path: 'conflicts', loadChildren: './conflict-trips/conflict-trips.module#ConflictTripsModule'},
       {path: 'adresses', loadChildren: './adresses/adresses.module#AdressesModule'},
