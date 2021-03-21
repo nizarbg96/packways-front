@@ -1376,6 +1376,9 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
            this.nbStop = this.nbStop + 1;
            this.activityRunsheet.fraisSoutraitant = this.activityRunsheet.fraisSoutraitant + trip.fraisSoutraitant;
          }
+         else{
+
+         }
       } else {
         this.activityRunsheet.nbStop++;
         this.nbStop = this.nbStop + 1;

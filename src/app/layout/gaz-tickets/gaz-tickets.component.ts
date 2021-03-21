@@ -2,7 +2,7 @@ import {Component, Inject, OnInit, Type} from '@angular/core';
 import {Entrepot} from '../../model/entrepot.model';
 import {RunsheetInfo} from '../runsheet/runsheet.component';
 import {Car, ICar} from '../../model/car.model';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatListOption, MatSelectChange} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatListOption, MatSelectChange, MatSnackBar} from '@angular/material';
 import {TripService} from '../trips/trips.service';
 import {MoveableUnitService} from '../moveable-unit/moveable-unit.service';
 import {EntrepotService} from '../entrepot/entrepot.service';
@@ -31,7 +31,8 @@ export class GazTicketsComponent implements OnInit {
   private isLoadingResults = false;
   filtredTickets: GasTicket[] = [];
 
-  constructor(public dialog: MatDialog, private gasTicketService: GasTicketService, private modalService: NgbModal) {
+  constructor(public dialog: MatDialog, private gasTicketService: GasTicketService, private modalService: NgbModal,
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit() {
@@ -104,7 +105,8 @@ export class DialogAffecterBordereauComponent implements OnInit {
     public dialogRef: MatDialogRef<DialogAffecterBordereauComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService,
     private entrepotService: EntrepotService, private runsheetService: RunsheetService, private driverService: DriversService,
-    private carService: CarService, private employeeService: EmployeeService, private gasTicketService: GasTicketService) {
+    private carService: CarService, private employeeService: EmployeeService, private gasTicketService: GasTicketService,
+    private snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
@@ -159,18 +161,33 @@ export class DialogAffecterBordereauComponent implements OnInit {
 
 
   consumeTicket() {
-    this.affectedTicket.consumed = true;
-    this.affectedTicket.affectedBy = this.user.idAdmin;
-    this.affectedTicket.affectedByName = this.user.name;
-    this.affectedTicket.affectedByDate = new Date;
-    this.affectedTicket.affectedFrom = 'caisse';
-    this.affectedTicket.consumedBy = this.affectedEmployee.id;
-    this.affectedTicket.consumedByName = this.affectedEmployee.firstName + ' ' + this.affectedEmployee.lastName;
-    this.affectedTicket.consumedDate = new Date();
-    this.affectedTicket.affectedCar = this.carValue;
-    this.gasTicketService.update(this.affectedTicket).subscribe(() => {
-      this.gasTicketService.dialogExit.next(true);
-    });
+
+    this.affectedTickets = this.affectedTickets.filter(value => value !== null)
+    const lookup = this.affectedTickets.reduce((a, e) => {
+      a[e.id] = ++a[e.id] || 0;
+      return a;
+    }, {});
+    const filtredTickets = this.affectedTickets.slice().filter(e => lookup[e.id]);
+    console.log(this.affectedTickets);
+    console.log(filtredTickets);
+    if (filtredTickets.length > 0){
+      this.snackBar.open('Vous avez sélectionné un bordereau plus qu\'une fois, veuillez vérifier votre sélection', 'Fermer', {duration: 8000});
+    } else {
+      this.affectedTickets.forEach((ticket, index) => {
+        this.affectedTickets[index].consumed = true;
+        this.affectedTickets[index].affectedBy = this.user.idAdmin;
+        this.affectedTickets[index].affectedByName = this.user.name;
+        this.affectedTickets[index].affectedByDate = new Date;
+        this.affectedTickets[index].affectedFrom = 'caisse';
+        this.affectedTickets[index].consumedBy = this.affectedEmployee.id;
+        this.affectedTickets[index].consumedByName = this.affectedEmployee.firstName + ' ' + this.affectedEmployee.lastName;
+        this.affectedTickets[index].consumedDate = new Date();
+        this.affectedTickets[index].affectedCar = this.carValue;
+      });
+      this.gasTicketService.updateList(this.affectedTickets).subscribe(() => {
+        this.gasTicketService.dialogExit.next(true);
+      });
+    }
   }
 
   createItem() {
@@ -182,23 +199,20 @@ export class DialogAffecterBordereauComponent implements OnInit {
 
   affectBordereau($event: any, i: number) {
     console.log($event);
-
-    const ticket = $event.source.value;
-
+    const ticket = $event.value;
     if (!!ticket) {
       this.affectedTicketsTest[i] = ticket.id;
       this.gasTicketService.find(ticket.id).subscribe((res) => {
         this.affectedTicket = res.body;
         this.affectedTickets[i] = this.affectedTicket;
+        console.log(this.affectedTickets);
+        console.log('affectedTicketsIds : ' + this.affectedTicketsTest);
       });
     } else {
-      this.affectedTicketsTest.splice(i, 1);
-      this.affectedTickets.splice(i, 1);
-    }
-    console.log('affectedTickets : ' + this.affectedTickets);
-    console.log('affectedTicketsIds : ' + this.affectedTicketsTest);
-    if (!$event.isUserInput) {    // ignore on deselection of the previous option
-      return;
+      this.affectedTicketsTest[i] = null;
+      this.affectedTickets[i] = null;
+      console.log(this.affectedTickets);
+      console.log('affectedTicketsIds : ' + this.affectedTicketsTest);
     }
   }
 

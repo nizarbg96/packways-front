@@ -320,12 +320,22 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
     this.activityPayementService.activityPayementInfo = {client: this.activityPayement.clientName, recoltedTrips: this.recoltedTrips};
     this.modalService.open(MODALS[name]).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
-      this.tripService.updatePayed(this.listColisToPay.map((trip) => trip.idTrip), this.user.idAdmin).subscribe(() => {
+      this.tripService.updatePayed(this.listColisToPay.map((trip) => trip.idTrip), this.user.idAdmin).subscribe((resTrips) => {
+        const trips: Trip[] = Array.of(JSON.parse(resTrips['_body']).trips)[0];
         this.activityPayement.listPayedTrips = this.listColisToPay.map((trip) => trip.idTrip);
         this.activityPayement.listRapportTrips = this.listRapportTrips;
         this.activityPayement.status = 'closed';
-        this.activityPayementService.update(this.activityPayement).subscribe(() => {
-          this.openCheckSuccess('activityConfirmed');
+        this.activityPayementService.update(this.activityPayement).subscribe((res) => {
+          this.listRapportTrips.forEach((value, i) => {
+            if(value.statusTrip === 'Livree'){
+              trips[i].delivredCost = value.costTrip;
+            } else if(value.statusTrip === 'Retounee'){
+              trips[i].returnedCost = value.costTrip;
+            }
+          } )
+          this.tripService.updateListOfTips(trips).subscribe(( )=>{
+            this.openCheckSuccess('activityConfirmed');
+          });
         });
       });
     }, (reason) => {

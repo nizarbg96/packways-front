@@ -25,6 +25,10 @@ export class GasTicketService {
     return this.http
       .post<IGasTicket[]>(this.resourceUrl + '-list', gasTickets, { observe: 'response' });
   }
+  updateList(gasTickets: IGasTicket[]): Observable<EntityArrayResponseType> {
+    return this.http
+      .put<IGasTicket[]>(this.resourceUrl + '-list', gasTickets, { observe: 'response' });
+  }
 
   update(gasTicket: IGasTicket): Observable<EntityResponseType> {
     return this.http

@@ -15,9 +15,9 @@
   <div *ngFor="let item of items; let i=index">
     <mat-form-field appearance="fill" class="mt-3" style="display: block; width: 100%">
       <mat-label>Bordereau Gasoile</mat-label>
-      <mat-select  required >
+      <mat-select  required (selectionChange)="affectBordereau($event, i)">
         <mat-option>--</mat-option>
-        <mat-option (onSelectionChange)="affectBordereau($event, i)" [ngStyle]="{'background-color': (affectedTicketsTest.indexOf(ticket.id) >= 0)?'gray':'white'}" *ngFor="let ticket of tickets" [value]="ticket" [disabled]="affectedTickets.indexOf(ticket) >= 0" >
+        <mat-option [ngStyle]="{'background-color': (affectedTicketsTest.indexOf(ticket.id) >= 0)?'gray':'white'}" *ngFor="let ticket of tickets" [value]="ticket" [disabled]="affectedTickets.indexOf(ticket) >= 0" >
           Bordereau {{ticket.numero}} - Valeur: {{ticket.value}}
         </mat-option>
       </mat-select>
