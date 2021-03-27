@@ -1,4 +1,5 @@
 import {Car} from './car.model';
+import {Employee} from './employee.model';
 
 export interface IGasTicket {
   id?: string;
@@ -20,6 +21,7 @@ export interface IGasTicket {
   createdByDate?: Date;
   affectedFrom?: string;
   affectedCar?: Car;
+  affectedTo?: Employee;
 }
 
 export class GasTicket implements IGasTicket {
@@ -42,7 +44,8 @@ export class GasTicket implements IGasTicket {
     public createdBy?: string,
     public createdByName?: string,
     public createdByDate?: Date,
-    public affectedCar?: Car
+    public affectedCar?: Car,
+    public affectedTo?: Employee
   ) {
     this.deleted = this.deleted || false;
     this.consumed = this.consumed || false;

@@ -1,45 +1,87 @@
-<app-page-header [heading]="'Statestiques'" [icon]="'fa-bar-chart'"></app-page-header>
-<div class="row">
-  <div class="col-md-12">
+<div style="width: 100%; height: 100vh; background: lightgray" >
+  <app-page-header [heading]="'Tableaux de santé'" [icon]="'fa-bar-chart'"></app-page-header>
+  <div class="row">
+    <div class="col-md-12">
 
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <div class="mat-elevation-z8">
-      <table mat-table [dataSource]="dataSource">
-
-        <!-- Position Column -->
-        <ng-container matColumnDef="jour">
-          <th mat-header-cell *matHeaderCellDef> Jour </th>
-          <td mat-cell *matCellDef="let element"> {{element.jour | date}} </td>
-        </ng-container>
-
-        <!-- Name Column -->
-        <ng-container matColumnDef="entrepot">
-          <th mat-header-cell *matHeaderCellDef> Entrepot </th>
-          <td mat-cell *matCellDef="let element"> {{element.entrepot.nom}} </td>
-        </ng-container>
-
-        <!-- Weight Column -->
-        <ng-container matColumnDef="nbColisEntrepot">
-          <th mat-header-cell *matHeaderCellDef> Nb Colis Entrepot </th>
-          <td mat-cell *matCellDef="let element"> {{element.nbColisEntrepot}} </td>
-        </ng-container>
-
-        <!-- Symbol Column -->
-        <ng-container matColumnDef="nbColisLivree">
-          <th mat-header-cell *matHeaderCellDef> Nb Colis Livrés </th>
-          <td mat-cell *matCellDef="let element"> {{element.nbColisLivree}} </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-
-      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <p class="card-title text-md-center text-xl-left">Nombre de colis livrés </p>
+          <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+            <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{healthStats.nbColisLivree + ' colis livrés'}}</h3>
+            <i class="ti-check icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+          </div>
+          <p class="mb-0 mt-2 text-success">in {{date | date:'MMMM'}} /  <span class="text-black ml-1"><small>({{''}} last month)</small></span></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <p class="card-title text-md-center text-xl-left">Nombre de colis retournés</p>
+          <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+            <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{healthStats.nbColiRetournee + ' colis retournés'}}</h3>
+            <i class="ti-share icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+          </div>
+          <p class="mb-0 mt-2 text-success">in {{date | date:'MMMM'}} /  <span class="text-black ml-1"><small>({{''}} last month)</small></span></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <p class="card-title text-md-center text-xl-left">Nombre de stops livrés</p>
+          <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+            <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{healthStats.nbStopLivree + ' stops livrés'}}</h3>
+            <i class="ti-share icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+          </div>
+          <p class="mb-0 mt-2 text-success">in {{date | date:'MMMM'}} /  <span class="text-black ml-1"><small>({{''}} last month)</small></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <p class="card-title text-md-center text-xl-left">Dépenses Internes</p>
+          <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+            <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{healthStats.depenseInterne + ' TND'}}</h3>
+            <i class="ti-wallet icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+          </div>
+          <p class="mb-0 mt-2 text-success">in {{date | date:'MMMM'}} /  <span class="text-black ml-1"><small>({{''}} TND last month)</small></span></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <p class="card-title text-md-center text-xl-left">Frais Soutraitance</p>
+          <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+            <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{healthStats.fraisSoutraitance / 100 +' TND'}}</h3>
+            <i class="ti-money icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+          </div>
 
+          <p class="mb-0 mt-2 text-success">in {{date | date:'MMMM'}} /  <span class="text-black ml-1"><small>({{''}} TND last month)</small></span></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <p class="card-title text-md-center text-xl-left">Chiffre D'Affaires</p>
+          <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+            <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{healthStats.chiffreAffaire +' TND'}}</h3>
+            <i class="ti-money icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+          </div>
+          <p class="mb-0 mt-2 text-success">in {{date | date:'MMMM'}} /  <span class="text-black ml-1"><small>({{''}} TND last month)</small></span></p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
 

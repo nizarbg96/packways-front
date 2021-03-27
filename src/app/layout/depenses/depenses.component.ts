@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, Inject, OnInit, TemplateRef, Type, ViewChild} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatPaginator, MatSnackBar, MatTableDataSource} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialog, MatPaginator, MatSnackBar, MatStepper, MatTableDataSource} from '@angular/material';
 import {Depenses, IDepenses} from '../../model/depenses.model';
 import {DepensesService} from './depenses.service';
 import {IStatActivityJour, StatActivityJour} from '../../model/stat-activity-jour.model';
@@ -21,6 +21,8 @@ import {Car, ICar} from '../../model/car.model';
 import {CarService} from '../car/car.service';
 import {GasTicket} from '../../model/gas-ticket.model';
 import {GasTicketService} from './gas-ticket.service';
+import {pluck} from 'rxjs/operators';
+import {CaisseService} from '../caisse-state/caisse.service';
 
 @Component({
   selector: 'app-depenses',
@@ -36,7 +38,7 @@ export class DepensesComponent implements OnInit, AfterViewInit {
 
   constructor(private depensesService: DepensesService, private modalService: NgbModal, private fb: FormBuilder,
               public dialog: MatDialog, private popUpDeleteService: PopUpDeleteService,
-              private employeeService: EmployeeService, private gasTicketService: GasTicketService) {
+              private snackBar: MatSnackBar, private caisseService: CaisseService) {
   }
 
   displayedColumns: string[] = ['createdDate', 'createdBy', 'type', 'montant', 'depenseFrom', 'depenseTo', 'action'];
@@ -71,11 +73,33 @@ export class DepensesComponent implements OnInit, AfterViewInit {
   }
 
   openDialog() {
-    this.dialog.open(AddDepenseComponent, {
-      data: null,
-      width: '60vw',
-      maxHeight: '60vh',
-    });
+    let d = new Date();
+    d.setHours(0,0,0,0);
+    this.caisseService.query().subscribe((res) => {
+      const caisses = res.body.reverse();
+      if(caisses.length === 0){
+        this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
+      } else {
+        const caisse = caisses[0];
+        if(caisse.closed){
+          this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
+        }else {
+          if(caisse.openedDate < d){
+            this.snackBar.open('une anicenne caisse a été ouverte et n\'est pas encore fermée ', 'Fermer', {duration: 8000});
+          }
+          else{
+            this.dialog.open(AddDepenseComponent, {
+              data: null,
+              width: '60vw',
+              maxHeight: '60vh',
+            });
+          }
+        }
+      }
+    },() => {
+      this.snackBar.open('Erreur Serveur', 'Fermer', {duration: 8000});
+    })
+
   }
 
 
@@ -113,9 +137,11 @@ export class DepensesComponent implements OnInit, AfterViewInit {
   selector: 'dialog-depense',
   templateUrl: './add-depense.html',
 })
-export class AddDepenseComponent implements OnInit {
+export class AddDepenseComponent implements OnInit, AfterViewInit {
   private user: any;
-   idBorderau = 0;
+  @ViewChild('stepper')  myStepper: MatStepper;
+
+  idBorderau = 0;
   private listEmployee: IEmployee[] = [];
   private listEmployeeAuto: string[] = [];
   private affectedEmployee: any;
@@ -172,6 +198,17 @@ export class AddDepenseComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
 
   }
+  ngAfterViewInit() {
+    this.myStepper.selectionChange
+      .pipe(pluck('selectedIndex'))
+      .subscribe((res: number) => {
+        if (res === 0) {
+          this.affectedEmployee = null;
+          this.editForm.reset()
+        }
+      });
+  }
+
 
   save(): void {
 
@@ -315,7 +352,6 @@ export class AddDepenseComponent implements OnInit {
       const ind = this.listEmployeeAuto.indexOf(employee.title);
       this.affectedEmployee = this.listEmployee[ind];
       this.cars = this.affectedEmployee.affectedCars;
-
       console.log(this.affectedEmployee);
     } else {
       this.affectedEmployee = null;
@@ -358,7 +394,8 @@ export class AddDepenseComponent implements OnInit {
   }
 
   resetStepper() {
-    this.editForm.controls['gasoilEspece'].setValue(null);
+    this.editForm.reset();
+    this.affectedEmployee = null;
   }
 
   private getAllEmployes() {

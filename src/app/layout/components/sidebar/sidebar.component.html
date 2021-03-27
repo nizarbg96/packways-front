@@ -33,19 +33,19 @@
         <li>
           <a *ngIf="isVisible"  [routerLink]="['/mu']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-circle-o ml-3"></i>&nbsp;
-            <span >Créer Moveable Unit </span>
+            <span >Créer M.U </span>
           </a>
         </li>
         <li>
           <a *ngIf="isVisible" style="white-space: pre-line;" [routerLink]="['/mu-in-progress']" [routerLinkActive]="['router-link-active']" class="list-group-item ml-3">
             <i class="fa  fa-circle-o"></i>&nbsp;
-            <span style="white-space: pre-line;">Moveable Units en cours </span>
+            <span style="white-space: pre-line;">M.U en cours </span>
           </a>
         </li>
         <li>
           <a *ngIf="isVisible" style="white-space: pre-line;" [routerLink]="['/reconcile-mu']" [routerLinkActive]="['router-link-active']" class="list-group-item ml-3">
             <i class="fa fa-circle-o"></i>&nbsp;
-            <span style="white-space: pre-line;">Réconcilier Moveable Unit</span>
+            <span style="white-space: pre-line;">Réconcilier M.U</span>
           </a>
         </li>
       </ul>
@@ -115,7 +115,7 @@
       </a>
       <a *ngIf="isVisible" [routerLink]="['/statestics']" [routerLinkActive]="['router-link-active']" class="list-group-item">
         <i class="fa fa-bar-chart"></i>&nbsp;
-        <span>Statestiques</span>
+        <span>Tableaux de santé</span>
       </a>
         <!-- <a [routerLink]="['/adresses']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-address-card"></i>&nbsp;
@@ -161,10 +161,18 @@
             <i class="fa fa-trash"></i>&nbsp;
             <span>Corbeille</span>
         </a>
-        <a *ngIf="isVisible" [routerLink]="['/caisse']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-usd"></i>&nbsp;
-            <span>Caisse</span>
-        </a>
+<!--        <a *ngIf="isVisible" [routerLink]="['/caisse']" [routerLinkActive]="['router-link-active']" class="list-group-item">-->
+<!--            <i class="fa fa-usd"></i>&nbsp;-->
+<!--            <span>Caisse</span>-->
+<!--        </a>-->
+      <a *ngIf="isVisible" [routerLink]="['/caisse-state']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-usd"></i>&nbsp;
+        <span>Etat de Caisse</span>
+      </a>
+      <a *ngIf="isVisible" [routerLink]="['/injection-fond']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-usd"></i>&nbsp;
+        <span>Injection Caisse</span>
+      </a>
         <a *ngIf="isVisible" [routerLink]="['/statlivreur']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             <i class="fa fa-tachometer"></i>&nbsp;
             <span>Compteurs </span>

@@ -11,6 +11,7 @@ import {ColisRunsheet} from '../../model/colis-runsheet.model';
 import {ActivityRunsheetInfo, DialogAddDriverToReconcileRunsheetComponent} from '../reconcile-runsheet/reconcile-runsheet.component';
 import {MoveableUnit} from '../../model/moveable-unit.model';
 import {environment} from '../../../environments/environment';
+import {CaisseService} from '../caisse-state/caisse.service';
 
 @Component({
   selector: 'app-close-activity-runsheet',
@@ -34,7 +35,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
 
 
   constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private router: Router, private tripService: TripService,
-              private activityRunsheetService: ActivityRunsheetService, private snackBar: MatSnackBar) { }
+              private activityRunsheetService: ActivityRunsheetService, private snackBar: MatSnackBar, private caisseService: CaisseService) { }
 
   ngOnInit() {
     this.selectionList.selectedOptions = new SelectionModel<MatListOption>(false);
@@ -152,9 +153,31 @@ export class CloseActivityRunsheetComponent implements OnInit {
   }
 
   editActivity(activityRunsheet: Activity) {
-    this.activityRunsheetService.activityRunsheetInfo = {runsheets: activityRunsheet.listRunsheets, driver: activityRunsheet.driver};
-    this.activityRunsheetService.activityToEdit = activityRunsheet;
-    this.router.navigate(['/close-activity-runsheet/create']);
+    let d = new Date();
+    d.setHours(0,0,0,0);
+    this.caisseService.query().subscribe((res) => {
+      const caisses = res.body.reverse();
+      if(caisses.length === 0){
+        this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
+      } else {
+        const caisse = caisses[0];
+        if(caisse.closed){
+          this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
+        }else {
+          if(caisse.openedDate < d){
+            this.snackBar.open('une anicenne caisse a été ouverte et n\'est pas encore fermée ', 'Fermer', {duration: 8000});
+          }
+          else{
+            this.activityRunsheetService.activityRunsheetInfo = {runsheets: activityRunsheet.listRunsheets, driver: activityRunsheet.driver};
+            this.activityRunsheetService.activityToEdit = activityRunsheet;
+            this.router.navigate(['/close-activity-runsheet/create']);
+          }
+        }
+      }
+    },() => {
+      this.snackBar.open('Erreur Serveur', 'Fermer', {duration: 8000});
+    })
+
   }
 
   showMore() {

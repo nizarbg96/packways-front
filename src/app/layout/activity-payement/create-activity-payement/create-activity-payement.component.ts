@@ -328,9 +328,9 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         this.activityPayementService.update(this.activityPayement).subscribe((res) => {
           this.listRapportTrips.forEach((value, i) => {
             if(value.statusTrip === 'Livree'){
-              trips[i].delivredCost = value.costTrip;
+              trips[i].delivredCost = value.costTrip + '';
             } else if(value.statusTrip === 'Retounee'){
-              trips[i].returnedCost = value.costTrip;
+              trips[i].returnedCost = value.costTrip + '';
             }
           } )
           this.tripService.updateListOfTips(trips).subscribe(( )=>{

@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Veuillez entrer le montant de la caisse</h1>
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm" style="width: 100%">
+  <div mat-dialog-content>
+    <mat-form-field style="width: 100%;">
+      <mat-label>Montant dans la caisse</mat-label>
+      <input formControlName="montant" style="width: 100%;" matInput  placeholder="exemple: 50000 TND"
+             required>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions class="mt-3">
+    <button  mat-raised-button color="primary"  [disabled]="editForm.invalid"
+    >Confirmer le montant</button>
+    <button mat-raised-button type="button" (click)="onNoClick()" class="ml-2">Abandonner</button>
+  </div>
+</form>

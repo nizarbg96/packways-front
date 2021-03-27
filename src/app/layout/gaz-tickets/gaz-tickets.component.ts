@@ -183,6 +183,8 @@ export class DialogAffecterBordereauComponent implements OnInit {
         this.affectedTickets[index].consumedByName = this.affectedEmployee.firstName + ' ' + this.affectedEmployee.lastName;
         this.affectedTickets[index].consumedDate = new Date();
         this.affectedTickets[index].affectedCar = this.carValue;
+        this.affectedTickets[index].affectedTo = this.affectedEmployee ;
+
       });
       this.gasTicketService.updateList(this.affectedTickets).subscribe(() => {
         this.gasTicketService.dialogExit.next(true);

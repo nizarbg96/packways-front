@@ -75,7 +75,6 @@ export class LoginComponent implements OnInit {
 
     authloginUser() {
             this.loginservice.loginUser(this.form.value.email, this.form.value.password).map(res => res.json()).subscribe((res) => {
-              const user = res.json().data[0]
               console.log('testttttt', res);
               console.log(this.form.value.email, this.form.value.password);
               if (res.data === 'Account is not Active') {

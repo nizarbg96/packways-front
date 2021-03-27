@@ -12,6 +12,7 @@ import {UserService} from '../users/users.service';
 import {TripExcelService} from '../trips/excel-trip.service';
 import {PickUp} from '../../model/pickup.model';
 import {DatePipe} from '@angular/common';
+import {CaisseService} from '../caisse-state/caisse.service';
 
 @Component({
   selector: 'app-activity-payement',
@@ -41,7 +42,7 @@ export class ActivityPayementComponent implements OnInit {
 
   constructor(public dialog: MatDialog, private router: Router, private tripService: TripService, private userService: UserService,
               private activityPayementService: ActivityPayementService, private snackBar: MatSnackBar, private tripExcelService: TripExcelService,
-              private datePipe: DatePipe) { }
+              private datePipe: DatePipe, private caisseService: CaisseService) { }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
@@ -61,32 +62,52 @@ export class ActivityPayementComponent implements OnInit {
     });
   }
 
-  openDialog(): void {
-    const dialogRef = this.dialog.open(DialogClientToActivityPayementComponent, {
-      width: '60%',
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      if ( !!result ) {
-        this.client = result;
-        console.log(this.client.idUser);
-        let clientActivity = this.activitiesPayement.filter((activity) => (activity.clientId === this.client.idUser) && activity.deleted === false && activity.status === 'draft');
-        if(this.user.role !== 'superAdmin'){
-          clientActivity = clientActivity.filter((activity: ActivityPayement) => activity.entrepot.id === this.user.entrepot.id ||
-            activity.createdBy === this.user.idAdmin);
-        }
-        if (clientActivity.length > 0) {
-          this.snackBar.open('Le client a déja une activité-payement à l\'état " draft ": ', 'Fermer', {
-            duration: 8000,
-          });
-          return;
-        }
-        this.getFiltredTrips1(null, null, null, this.client.idUser,
-          null, null, 'Récolté', null, null, null);
+  openDialog(): void { let d = new Date();
+    d.setHours(0,0,0,0);
+    this.caisseService.query().subscribe((res) => {
+      const caisses = res.body.reverse();
+      if(caisses.length === 0){
+        this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
       } else {
-        // do nothing
+        const caisse = caisses[0];
+        if(caisse.closed){
+          this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
+        }else {
+          if(caisse.openedDate < d){
+            this.snackBar.open('une anicenne caisse a été ouverte et n\'est pas encore fermée ', 'Fermer', {duration: 8000});
+          }
+          else{
+            const dialogRef = this.dialog.open(DialogClientToActivityPayementComponent, {
+              width: '60%',
+            });
+            dialogRef.afterClosed().subscribe(result => {
+              console.log('The dialog was closed');
+              if ( !!result ) {
+                this.client = result;
+                console.log(this.client.idUser);
+                let clientActivity = this.activitiesPayement.filter((activity) => (activity.clientId === this.client.idUser) && activity.deleted === false && activity.status === 'draft');
+                if(this.user.role !== 'superAdmin'){
+                  clientActivity = clientActivity.filter((activity: ActivityPayement) => activity.entrepot.id === this.user.entrepot.id ||
+                    activity.createdBy === this.user.idAdmin);
+                }
+                if (clientActivity.length > 0) {
+                  this.snackBar.open('Le client a déja une activité-payement à l\'état " draft ": ', 'Fermer', {
+                    duration: 8000,
+                  });
+                  return;
+                }
+                this.getFiltredTrips1(null, null, null, this.client.idUser,
+                  null, null, 'Récolté', null, null, null);
+              } else {
+                // do nothing
+              }
+            });
+          }
+        }
       }
-    });
+    },() => {
+      this.snackBar.open('Erreur Serveur', 'Fermer', {duration: 8000});
+    })
   }
 
   deleteActivity(activity: ActivityPayement) {

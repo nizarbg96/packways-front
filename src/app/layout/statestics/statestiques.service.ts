@@ -10,6 +10,7 @@ import {IStatActivityDriver} from '../../model/stat-activity-driver.model';
 import {IStatActivityJourClient} from '../../model/stat-activity-jour-client.model';
 import {IClassementDrivers} from '../../model/classement-drivers.model';
 import {JumiaTrip} from '../../model/jumia.trip.model';
+import {IHealthStats} from '../../model/health-stats.model';
 
 type EntityResponseType = HttpResponse<IStatActivityJour>;
 type EntityArrayResponseType = HttpResponse<IStatActivityJour[]>;
@@ -92,6 +93,10 @@ export class StatestiquesService {
   }
   postJumiaTrips(trips: JumiaTrip[]): Observable<HttpResponse<Trip[]>> {
     return this.http.post<Trip[]>(`${this.resourceUrl}/external-trips/`, trips, {observe: 'response'});
+
+  }
+  getHealthStats(fromDate: Date): Observable<HttpResponse<IHealthStats>> {
+    return this.http.post<IHealthStats>(`${this.resourceUrl}/healthStats/`, fromDate, {observe: 'response'});
 
   }
 

@@ -105,6 +105,11 @@ export class EmployeeUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const employee = this.createFromForm();
+    if(employee.roles.indexOf('ROLE_SOUTRAITANT') >= 0 && employee.roles.indexOf('ROLE_DRIVER') >= 0 ){
+      employee.soutraitant = true;
+    } else {
+      employee.soutraitant = false;
+    }
     if (employee.id !== null) {
       this.subscribeToSaveResponse(this.employeeService.update(employee));
     } else {

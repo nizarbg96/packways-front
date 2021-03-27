@@ -20,6 +20,8 @@ export interface IEmployee {
   entrepot?: Entrepot;
   affectedCars?: Car[];
   fraisSoutraitance?: number;
+  soutraitant?: boolean;
+
 }
 
 export class Employee implements IEmployee {
@@ -41,8 +43,11 @@ export class Employee implements IEmployee {
     public password?: string,
     public entrepot?: Entrepot,
     public affectedCars?: Car[],
-    public fraisSoutraitance?: number
-) {
+    public fraisSoutraitance?: number,
+    public soutraitant?: boolean
+  ) {
     this.deleted = this.deleted || false;
+    this.soutraitant = this.soutraitant || false;
+
   }
 }

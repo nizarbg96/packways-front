@@ -1,0 +1,126 @@
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;">
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Caisse'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Etat de caisse</h5>
+        <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-10 Aligner">
+      </div>
+      <div class="col-md-2 Aligner">
+        <button style="width: 100%" mat-raised-button   color="primary" [disabled]="!lastCoffre.closed" (click)="openDialog()">Ouvrir la caisse</button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+<div class="row">
+  <mat-spinner *ngIf="isLoadingResults" class="center"></mat-spinner>
+  <mat-selection-list style="width:100%"  #tickets_list>
+    <div *ngFor="let caisse of filtredCaissses; index as i">
+      <mat-list-option #caisse_option  (click)="onAreaListControlChanged(caisse_option, caisse)" >
+        <div class="row mt-1" >
+          <div class="col-md-3">
+            <p>Montant à l'ouverture : {{caisse.montantOuverture}} TND </p>
+            <p style="color: grey; font-style: italic;" *ngIf="caisse.openedDate">
+              Date d'ouverture: {{caisse.openedDate | date:'short'}}</p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-3" *ngIf="caisse.montantsFermeture.length > 1 && caisse.closed">
+            <p *ngIf="!!caisse.montantsFermeture && caisse.closed">Montant à la 1ere fermeture : {{caisse.montantsFermeture[0]}} TND </p>
+            <p  *ngIf="caisse.closed" style="color: grey; font-style: italic;"> Date de fermeture :  {{caisse.closedDates[0] | date:'short'}} </p>
+            <p style="color: grey; font-style: italic;" [ngClass]="{'text-success': true }" class="mt-2"
+            *ngIf="returnDiffState(caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut)) === 'success'">
+              {{(caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) > 0 ? 'excès: ':'manque: ')}}
+              <strong> {{caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) }} TND</strong></p>
+            <p style="color: grey; font-style: italic;" [ngClass]="{'text-warning': true }" class="mt-2"
+               *ngIf="returnDiffState(caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut)) === 'warning'">
+              {{(caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) > 0 ? 'excès: ':'manque: ')}}
+              <strong> {{caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) }} TND</strong></p>
+            <p style="color: grey; font-style: italic;" [ngClass]="{'text-danger': true }" class="mt-2"
+               *ngIf="returnDiffState(caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut)) === 'danger'">
+              {{(caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) > 0 ? 'excès: ':'manque: ')}}
+              <strong> {{caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) }} TND</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-3" *ngIf="caisse.montantsFermeture.length > 1 && caisse.closed">
+            <p *ngIf="!!caisse.montantsFermeture && caisse.closed">Montant à la derniere fermeture : {{caisse.montantsFermeture[caisse.montantsFermeture.length - 1]}} TND </p>
+            <p  *ngIf="caisse.closed" style="color: grey; font-style: italic;"> Date de fermeture :  {{caisse.closedDates[caisse.closedDates.length - 1] | date:'short'}} </p>
+            <p style="color: grey; font-style: italic;" [ngClass]="{'text-success': true }" class="mt-2"
+               *ngIf="returnDiffState(caisse.montantsFermeture[caisse.montantsFermeture.length-1] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut)) === 'success'">
+              {{(caisse.montantsFermeture[caisse.montantsFermeture.length-1] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) > 0 ? 'excès: ':'manque: ')}}
+              <strong> {{caisse.montantsFermeture[caisse.montantsFermeture.length-1] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) }} TND</strong></p>
+            <p style="color: grey; font-style: italic;" [ngClass]="{'text-warning': true }" class="mt-2"
+               *ngIf="returnDiffState(caisse.montantsFermeture[caisse.montantsFermeture.length-1] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut)) === 'warning'">
+              {{(caisse.montantsFermeture[caisse.montantsFermeture.length-1] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) > 0 ? 'excès: ':'manque: ')}}
+              <strong> {{caisse.montantsFermeture[caisse.montantsFermeture.length-1] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) }} TND</strong></p>
+            <p style="color: grey; font-style: italic;" [ngClass]="{'text-danger': true }" class="mt-2"
+               *ngIf="returnDiffState(caisse.montantsFermeture[caisse.montantsFermeture.length-1] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut)) === 'danger'">
+              {{(caisse.montantsFermeture[caisse.montantsFermeture.length-1] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) > 0 ? 'excès: ':'manque: ')}}
+              <strong> {{caisse.montantsFermeture[caisse.montantsFermeture.length-1] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) }} TND</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-6" *ngIf="caisse.montantsFermeture.length === 1 && caisse.closed">
+            <p *ngIf="!!caisse.montantsFermeture && caisse.closed">Montant à la fermeture : {{caisse.montantsFermeture[0]}} TND </p>
+            <p  *ngIf="caisse.closed" style="color: grey; font-style: italic;"> Date de la fermeture :  {{caisse.closedDates[0] | date:'short'}} </p>
+            <p style="color: grey; font-style: italic;" [ngClass]="{'text-success': true }" class="mt-2"
+               *ngIf="returnDiffState(caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut)) === 'success'">
+              {{(caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) > 0 ? 'excès: ':'manque: ')}}
+              <strong> {{caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) }} TND</strong></p>
+            <p style="color: grey; font-style: italic;" [ngClass]="{'text-warning': true }" class="mt-2"
+               *ngIf="returnDiffState(caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut)) === 'warning'">
+              {{(caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) > 0 ? 'excès: ':'manque: ')}}
+              <strong> {{caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) }} TND</strong></p>
+            <p style="color: grey; font-style: italic;" [ngClass]="{'text-danger': true }" class="mt-2"
+               *ngIf="returnDiffState(caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut)) === 'danger'">
+              {{(caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) > 0 ? 'excès: ':'manque: ')}}
+              <strong> {{caisse.montantsFermeture[0] - (caisse.montantOuverture + caisse.caisseIn - caisse.caisseOut) }} TND</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-6" *ngIf="!caisse.closed">
+            <h5 class="mt-4" *ngIf="!caisse.closed">Caisse n'est pas encore fermée</h5>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1" *ngIf="i === 0 && caisse.closed">
+            <button style="z-index: 10; width: 100%" type="button" mat-raised-button class="mt-4"  title="Fermer la caisse" (click)="fermerCaisse(caisse)" > <!-- (click)="open(content)" -->
+              Fermer  <i class="material-icons">vpn_key</i>
+            </button>
+          </div>
+          <div class="col-md-2" *ngIf="i === 0 && !caisse.closed">
+            <button style="z-index: 10; width: 100%" type="button" mat-raised-button class="mt-4"  title="Fermer la caisse" (click)="fermerCaisse(caisse)" > <!-- (click)="open(content)" -->
+              Fermer  <i class="material-icons">vpn_key</i>
+            </button>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-2" *ngIf="caisse.closed && i !== 0">
+            <button  style="z-index: 10; width: 100%" type="button" mat-raised-button class="mt-4"  title="Voir détails" (click)="viewDetails(caisse)" > <!-- (click)="open(content)" -->
+              Détails <i class="material-icons">list</i>
+            </button>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1" *ngIf="caisse.closed && i === 0">
+            <button  style="z-index: 10; width: 100%" type="button" mat-raised-button class="mt-4"  title="Voir détails" (click)="viewDetails(caisse)" > <!-- (click)="open(content)" -->
+              Détails <i class="material-icons">list</i>
+            </button>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+          <div class="col-md-1">
+            <p style="color: grey; font-style: italic;" class="mt-2">
+              {{ caisse.openedDate | date:'dd/MM/yyyy'}}
+            </p>
+            <p style="color: grey; font-style: italic;" [ngClass]="{'text-success': true }" class="mt-2">
+              <strong>{{ calculateDiff(caisse.openedDate)}} Jours</strong></p>
+            <mat-divider style="height: 100%;" class="ml-0" [vertical]="true"></mat-divider>
+          </div>
+        </div>
+        <mat-divider ></mat-divider>
+      </mat-list-option>
+    </div>
+  </mat-selection-list>
+</div>

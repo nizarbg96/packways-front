@@ -37,6 +37,8 @@ const routes: Routes = [
       {path: 'profile', loadChildren: './profile/profile.module#ProfileModule'},
       {path: 'courbeille', loadChildren: './courbeille/courbeille.module#CourbeilleModule'},
       {path: 'caisse', loadChildren: './caisse/caisse.module#CaisseModule'},
+      {path: 'caisse-state', loadChildren: './caisse-state/caisse-state.module#CaisseStateModule'},
+      {path: 'injection-fond', loadChildren: './injection-fond/injection-fond.module#InjectionFondModule'},
       {path: 'statlivreur', loadChildren: './statlivreur/statlivreur.module#StatlivreurModule'},
       {path: 'rapport', loadChildren: './rapport/rapport.module#RapportModule'},
       {path: 'parainage', loadChildren: './parainage/parainage.module#ParainageModule'},

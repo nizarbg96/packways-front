@@ -109,6 +109,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
   private depensesCarteTel: {affectedCar: Car, createdByName: any; depenseFrom: string; affectedTo: any; description: string; montant: any; type: string; deletedBy?: string; createdDate: Date; deleted?: boolean; deletedByName?: string; createdBy: string; deletedDate?: Date; carnetGasoil?: string; id?: string; depenseActivity: { gasoilEspece: null; autreValue: null; avanceMois: null; avance: null; autreDesc: null; carMaintaining: null; gasoilCarteValue?: string; carteTel: any; gasoilCarteNumber?: string; desktopCharge: null } };
   private depensesAvance: { affectedCar: Car, createdByName: any; depenseFrom: string; affectedTo: any; description: string; montant: any; type: string; deletedBy?: string; createdDate: Date; deleted?: boolean; deletedByName?: string; createdBy: string; deletedDate?: Date; carnetGasoil?: string; id?: string; depenseActivity: { gasoilEspece: null; autreValue: null; avanceMois: null; avance: any; autreDesc: null; carMaintaining: null; gasoilCarteValue?: string; carteTel: null; gasoilCarteNumber?: string; desktopCharge: null } };
   private depensesAutre: {affectedCar: Car,  createdByName: any; depenseFrom: string; affectedTo: any; description: string; montant: any; type: string; deletedBy?: string; createdDate: Date; deleted?: boolean; deletedByName?: string; createdBy: string; deletedDate?: Date; carnetGasoil?: string; id?: string; depenseActivity: { gasoilEspece: null; autreValue: any; avanceMois: null; avance: null; autreDesc: any; carMaintaining: null; gasoilCarteValue?: string; carteTel: null; gasoilCarteNumber?: string; desktopCharge: null } };
+  private listRelatedTrips: Trip[] = [];
   constructor(private activityRunsheetService: ActivityRunsheetService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
               private fb: FormBuilder, private ramassageService: RamassageService, private userService: UserService, private http: Http,
@@ -207,7 +208,6 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
         }
 
       });
-    console.log(this.activityRunsheet.argentRecolte);
   }
   saveDepenses(){
     this.employeeService.find(this.activityRunsheet.driver.refEmployee).subscribe((res) => {
@@ -638,7 +638,9 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
             } else {
               if(!!obj.refJumia){
                 this.activityRunsheetService.sacannedTrip = obj;
-                this.successJumia();
+                obj.statusTrip = 'Livree'
+                this.ListScanSuccess.push(obj);
+                this.successJumia(obj);
               }else{
                 const msg = 'L\'état de colis doit être " Livré " ! Etat de colis scanné : ' + obj.statusTrip;
                 this.snackBar.open(msg, 'Fermer', {
@@ -737,7 +739,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       });
     });
   }
-  successJumia(){
+  successJumia(obj: Trip){
     this.tripService.updateTripsStatus('Livree',
       [this.activityRunsheetService.sacannedTrip.idTrip], this.user.name, '').subscribe((res) => {
       const trip: Trip = Array.of(JSON.parse(res['_body']).trips)[0][0];
@@ -752,7 +754,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
         this.ListScanFailure = this.ListScanFailure.filter((sucessTrip) => sucessTrip.idTrip !== trip.idTrip);
         this.activityRunsheet.listColisFailure = this.activityRunsheet.listColisFailure.filter((colis) => colis.idTrip !== trip.idTrip);
       }
-      this.ListScanSuccess.push(trip);
+      this.ListScanSuccess[this.ListScanSuccess.indexOf(obj)] = trip;
       this.playSuccessAudio();
       this.activityRunsheet.listColisSuccess.push(new ColisFailureRunsheet(trip.idTrip, this.user.idAdmin, new Date(), false));
       this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
@@ -1134,6 +1136,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
         this.activityRunsheet.nbColisNLRetour = this.ListScanFailure.length - listLivraisonEnCoursIds.length;
         this.activityRunsheet.nbColisLivree = listSuccessTripsIds.length - listSuccessTripsRetourneeIds.length;
         this.activityRunsheet.nbColisEncours = this.listColisNonTreated.length;
+        this.tripService.updateListOfTips(this.listRelatedTrips).subscribe(() => {
           this.tripService.updateTripsWhenDeleteRunsheet(listTreatedTripsIds).subscribe(() => {
             this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
               this.tripService.getListOfTips(listChercheUnLivreur).subscribe((resTrips) => {
@@ -1148,12 +1151,12 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
                       this.tripService.updateTripsPreRecolte(listSuccessTripsIds, this.user.idAdmin).subscribe(() => {
                         if (listSuccessTripsRetourneeIds.length > 0) {
                           this.tripService.updateTripsStatus('Retournee', listSuccessTripsRetourneeIds, this.user.name, '').subscribe(() => {
-                              this.activityRunsheetService.update(this.activityRunsheet).subscribe(() => {
-                                this.conflitService.createList(this.listConflit).subscribe(() => {
-                                  this.openCheckSuccess('activityConfirmed');
-                                  this.saveDepenses();
-                                });
+                            this.activityRunsheetService.update(this.activityRunsheet).subscribe(() => {
+                              this.conflitService.createList(this.listConflit).subscribe(() => {
+                                this.openCheckSuccess('activityConfirmed');
+                                this.saveDepenses();
                               });
+                            });
                           });
                         } else {
                           this.activityRunsheetService.update(this.activityRunsheet).subscribe(() => {
@@ -1166,6 +1169,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
                       });
                     });
                   });
+                });
               });
             });
           });
@@ -1364,20 +1368,28 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
   }
 
   private calculateNbStops() {
+    this.listRelatedTrips = [];
     this.activityRunsheet.nbStop = 0;
     this.nbStop = 0;
     const trips: Trip[] = this.ListScanSuccess;
     const listClientsJumia = [];
+    const listRefTrips = [];
     trips.forEach(trip => {
       if (!!trip.refJumia) {
          if (listClientsJumia.indexOf(trip.destTrip.contactAdr) < 0) {
            listClientsJumia.push(trip.destTrip.contactAdr);
+           listRefTrips.push(trip.refJumia);
            this.activityRunsheet.nbStop++;
            this.nbStop = this.nbStop + 1;
            this.activityRunsheet.fraisSoutraitant = this.activityRunsheet.fraisSoutraitant + trip.fraisSoutraitant;
+           trip.parentStop = true;
+           this.listRelatedTrips.push(trip);
          }
          else{
-
+           const relatedTrip = trip;
+           relatedTrip.relatedRefStop = listRefTrips[listClientsJumia.indexOf(trip.destTrip.contactAdr)];
+           relatedTrip.costTrip = 0;
+           this.listRelatedTrips.push(relatedTrip);
          }
       } else {
         this.activityRunsheet.nbStop++;

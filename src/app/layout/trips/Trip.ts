@@ -99,8 +99,10 @@ export class Trip {
   survey?: any;
   refJumia?: string;
   fraisSoutraitant?: number;
-  delivredCost?: number;
-  returnedCost?: number;
+  delivredCost?: any;
+  returnedCost?: any;
+  relatedRefStop?: string;
+  parentStop ?: boolean;
 
 
   constructor() {
