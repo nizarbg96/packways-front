@@ -1,0 +1,27 @@
+<h1 mat-dialog-title>Veuillez entrer les info de la charge fixe à ajouter</h1>
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm" style="width: 100%">
+  <div mat-dialog-content>
+    <mat-form-field style="width: 100%;" [hidden]="true">
+      <mat-label>Valeur</mat-label>
+      <input formControlName="id" style="width: 100%;" matInput  placeholder="exemple: 500 TND"
+             required>
+    </mat-form-field>
+    <ng2-completer [hidden]="!!data" [inputClass]="'form-control form-control-inline'" [datasource]="listEmployeeAuto" [minSearchLength]="0" [textSearching]="'Cherche...'"
+                   [textNoResults]="'Pas trouvé.'" [placeholder]="'Employé'" (selected)="getSelectedEmployee($event)" [(ngModel)]="affectedEmployeeNgModel" [ngModelOptions]="{standalone: true}" >
+    </ng2-completer>
+    <mat-form-field style="width: 100%;">
+      <mat-label>Valeur</mat-label>
+      <input formControlName="valeur" style="width: 100%;" matInput  placeholder="exemple: 500 TND"
+             required>
+    </mat-form-field>
+      <mat-form-field class="example-full-width"  style="width: 100%;">
+        <mat-label>Ajouter une Description</mat-label>
+        <textarea formControlName="description" class="mt-3" style="width: 100%;" matInput placeholder="description..."></textarea>
+      </mat-form-field>
+  </div>
+  <div mat-dialog-actions class="mt-3">
+    <button  mat-raised-button color="primary"  [disabled]="editForm.get('valeur').invalid || editForm.get('description').invalid || !affectedEmployee "
+    >Confirmer la charge</button>
+    <button mat-raised-button type="button" (click)="onNoClick()" class="ml-2">Abandonner</button>
+  </div>
+</form>

@@ -133,10 +133,15 @@
             <i class="fa fa-car"></i>&nbsp;
             <span>{{ 'Drivers' | translate }}</span>
         </a>
-        <a *ngIf="isVisible" [routerLink]="['/pickup']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-exchange"></i>&nbsp;
-            <span>PickUp</span>
-        </a>
+      <a *ngIf="isVisible" [routerLink]="['/drivers-table']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-table"></i>&nbsp;
+        <span>Tableau des livreurs</span>
+      </a>
+<!--        <a *ngIf="isVisible" [routerLink]="['/pickup']" [routerLinkActive]="['router-link-active']" class="list-group-item">-->
+<!--            <i class="fa fa-exchange"></i>&nbsp;-->
+<!--            <span>PickUp</span>-->
+<!--        </a>-->
+
       <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/car']" [routerLinkActive]="['router-link-active']" class="list-group-item">
         <i class="fa fa-car"></i>&nbsp;
         <span>Véhicules</span>
@@ -148,6 +153,10 @@
       <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/employee']" [routerLinkActive]="['router-link-active']" class="list-group-item">
         <i class="fa fa-user"></i>&nbsp;
         <span>Employés</span>
+      </a>
+      <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/charge-fixe']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-users"></i>&nbsp;
+        <span>Charges fixe</span>
       </a>
         <a *ngIf="isVisible && dataUser.role === 'superAdmin'" [routerLink]="['/conflicts']" [routerLinkActive]="['router-link-active']" class="list-group-item">
           <i class="fa fa-building"></i>&nbsp;

@@ -193,6 +193,7 @@ export class AddFondComponent implements OnInit {
 
   save(): void {
     const injectionFond = this.createFromForm();
+    console.log(injectionFond)
     if (injectionFond.id !== undefined) {
       this.subscribeToSaveResponse(this.injectionFondService.update(injectionFond));
     } else {

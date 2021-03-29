@@ -7,6 +7,7 @@
 <div class="modal-body">
   <p><strong>Type:</strong> {{injection.type}}</p>
   <p><strong>Date de Création:</strong> {{injection.createdDate | date:'long'}}</p>
+  <p><strong>Injecté par:</strong> {{injection.injectedBy.firstName+' '+injection.injectedBy.lastName}}</p>
   <p><strong>Creé par:</strong> {{injection.createdByName}}</p>
   <p *ngIf="injection.deleted"><strong>Date de suppression:</strong> {{injection.deletedDate | date:'long'}}</p>
   <p *ngIf="injection.deleted"><strong>Supprimé par:</strong> {{injection.deletedByName}}</p>

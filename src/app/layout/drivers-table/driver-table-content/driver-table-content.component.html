@@ -1,0 +1,197 @@
+<mat-card class="mat-elevation-z8">
+  <mat-tab-group [color]="'primary'" [backgroundColor]="'primary'" mat-align-tabs="center">
+    <mat-tab label="Soutraitants">
+      <div class="nav-container" >
+        <div class="bg" ></div>
+        <div class="button mt-n2" tabindex="0" #button1 style="z-index:50000;float: left">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </div>
+        <div class="nav-content" tabindex="0" style="overflow: scroll">
+          <ul>
+            <li><mat-form-field appearance="fill">
+              <mat-label>Date de début</mat-label>
+              <input matInput [matDatepicker]="picker1"
+                     (dateInput)="addEventDateDebutActivityDriver1('input', $event)" (dateChange)="addEventDateDebutActivityDriver1('change', $event)">
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field></li>
+            <li><mat-form-field appearance="fill">
+              <mat-label>Date de fin</mat-label>
+              <input matInput [matDatepicker]="picker2"
+                     (dateInput)="addEventDateFinActivityDriver1('input', $event)" (dateChange)="addEventDateFinActivityDriver1('change', $event)">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field></li>
+            <li><ng2-completer [inputClass]="'form-control form-control-inline mt-n1'" [datasource]="Listdriverauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
+                               [textNoResults]="'Pas trouvé.'" [placeholder]="'Livreur'" (selected)="getSelectedDriver1($event)" [(ngModel)]="affectedDriverNgModel">
+            </ng2-completer></li>
+            <li>
+              <button mat-button color="primary" class="mt-4" (click)="generateExcelReportActivityDriver(dataSourceDriversFiltred.data)">Generate Excel</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <main>
+        <div class="content">
+          <div class="row">
+            <div class="col-md-12">
+              <div >
+                <table mat-table [dataSource]="dataSourceFiltred">
+                  <ng-container matColumnDef="mois">
+                    <th mat-header-cell *matHeaderCellDef> Mois</th>
+                    <td mat-cell *matCellDef="let element"> {{element.mois | date: 'MMMM'}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="driver">
+                    <th mat-header-cell *matHeaderCellDef> Livreur</th>
+                    <td mat-cell *matCellDef="let element"> {{element.driver.nameDriver + ' '+ element.driver.surnameDriver }} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="nbColisLivree">
+                    <th mat-header-cell *matHeaderCellDef> Nombre colis livrés </th>
+                    <td mat-cell *matCellDef="let element"> {{element.  nbColisLivree}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="nbClientsLivree">
+                    <th mat-header-cell *matHeaderCellDef> Nombre clients livrés </th>
+                    <td mat-cell *matCellDef="let element"> {{element.nbStopLivree }} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="coutPrestation">
+                    <th mat-header-cell *matHeaderCellDef> Cout de prestation </th>
+                    <td mat-cell *matCellDef="let element"> {{element.coutPrestation}} TND </td>
+                  </ng-container>
+                  <ng-container matColumnDef="avance">
+                    <th mat-header-cell *matHeaderCellDef> Avance </th>
+                    <td mat-cell *matCellDef="let element"> {{element.avance}} TND </td>
+                  </ng-container>
+                  <ng-container matColumnDef="gasoil">
+                    <th mat-header-cell *matHeaderCellDef> Gasoile </th>
+                    <td mat-cell *matCellDef="let element"> {{element.gasoil}} TND </td>
+                  </ng-container>
+                  <ng-container matColumnDef="chargesFixe">
+                    <th mat-header-cell *matHeaderCellDef> Charges fixes </th>
+                    <td mat-cell *matCellDef="let element"> {{element.chargesFixe}} TND </td>
+                  </ng-container>
+                  <ng-container matColumnDef="reste">
+                    <th mat-header-cell *matHeaderCellDef> Reste </th>
+                    <td mat-cell *matCellDef="let element"> {{element.reste}} TND </td>
+                  </ng-container>
+                  <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef>  </th>
+                    <td mat-cell *matCellDef="let element">
+                      <button mat-stroked-button color="primary" (click)="openDialog(element)">Détails</button>
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns1;"></tr>
+                </table>
+
+                <mat-paginator #pag1 [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+
+                </mat-paginator>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </mat-tab>
+    <mat-tab label="Internes">
+      <div class="nav-container" >
+        <div class="bg" ></div>
+        <div class="button mt-n2" tabindex="0" #button1 style="z-index:50000;float: left">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </div>
+        <div class="nav-content" tabindex="0" style="overflow: scroll">
+          <ul>
+            <li><mat-form-field appearance="fill">
+              <mat-label>Date de début</mat-label>
+              <input matInput [matDatepicker]="picker3"
+                     (dateInput)="addEventDateDebutActivityDriver2('input', $event)" (dateChange)="addEventDateDebutActivityDriver2('change', $event)">
+              <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+              <mat-datepicker #picker3></mat-datepicker>
+            </mat-form-field></li>
+            <li><mat-form-field appearance="fill">
+              <mat-label>Date de fin</mat-label>
+              <input matInput [matDatepicker]="picker4"
+                     (dateInput)="addEventDateFinActivityDriver2('input', $event)" (dateChange)="addEventDateFinActivityDriver2('change', $event)">
+              <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+              <mat-datepicker #picker4></mat-datepicker>
+            </mat-form-field></li>
+            <li><ng2-completer [inputClass]="'form-control form-control-inline mt-n1'" [datasource]="Listdriverauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
+                               [textNoResults]="'Pas trouvé.'" [placeholder]="'Livreur'" (selected)="getSelectedDriver2($event)" [(ngModel)]="affectedDriverNgModel">
+            </ng2-completer></li>
+            <li>
+              <button mat-button color="primary" class="mt-4" (click)="generateExcelReportActivityDriver(dataSourceDriversFiltred.data)">Generate Excel</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <main>
+        <div class="content">
+          <div class="row">
+            <div class="col-md-12">
+              <div>
+                <table mat-table [dataSource]="dataSourceFiltred2">
+                  <ng-container matColumnDef="mois">
+                    <th mat-header-cell *matHeaderCellDef> Mois</th>
+                    <td mat-cell *matCellDef="let element"> {{element.mois | date: 'MMMM'}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="driver">
+                    <th mat-header-cell *matHeaderCellDef> Livreur</th>
+                    <td mat-cell *matCellDef="let element"> {{element.driver.nameDriver + ' '+ element.driver.surnameDriver }} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="nbColisLivree">
+                    <th mat-header-cell *matHeaderCellDef> Nombre colis livrés </th>
+                    <td mat-cell *matCellDef="let element"> {{element.  nbColisLivree}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="nbClientsLivree">
+                    <th mat-header-cell *matHeaderCellDef> Nombre clients livrés </th>
+                    <td mat-cell *matCellDef="let element"> {{element.nbStopLivree }} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="coutPrestation">
+                    <th mat-header-cell *matHeaderCellDef> Cout de prestation </th>
+                    <td mat-cell *matCellDef="let element"> {{element.coutPrestation / 100}} TND </td>
+                  </ng-container>
+                  <ng-container matColumnDef="avance">
+                    <th mat-header-cell *matHeaderCellDef> Avance </th>
+                    <td mat-cell *matCellDef="let element"> {{element.avance}} TND </td>
+                  </ng-container>
+                  <ng-container matColumnDef="gasoil">
+                    <th mat-header-cell *matHeaderCellDef> Gasoile </th>
+                    <td mat-cell *matCellDef="let element"> {{element.gasoil}} TND </td>
+                  </ng-container>
+                  <ng-container matColumnDef="chargesFixe">
+                    <th mat-header-cell *matHeaderCellDef> Charges fixes </th>
+                    <td mat-cell *matCellDef="let element"> {{element.chargesFixe}} TND </td>
+                  </ng-container>
+                  <ng-container matColumnDef="reste">
+                    <th mat-header-cell *matHeaderCellDef> Reste </th>
+                    <td mat-cell *matCellDef="let element"> {{element.reste}} TND </td>
+                  </ng-container>
+                  <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef>  </th>
+                    <td mat-cell *matCellDef="let element">
+                      <button mat-stroked-button color="primary" (click)="openDialog(element)">Détails</button>
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+                </table>
+
+                <mat-paginator #pag2 [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+
+                </mat-paginator>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </mat-tab>
+
+  </mat-tab-group>
+</mat-card>

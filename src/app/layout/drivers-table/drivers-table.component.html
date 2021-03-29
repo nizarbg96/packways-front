@@ -1,0 +1,41 @@
+<!--suppress ALL -->
+<div class="row" style="margin-top: -15px">
+  <mat-card [class.mat-elevation-z8]="true" style="width: 100%;">
+    <div class="row">
+      <div class="col-md-12">
+        <app-page-header [heading]="'Tableau des livreurs'" [icon]="'fa-table'"></app-page-header>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5>infos de livraison</h5>
+        <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-10 Aligner">
+      </div>
+      <div class="col-md-2 Aligner ">
+        <!--        <button mat-raised-button *ngIf="inventaire_List.selectedOptions.selected.length === 0 "-->
+        <!--                style="width:100%;" color="primary" (click)="createInventaire()" class="ml-2">Créer un inventaire-->
+        <!--        </button>-->
+        <!--        <button mat-raised-button color="warn" class="ml-2"-->
+        <!--                style="width: 100%"-->
+        <!--                *ngIf="inventaire_List.selectedOptions.selected.length>0 && checkedInventaireStatus === 'draft' " (click)="deleteSelectedActivity()">-->
+        <!--          Annuler-->
+        <!--        </button>-->
+        <!--        <button mat-raised-button  class="ml-2"-->
+        <!--                style="width: 100%; background-color: #00aa88; color: white;"-->
+        <!--                *ngIf="inventaire_List.selectedOptions.selected.length>0 && checkedInventaireStatus === 'confirmed' " (click)="printRunsheet()">-->
+        <!--          imprimer-->
+        <!--        </button>-->
+      </div>
+    </div>
+  </mat-card>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-12">
+    <app-driver-table-content></app-driver-table-content>
+  </div>
+</div>

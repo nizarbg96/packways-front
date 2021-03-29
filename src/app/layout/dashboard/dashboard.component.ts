@@ -69,7 +69,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   messageSelectionee = '-';
   listColisMessage: Trip[] = [];
   displayedColumns: string[] = ['jour', 'entrepot', 'nbColisLivree', 'nbColisRetournee', 'nbColisNLRetour', 'nbColisNLALivree', 'nbColisEncours', 'action'];
-  displayedColumns2: string[] = ['jour', 'entrepot', 'driver', 'nbColisLivree', 'nbColisRetournee', 'nbColisNLRetour', 'nbColisNLALivree', 'nbColisEncours', 'action'];
+  displayedColumns2: string[] = ['jour', 'entrepot', 'driver', 'nbColisLivree', 'nbColisRetournee', 'nbColisNLRetour', 'nbColisNLALivree', 'nbColisEncours', 'tauxLivraison', 'action'];
   displayedColumns3: string[] = ['jour', 'client', 'nbColisPickUp', 'nbColisLivree', 'nbColisRetournee',
     'nbColisEnCoursDePayement', 'nbColisPayee', 'action'];
   entrepot = new FormControl('', Validators.required);
