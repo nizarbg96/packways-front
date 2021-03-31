@@ -29,7 +29,7 @@ export class CaisseStateComponent implements OnInit {
   private isLoadingResults = false;
   filtredTickets: GasTicket[] = [];
   filtredCaissses: Caisse[] = [];
-  lastCoffre = new Caisse();
+  lastCoffre;
 
   constructor(public dialog: MatDialog, private gasTicketService: GasTicketService, private modalService: NgbModal,
               private snackBar: MatSnackBar, private caisseService: CaisseService) {

@@ -674,6 +674,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.selectedActivityJour = element;
     this.open(contentActivityJour);
   }
+  openModalActivityDriver(contentActivityJour: TemplateRef<any>, element: IStatActivityDriver) {
+    this.selectedActivityDriver = element;
+    this.open(contentActivityJour);
+  }
+  openModalActivityClient(contentActivityJour: TemplateRef<any>, element: IStatActivityJourClient) {
+    this.selectedActivityClient = element;
+    this.open(contentActivityJour);
+  }
 
 
   generateExcelReportActivityGlobale(listRapport: StatActivityJour[]) {

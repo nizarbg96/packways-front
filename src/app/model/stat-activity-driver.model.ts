@@ -24,6 +24,7 @@ export interface IStatActivityDriver {
   nbColisMUOutALivree?: number;
   nbColisMUInRetour?: number;
   nbColisMUInNonTreated?: number;
+  nbStopLivree?: number;
 
 }
 
@@ -51,7 +52,8 @@ export class StatActivityDriver implements IStatActivityDriver {
     public nbColisMUOutRetour?: number,
     public nbColisMUOutALivree?: number,
     public nbColisMUInRetour?: number,
-    public nbColisMUInNonTreated?: number
+    public nbColisMUInNonTreated?: number,
+    public nbStopLivree?: number
   ) {
   }
 

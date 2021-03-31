@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { MatButtonModule, MatCheckboxModule, MatCardModule,
      MatInputModule, MatSnackBarModule, MatToolbarModule, MatFormFieldModule} from '@angular/material';
+import {MaterialLibModule} from '../layout/material/material.module';
 
 @NgModule({
     imports: [
@@ -30,7 +31,8 @@ import { MatButtonModule, MatCheckboxModule, MatCardModule,
         MatSnackBarModule,
         MatToolbarModule,
         MatCheckboxModule,
-        MatFormFieldModule],
+        MatFormFieldModule,
+    MaterialLibModule],
     declarations: [LoginComponent],
     providers: [LoginService]
 })

@@ -243,7 +243,7 @@
                           <ng-container matColumnDef="action">
                             <th mat-header-cell *matHeaderCellDef>  </th>
                             <td mat-cell *matCellDef="let element">
-                              <button mat-stroked-button color="primary" (click)="openDialog(element)">Détails</button>
+                              <button mat-stroked-button color="primary" (click)="openModalActivityDriver(contentActivityDriver,element)">Détails</button>
                             </td>
                           </ng-container>
 
@@ -334,7 +334,7 @@
                           <ng-container matColumnDef="action">
                             <th mat-header-cell *matHeaderCellDef>  </th>
                             <td mat-cell *matCellDef="let element">
-                              <button mat-stroked-button color="primary" (click)="openDialog(element)">Détails</button>
+                              <button mat-stroked-button color="primary" (click)="openModalActivityClient(contentActivityClient,element)">Détails</button>
                             </td>
                           </ng-container>
 
@@ -597,6 +597,144 @@
         <button type="button" class="btn btn-primary" (click)="(c('Close click'))">D'accord</button>
       </div>
     </ng-template>
+    <ng-template #contentActivityDriver let-c="close" let-d="dismiss">
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <h6 style="color: #f01010;"><b>Détail d'activity  Jour {{!!selectedActivityDriver?convertTime(selectedActivityDriver.jour) :'-'}} </b></h6>
+        </div>
+      </div>
+      <div class="modal-body">
+        <table class="table table-sm" id="contentToConvert" style="font-size:12px !important;">
+          <tbody style="font-size:14px !important;">
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Livreur</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.driver.nameDriver + ' ' + selectedActivityDriver.driver.surnameDriver :'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Entrepot</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.entrepot.nom:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Non Livrés</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.nbColisNonLivree:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Non Livrés Chez Livreur</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.nbColisNLALivree:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Non Livrés Retour</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.nbColisNLRetour:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Livrés</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.nbColisLivree:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Stops</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.nbStopLivree:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Retournés</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.nbColisRetournee:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">En cours de livraison</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.nbColisEncours:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Valeur de colis livrés </td>
+            <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.valColisLivree+' TND':'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Valeur de dépenses </td>
+            <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.valDepenses+' TND':'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Valeur des montants récoltés </td>
+            <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.valMontantRecoltee+' TND':'-'}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="(c('Close click'))">D'accord</button>
+      </div>
+    </ng-template>
+    <ng-template #contentActivityClient let-c="close" let-d="dismiss">
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <h6 style="color: #f01010;"><b>Détail d'activity de Jour {{!!selectedActivityClient?convertTime(selectedActivityClient.jour) :'-'}} </b></h6>
+        </div>
+      </div>
+      <div class="modal-body">
+        <table class="table table-sm" id="contentToConvert" style="font-size:12px !important;">
+          <tbody style="font-size:14px !important;">
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Client</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.user.nameUser+' '+selectedActivityClient.user.surnameUser:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Entrepot</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.entrepot.nom:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Entrepot : A livrer</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisEntrepotChezLivreur:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Entrepot : Retour</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisEntrepotRetour:'-'}}</td>
+          </tr>
+          <tr>
+            <td style="background-color: #ffffff">Livrés</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisLivree:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Retournés</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisRetournee:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">En cours de livraison</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisEncoursLivraison:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Ramassés</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisPickUp:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Transit Livraison</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisTransitLivraison:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Transit Retour</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisTransitRetour:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Expédiés transit livraison </td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisMUOutALivree:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Non Cloturés</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nonClosedTrips:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">En cours de payement</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisEnCoursDePayement+' TND':'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Payés</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisPayee+' TND':'-'}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="(c('Close click'))">D'accord</button>
+      </div>
+    </ng-template>
+
+
   </div>
 
 </div>

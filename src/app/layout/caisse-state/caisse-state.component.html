@@ -14,8 +14,11 @@
     <div class="row mt-2">
       <div class="col-md-10 Aligner">
       </div>
-      <div class="col-md-2 Aligner">
-        <button style="width: 100%" mat-raised-button   color="primary" [disabled]="!lastCoffre.closed" (click)="openDialog()">Ouvrir la caisse</button>
+      <div class="col-md-2 Aligner" *ngIf="!!lastCoffre">
+        <button style="width: 100%" mat-raised-button   color="primary" [disabled]="!!lastCoffre && lastCoffre.closed === false " (click)="openDialog()">Ouvrir la caisse</button>
+      </div>
+      <div class="col-md-2 Aligner" *ngIf="!lastCoffre">
+        <button style="width: 100%" mat-raised-button   color="primary"  (click)="openDialog()">Ouvrir la caisse</button>
       </div>
     </div>
   </mat-card>

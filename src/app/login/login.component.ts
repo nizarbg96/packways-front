@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     userForm: FormGroup;
     login: any;
     password: any;
-    selectedRbValue: any;
+    selectedRbValue: 'admin' | 'user' = 'admin';
     form;
 
     constructor(

@@ -1,6 +1,35 @@
-<div class="login-page" [@routerTransition] style="background-color:rgb(250, 250, 250);">
+<div class="login-page" [@routerTransition] >
+  <div class="app">
+
+    <div class="bg"></div>
+
+    <form>
+      <header>
+        <img src="../../assets/images/logo.png" width="150px" class="user-avatar" >
+      </header>
+
+      <div class="inputs" [formGroup]="form" (ngSubmit)="authlogin()">
+        <section class="example-section">
+          <mat-radio-group  [(ngModel)]="selectedRbValue" [ngModelOptions]="{standalone: true}">
+            <mat-radio-button color="primary" value="admin" >Admin</mat-radio-button>
+            <mat-radio-button class="ml-3" color="primary" value="user" >Client</mat-radio-button>
+          </mat-radio-group>
+        </section>
+        <input type="text"  placeholder="username or email" formControlName="email" id="userlogin" name="userlogin">
+        <input type="password" formControlName="password" id="userpwd" name="userpwd" placeholder="password">
+
+      </div>
+    </form>
+
+    <footer>
+      <button style="cursor: pointer" type="submit" (click)="authlogin()">Se Connecter</button>
+      <p>Vous n'avez pas un compte? <a style="cursor: pointer; color: #0c5460" [routerLink]="['/signup']">Créer un compte</a></p>
+    </footer>
+
+
+  </div>
 <!-- <div class="login-page" [@routerTransition] [ngStyle]="{background: 'url(assets/images/s.jpg) center'}"> -->
-    <div class="row justify-content-md-center">
+    <!--<div class="row justify-content-md-center">
         <div class="col-md-4">
 
                 <img src="assets/images/logo.png" width="150px" class="user-avatar" />
@@ -35,7 +64,7 @@
                 </mat-card>
 
 
-            <!-- <form role="form">
+            &lt;!&ndash; <form role="form">
                 <div class="form-content">
                     <div class="form-group">
                         <input type="text" [(ngModel)]="login" class="form-control input-underline input-lg" id="userlogin" name="userlogin" placeholder="Nom d'utilisateur">
@@ -56,9 +85,10 @@
                 <a class="btn rounded-btn" [routerLink]="['/dashboard']" (click)="authlogin()">{{ 'Log in' | translate }}</a>
                 &nbsp;
                 <a class="btn rounded-btn" [routerLink]="['/signup']">{{ 'Register' | translate }}</a>
-            </form> -->
+            </form> &ndash;&gt;
         </div>
-    </div>
+    </div>-->
+
 
 
 </div>
