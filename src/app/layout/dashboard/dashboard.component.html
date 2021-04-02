@@ -17,7 +17,7 @@
 </div>
     </div>
     <div class="row">
-      <div class="col-md-3 grid-margin stretch-card">
+      <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
             <p class="card-title text-md-center text-xl-left">Nombre de colis livrés </p>
@@ -29,7 +29,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-3 grid-margin stretch-card">
+      <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
             <p class="card-title text-md-center text-xl-left">Nombre de colis retournés</p>
@@ -41,7 +41,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-3 grid-margin stretch-card">
+      <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
             <p class="card-title text-md-center text-xl-left">Valeur des dépenses</p>
@@ -53,6 +53,7 @@
           </div>
         </div>
       </div>
+<!--
       <div class="col-md-3 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
@@ -65,6 +66,7 @@
           </div>
         </div>
       </div>
+-->
     </div>
     <div class="row mb-3">
       <div class="col-md-12">
@@ -674,10 +676,7 @@
             <td style="background-color: #ffffff">Client</td>
             <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.user.nameUser+' '+selectedActivityClient.user.surnameUser:'-'}}</td>
           </tr>
-          <tr class="table-active text-center" style="background-color: #ffffff;">
-            <td style="background-color: #ffffff">Entrepot</td>
-            <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.entrepot.nom:'-'}}</td>
-          </tr>
+
           <tr class="table-active text-center" style="background-color: #ffffff;">
             <td style="background-color: #ffffff">Entrepot : A livrer</td>
             <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisEntrepotChezLivreur:'-'}}</td>
@@ -686,7 +685,7 @@
             <td style="background-color: #ffffff">Entrepot : Retour</td>
             <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisEntrepotRetour:'-'}}</td>
           </tr>
-          <tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
             <td style="background-color: #ffffff">Livrés</td>
             <td style="background-color: #ffffff">{{!!selectedActivityClient?selectedActivityClient.nbColisLivree:'-'}}</td>
           </tr>
@@ -729,6 +728,8 @@
           </tbody>
         </table>
       </div>
+
+
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="(c('Close click'))">D'accord</button>
       </div>
