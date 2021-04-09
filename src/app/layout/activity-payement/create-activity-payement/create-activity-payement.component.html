@@ -84,7 +84,7 @@
         <button mat-button mat-raised-button color="primary" *ngIf="finalStep && activityPayement.status === 'draft' "   (click)="goBack(stepper)" >Précédent</button>
         <button mat-button mat-raised-button color="primary" *ngIf="finalStep && activityPayement.status === 'confirmed'"  style="width: 50%"  (click)="goBack(stepper)" >Précédent</button>
         <button mat-button mat-raised-button color="primary" *ngIf="finalStep && activityPayement.status === 'closed'"  style="width: 100%"  (click)="goBack(stepper)" >Précédent</button>
-        <button mat-button mat-raised-button *ngIf="finalStep && activityPayement.status === 'confirmed'"  style="width: 50%;background-color:#00aa88;color:white;" class="ml-2"  (click)="closeActivite('confirmActivity')" >Clôturer</button>
+        <button mat-button mat-raised-button *ngIf="finalStep && activityPayement.status === 'confirmed'"  style="width: 50%;background-color:#00aa88;color:white;" class="ml-2" [disabled]="!selectedFile"  (click)="closeActivite('confirmActivity')" >Clôturer</button>
         <button mat-button mat-raised-button *ngIf="!finalStep" [ngStyle]="{'width': firstStep === true ?'100%':'50%', 'background-color':'#00aa88', 'color': 'white'}"class="ml-2" (click)="goForward(stepper)">Suivant</button>
         <button mat-button mat-raised-button  *ngIf="finalStep && activityPayement.status === 'draft'" style="width:50%;background-color:#00aa88;color:white;" class="ml-2" (click)="conirmeActivite('confirmActivity')" [disabled]="listColisToPay.length === 0" >Confirmer</button>
       </div>
@@ -234,19 +234,27 @@
       <ng-template matStepLabel>Résumé</ng-template>
       <div class="row">
         <div class="col-md-2" *ngIf="activityPayement.status === 'confirmed'">
-          <mat-card [class.mat-elevation-z8] = "true" class="mt-2">
+          <mat-card [class.mat-elevation-z8]="true" class="mt-2">
             <div class="form-group">
-              <label for="file">Choose File</label>
-              <input type="file"
+              <label for="file">Joindre un justificatif <mat-icon>upload</mat-icon></label>
+              <input style="cursor: pointer" type="file"
                      id="file"
-                     (change)="handleFileInput($event.target.files)">
+                     (change)="onFileChanged($event)">
+              <p height="200" *ngIf="imgURL">{{imgURL}}</p>
             </div>
           </mat-card>
-        </div>
+        </div><!--
+        <div class="col-md-2" *ngIf="activityPayement.status === 'confirmed'">
+            <button class="mt-2" mat-raised-button (click)="onUpload()" value="upload">upload image <mat-icon>upload</mat-icon></button>
+        </div>-->
         <!--<div class="col-md-2">
           <button mat-raised-button class="mt-2" (click) = "generateExcelReportForClient()"><i class="material-icons">library_books</i> imprimer rapport</button>
         </div>-->
       </div>
+      <!--<img class="card-img-top img-responsive"
+           src = "{{url+'/api/Imgarticles/'+activityPayement.id}}"
+           style = "height :200px;width:fit-content"
+           alt=""> -->
       <div class="row">
         <div class="col-md-12">
           <mat-card [class.mat-elevation-z8] = "true" class="mt-2">

@@ -1,9 +1,9 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatListOption, MatSelectionList, MatSnackBar} from '@angular/material';
 import {Router} from '@angular/router';
 import {TripService} from '../trips/trips.service';
 import {ColisRunsheet} from '../../model/colis-runsheet.model';
-import {ActivityPayement} from '../../model/activity-payement.model';
+import {ActivityPayement, IActivityPayement} from '../../model/activity-payement.model';
 import {ActivityPayementService} from './activity-payement.service';
 import {Trip} from '../trips/Trip';
 import {MoveableUnitService} from '../moveable-unit/moveable-unit.service';
@@ -13,6 +13,9 @@ import {TripExcelService} from '../trips/excel-trip.service';
 import {PickUp} from '../../model/pickup.model';
 import {DatePipe} from '@angular/common';
 import {CaisseService} from '../caisse-state/caisse.service';
+import {environment} from '../../../environments/environment';
+import {IStatActivityJour} from '../../model/stat-activity-jour.model';
+import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-activity-payement',
@@ -37,12 +40,15 @@ export class ActivityPayementComponent implements OnInit {
   private jsonObj: any;
   listCheckedActivities: ActivityPayement[] = [];
   private moreDayCounter = 1;
+  url = environment.serverUrl;
+  private closeResult: string;
+
 
 
 
   constructor(public dialog: MatDialog, private router: Router, private tripService: TripService, private userService: UserService,
               private activityPayementService: ActivityPayementService, private snackBar: MatSnackBar, private tripExcelService: TripExcelService,
-              private datePipe: DatePipe, private caisseService: CaisseService) { }
+              private datePipe: DatePipe, private caisseService: CaisseService, private modalService: NgbModal) { }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
@@ -108,6 +114,26 @@ export class ActivityPayementComponent implements OnInit {
     },() => {
       this.snackBar.open('Erreur Serveur', 'Fermer', {duration: 8000});
     })
+  }
+  openModalJustificatif(contentActivityJour: TemplateRef<any>, element: IActivityPayement) {
+    this.selectedActivityPayement = element;
+    this.open(contentActivityJour);
+  }
+  open(content) {
+    this.modalService.open(content, { size: 'lg' }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return  `with: ${reason}`;
+    }
   }
 
   deleteActivity(activity: ActivityPayement) {

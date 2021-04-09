@@ -23,6 +23,8 @@ import {GasTicket} from '../../model/gas-ticket.model';
 import {GasTicketService} from './gas-ticket.service';
 import {pluck} from 'rxjs/operators';
 import {CaisseService} from '../caisse-state/caisse.service';
+import {FileUploadService} from '../activity-payement/create-activity-payement/file-upload.service';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-depenses',
@@ -46,6 +48,7 @@ export class DepensesComponent implements OnInit, AfterViewInit {
 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  url = environment.serverUrl;
 
 
   ngAfterViewInit() {
@@ -146,10 +149,12 @@ export class AddDepenseComponent implements OnInit, AfterViewInit {
   private listEmployeeAuto: string[] = [];
   private affectedEmployee: any;
   private carValue: ICar;
+  private selectedFile: any;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private depensesService: DepensesService, private fb: FormBuilder,
               private tservice: TripService, private driverService: DriversService, private snackBar: MatSnackBar,
-              private employeeService: EmployeeService, private carService: CarService, private gasTicketService: GasTicketService) {
+              private employeeService: EmployeeService, private carService: CarService, private gasTicketService: GasTicketService,
+              private fileUploadService: FileUploadService) {
   }
 
   isSaving = false;
@@ -190,6 +195,8 @@ export class AddDepenseComponent implements OnInit, AfterViewInit {
     'August', 'September', 'October', 'November', 'December'];
   items = [];
   cars: ICar[] = [] ;
+  imgURL: any;
+
 
   ngOnInit() {
     this.getAllDrivers();
@@ -222,12 +229,24 @@ export class AddDepenseComponent implements OnInit, AfterViewInit {
         }
       });
       this.gasTicketService.createList(gasTickets).subscribe(() => {
-        console.log(this.items);
-        this.subscribeToSaveResponse(this.depensesService.create(depenses));
+        this.depensesService.create(depenses).subscribe((res) => {
+          const savedDepenses = res.body;
+          const uploadImageData = new FormData();
+          uploadImageData.append('imageFile', this.selectedFile, this.selectedFile.name);
+          uploadImageData.append('activity', JSON.stringify(savedDepenses));
+          this.fileUploadService.postFileDepense(uploadImageData).subscribe((response) => {
+          });
+        })
       })
     }else{
-      console.log(this.items);
-      this.subscribeToSaveResponse(this.depensesService.create(depenses));
+      this.depensesService.create(depenses).subscribe((res) => {
+        const savedDepenses = res.body;
+        const uploadImageData = new FormData();
+        uploadImageData.append('imageFile', this.selectedFile, this.selectedFile.name);
+        uploadImageData.append('activity', JSON.stringify(savedDepenses));
+        this.fileUploadService.postFileDepense(uploadImageData).subscribe((response) => {
+        });
+      })
     }
   }
 
@@ -421,6 +440,13 @@ export class AddDepenseComponent implements OnInit, AfterViewInit {
     console.log(value);
 
   }
+
+  onFileChanged($event: Event) {
+    // @ts-ignore
+    this.selectedFile = event.target.files[0];
+    this.imgURL = this.selectedFile.name;
+  }
+
 }
 const MODALS: { [name: string]: Type<any> } = {
   deletePopUp: PopUpDeleteComponent,

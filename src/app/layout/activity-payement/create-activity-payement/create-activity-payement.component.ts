@@ -25,6 +25,7 @@ import {
 } from '../../reconcile-runsheet/create-activity-runsheet/create-activity-runsheet.component';
 import {FileUploadService} from './file-upload.service';
 import {TripExcelService} from '../../trips/excel-trip.service';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-create-activity-payement',
@@ -90,12 +91,24 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
   listEnCoursDePayement: Trip[] = [];
   dateDebut: Date;
   dateFin: Date;
+  /// IMAGE UPLOAD PROPERTIES
+  selectedFile: File;
+  retrievedImage: any;
+  base64Data: any;
+  retrieveResonse: any;
+  message: string;
+  imageName: any;
+  userFile ;
+  public imagePath;
+  imgURL: any;
+  url = environment.serverUrl
 
 
   constructor(private activityPayementService: ActivityPayementService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private fb: FormBuilder,
               private ramassageService: RamassageService, private userService: UserService, private activityRunsheetService: ActivityRunsheetService,
-              private entrepotService: EntrepotService, private fileUploadService: FileUploadService, private  tripExcelService: TripExcelService) {
+              private entrepotService: EntrepotService, private fileUploadService: FileUploadService,
+              private  tripExcelService: TripExcelService) {
   }
 
   ngOnInit() {
@@ -325,6 +338,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         this.activityPayement.listPayedTrips = this.listColisToPay.map((trip) => trip.idTrip);
         this.activityPayement.listRapportTrips = this.listRapportTrips;
         this.activityPayement.status = 'closed';
+        this.activityPayement.closedDate = new Date();
         this.activityPayementService.update(this.activityPayement).subscribe((res) => {
           this.listRapportTrips.forEach((value, i) => {
             if(value.statusTrip === 'Livree'){
@@ -334,7 +348,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
             }
           } )
           this.tripService.updateListOfTips(trips).subscribe(( )=>{
-            this.openCheckSuccess('activityConfirmed');
+            this.onUpload();
           });
         });
       });
@@ -415,7 +429,13 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         }
       }
     });
-    this.amountToPay = this.totalAmount - this.shippingCosts;
+    if(this.activityPayement.clientId === '603f63e42ce3e0276081920f'){
+      this.amountToPay = this.totalAmount;
+
+    } else {
+      this.amountToPay = this.totalAmount - this.shippingCosts;
+
+    }
   }
 
   changeDateFormat(dd) {
@@ -558,7 +578,13 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
           }
         }
       });
-      this.amountToPay = this.totalAmount - this.shippingCosts;
+      if(this.activityPayement.clientId === '603f63e42ce3e0276081920f'){
+        this.amountToPay = this.totalAmount;
+
+      } else {
+        this.amountToPay = this.totalAmount - this.shippingCosts;
+
+      }
     } else if (value === 'standard') {
       this.totalAmount = 0;
       this.shippingCosts = 0;
@@ -581,7 +607,13 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
           }
         }
       });
-      this.amountToPay = this.totalAmount - this.shippingCosts;
+      if(this.activityPayement.clientId === '603f63e42ce3e0276081920f'){
+        this.amountToPay = this.totalAmount;
+
+      } else {
+        this.amountToPay = this.totalAmount - this.shippingCosts;
+
+      }
     } else if (value === 'personnalisé') {
       this.modalService.open(this.contentLivreePerso, {size: 'lg'}).result.then((result) => {
         this.closeResult = `Closed with: ${result}`;
@@ -607,7 +639,13 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
             }
           }
         });
-        this.amountToPay = this.totalAmount - this.shippingCosts;
+        if(this.activityPayement.clientId === '603f63e42ce3e0276081920f'){
+          this.amountToPay = this.totalAmount;
+
+        } else {
+          this.amountToPay = this.totalAmount - this.shippingCosts;
+
+        }
       }, (reason) => {
         this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
       });
@@ -639,7 +677,13 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
           }
         }
       });
-      this.amountToPay = this.totalAmount - this.shippingCosts;
+      if(this.activityPayement.clientId === '603f63e42ce3e0276081920f'){
+        this.amountToPay = this.totalAmount;
+
+      } else {
+        this.amountToPay = this.totalAmount - this.shippingCosts;
+
+      }
     } else if ([0, 1, 2, 3, 5, 6, 7, 8].indexOf(value) >= 0) {
       this.returnedCost = value;
       this.totalAmount = 0;
@@ -657,7 +701,13 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
           this.listRapportTrips.push(trip);
         }
       });
-      this.amountToPay = this.totalAmount - this.shippingCosts;
+      if(this.activityPayement.clientId === '603f63e42ce3e0276081920f'){
+        this.amountToPay = this.totalAmount;
+
+      } else {
+        this.amountToPay = this.totalAmount - this.shippingCosts;
+
+      }
     }
 
   }
@@ -673,7 +723,13 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         this.shippingCosts = this.shippingCosts + parseFloat(trip.costTrip);
         this.listRapportTrips.push(trip);
       });
-      this.amountToPay = this.totalAmount - this.shippingCosts;
+      if(this.activityPayement.clientId === '603f63e42ce3e0276081920f'){
+        this.amountToPay = this.totalAmount;
+
+      } else {
+        this.amountToPay = this.totalAmount - this.shippingCosts;
+
+      }
     } else {
       this.totalAmount = 0;
       this.shippingCosts = 0;
@@ -697,7 +753,13 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
           }
         }
       });
-      this.amountToPay = this.totalAmount - this.shippingCosts;
+      if(this.activityPayement.clientId === '603f63e42ce3e0276081920f'){
+        this.amountToPay = this.totalAmount;
+
+      } else {
+        this.amountToPay = this.totalAmount - this.shippingCosts;
+
+      }
     }
   }
 
@@ -840,6 +902,68 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
     if (!!this.entrepotSrcValue){
       this.filtredRecoltedTrips = this.filtredRecoltedTrips.slice().filter((item) => item.entrepot.id === this.entrepotSrcValue.id);
     }
+  }
+
+
+
+  /*onFileChanged(event: any) {
+    this.selectedFile = event.target.files[0];
+    this.imgURL = this.selectedFile.name;
+  }*/
+  onUpload() {
+    console.log(this.selectedFile);
+    const uploadImageData = new FormData();
+    uploadImageData.append('imageFile', this.selectedFile, this.selectedFile.name);
+    uploadImageData.append('activity', JSON.stringify(this.activityPayement));
+    this.fileUploadService.postFile(uploadImageData).subscribe((response) => {
+      console.log(response.json())
+      this.activityPayement = response.json();
+      this.openCheckSuccess('activityConfirmed');
+      if (response.status === 200) {
+        this.message = 'Image uploaded successfully';
+      } else {
+        this.message = 'Image not uploaded successfully';
+      }
+    });
+
+  }
+
+  getImage() {
+      this.fileUploadService.getImage(this.imageName).subscribe(
+        res => {
+          this.retrieveResonse = res;
+          this.base64Data = this.retrieveResonse.picByte;
+          this.retrievedImage = 'data:image/jpeg;base64,' + this.base64Data;
+        }
+      );
+  }
+
+/*  onFileChanged($event: Event) {
+    if (event.target.files.length > 0)
+    {
+      const file = event.target.files[0];
+      this.userFile = file;
+      // this.f['profile'].setValue(file);
+
+      var mimeType = event.target.files[0].type;
+      if (mimeType.match(/image\/!*!/) == null) {
+        this.message = "Only images are supported.";
+        return;
+      }
+
+      var reader = new FileReader();
+
+      this.imagePath = file;
+      reader.readAsDataURL(file);
+      reader.onload = (_event) => {
+        this.imgURL = reader.result;
+      }
+    }
+  }*/
+  onFileChanged($event: Event) {
+    // @ts-ignore
+    this.selectedFile = event.target.files[0];
+    this.imgURL = this.selectedFile.name;
   }
 }
 

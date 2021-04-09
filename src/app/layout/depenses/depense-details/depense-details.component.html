@@ -18,6 +18,11 @@
   <p><strong>Prelevé de:</strong> {{depense.depenseFrom}}</p>
   <p *ngIf="!!depense.affectedTo"><strong>Bénéficiaire:</strong> {{depense.affectedTo.firstName + ' ' + depense.affectedTo.lastName}}</p>
   <p><strong>Commentaires:</strong> {{depense.description}}</p>
+  <p><strong>Justificatif: </strong></p>
+  <img class="card-img-top img-responsive"
+       src = "{{url+'/api/ImgDepenses/'+depense.id}}"
+       style = "max-height :40vh;max-width:40vw"
+       alt="">
 </div>
   <div class="modal-footer">
     <button type="button" ngbAutofocus class="btn btn-success" (click)="modal.close('Ok click')">D'accord</button>

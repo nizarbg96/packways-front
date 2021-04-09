@@ -32,6 +32,7 @@ export interface IActivityPayement {
   listRapportTrips?: Trip[];
   listPayedTrips?: string[];
   listEnCoursDePayementTrips?: string[];
+  fileName?: string;
 }
 
 export class ActivityPayement implements IActivityPayement {
@@ -60,7 +61,8 @@ export class ActivityPayement implements IActivityPayement {
     public clientName?: string,
     public listRapportTrips?: Trip[],
     public listPayedTrips?: string[],
-    public listEnCoursDePayementTrips?: string[]
+    public listEnCoursDePayementTrips?: string[],
+    public fileName?: string
 
 ) {
     this.deleted = this.deleted || false;

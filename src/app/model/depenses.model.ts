@@ -19,6 +19,7 @@ export interface IDepenses {
   carnetGasoil?: string;
   montant?: string;
   affectedCar?: Car;
+  filename?: string;
 }
 
 export class Depenses implements IDepenses {
@@ -38,7 +39,8 @@ export class Depenses implements IDepenses {
     public description?: string,
     public carnetGasoil?: string,
     public montant?: string,
-    public affectedCar?: Car
+    public affectedCar?: Car,
+    public filename?: string
   ) {
     this.deleted = this.deleted || false;
   }
