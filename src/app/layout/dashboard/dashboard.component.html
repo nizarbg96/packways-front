@@ -7,7 +7,9 @@
     </mat-card>
   </div>
 -->
-
+  <ngx-spinner class="myspinner" bdColor = "rgba(255,255,255,0.8)" fullScreen="false" size = "large" color = "#000000" type = "ball-square-clockwise-spin">
+    <p style="color: black; font-size: large; margin-top: 100px; height: 100vh !important"> Veuillez patienter...</p>
+  </ngx-spinner>
 <app-stat-client *ngIf="id !== 'admin'"></app-stat-client>
   <div *ngIf="id === 'admin'">
     <div class="row">

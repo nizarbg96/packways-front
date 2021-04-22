@@ -113,7 +113,8 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
   constructor(private activityRunsheetService: ActivityRunsheetService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
               private fb: FormBuilder, private ramassageService: RamassageService, private userService: UserService, private http: Http,
-              private conflitService: ConflitService, private depensesService: DepensesService, private employeeService: EmployeeService) {
+              private conflitService: ConflitService, private depensesService: DepensesService, private employeeService: EmployeeService,
+              private spinner2: NgxSpinnerService) {
   }
 
 
@@ -209,22 +210,22 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
 
       });
   }
-  saveDepenses(){
+  saveDepenses() {
     this.employeeService.find(this.activityRunsheet.driver.refEmployee).subscribe((res) => {
       this.depensesAvance.affectedTo = res.body;
       this.depensesAutre.affectedTo = res.body;
       this.depensesCarteTel.affectedTo = res.body;
       this.depensesGasoileEspece.affectedTo = res.body;
-      if (this.depensesAvance.montant > 0){
+      if (this.depensesAvance.montant > 0) {
         this.depensesService.create(this.depensesAvance).subscribe();
       }
-      if (this.depensesAutre.montant > 0){
+      if (this.depensesAutre.montant > 0) {
         this.depensesService.create(this.depensesAutre).subscribe();
       }
-      if (this.depensesCarteTel.montant > 0){
+      if (this.depensesCarteTel.montant > 0) {
         this.depensesService.create(this.depensesCarteTel).subscribe();
       }
-      if (this.depensesGasoileEspece.montant > 0){
+      if (this.depensesGasoileEspece.montant > 0) {
         this.depensesService.create(this.depensesGasoileEspece).subscribe();
       }
     } );
@@ -636,12 +637,12 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
               }
 
             } else {
-              if(!!obj.refJumia){
+              if (!!obj.refJumia) {
                 this.activityRunsheetService.sacannedTrip = obj;
-                obj.statusTrip = 'Livree'
+                obj.statusTrip = 'Livree';
                 this.ListScanSuccess.push(obj);
                 this.successJumia(obj);
-              }else{
+              } else {
                 const msg = 'L\'état de colis doit être " Livré " ! Etat de colis scanné : ' + obj.statusTrip;
                 this.snackBar.open(msg, 'Fermer', {
                   duration: 8000,
@@ -739,7 +740,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       });
     });
   }
-  successJumia(obj: Trip){
+  successJumia(obj: Trip) {
     this.tripService.updateTripsStatus('Livree',
       [this.activityRunsheetService.sacannedTrip.idTrip], this.user.name, '').subscribe((res) => {
       const trip: Trip = Array.of(JSON.parse(res['_body']).trips)[0][0];
@@ -817,7 +818,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
         description: '',
         affectedCar: this.activityRunsheet.listRunsheets[this.activityRunsheet.listRunsheets.length - 1].car,
         montant: gasoilEspece
-      }
+      };
       this.depensesCarteTel = {
         ...new Depenses(),
         createdDate: new Date(),
@@ -840,7 +841,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
         description: '',
         montant: carteTel,
         affectedCar: null
-      }
+      };
       this.depensesAvance = {
         ...new Depenses(),
         createdDate: new Date(),
@@ -863,7 +864,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
         description: '',
         montant: avance,
         affectedCar: null
-      }
+      };
       this.depensesAutre = {
         ...new Depenses(),
         createdDate: new Date(),
@@ -959,23 +960,32 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
     const listOfIdsSuccess: string[] = this.activityRunsheet.listColisSuccess.slice()
       .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined))
       .map((colis) => colis.idTrip);
-    this.tripService.getListOfTips(listOfIdsSuccess).subscribe((resTrip) => {
+    /*this.tripService.getListOfTips(listOfIdsSuccess).subscribe((resTrip) => {
       this.ListScanSuccess = resTrip.body;
-    });
+    });*/
     const listOfIdsFailure: string[] = this.activityRunsheet.listColisFailure.slice()
       .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined))
       .map((colis) => colis.idTrip);
-    this.tripService.getListOfTips(listOfIdsFailure).subscribe((resTrip) => {
+    /*this.tripService.getListOfTips(listOfIdsFailure).subscribe((resTrip) => {
       this.ListScanFailure = resTrip.body;
-    });
+    });*/
     const listOfIdsPickUp: string[] = this.activityRunsheet.listColisPickUp.slice()
       .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined))
       .map((colis) => colis.idTrip);
-    this.tripService.getListOfTips(listOfIdsPickUp).subscribe((resTrip) => {
+  /*  this.tripService.getListOfTips(listOfIdsPickUp).subscribe((resTrip) => {
       this.ListScanPickUp = resTrip.body;
-    });
-    this.tripService.getListOfTips(this.activityRunsheet.listColisNonTreated).subscribe((resTrip) => {
+    });*/
+   /* this.tripService.getListOfTips(this.activityRunsheet.listColisNonTreated).subscribe((resTrip) => {
       this.listColisNonTreated = resTrip.body;
+    });*/
+
+    const editActivityTrips = {listColisSuccess: listOfIdsSuccess, listColisFailure: listOfIdsFailure, listColisPickUp: listOfIdsPickUp,
+      listColisNonTreated: this.activityRunsheet.listColisNonTreated };
+    this.activityRunsheetService.getEditActivityTrips(editActivityTrips).subscribe((res) => {
+      this.ListScanSuccess = res.body.listColisSuccess;
+      this.ListScanFailure = res.body.listColisFailure;
+      this.ListScanPickUp = res.body.listColisPickUp;
+      this.listColisNonTreated = res.body.listColisNonTreated;
     });
   }
 
@@ -1076,9 +1086,72 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
       this.scanForceRetournee = false;
     });
   }
+  confirmActivity(name: string) {
+    this.modalService.open(MODALS[name]).result.then((result) => {
+      this.spinner2.show();
+      this.closeResult = `Closed with: ${result}`;
+      const listConflitTripsIds = this.listConflit.map((conflit) => conflit.colisId);
+      const listLivraisonEnCoursIds = this.ListScanFailure.filter((trp) => trp.statusTrip === 'livraison en cours').map((trp) => trp.idTrip);
+      const listToUpdateChezLivreur = this.ListScanPickUp.map((trp) => trp.idTrip).concat(listLivraisonEnCoursIds);
+      const listChercheUnLivreur = this.ListScanPickUp.map((trp) => trp.idTrip);
+      const listEnCoursDeRetourIds = this.ListScanFailure.filter((trp) => trp.statusTrip === 'En cours de retour').map((trp) => trp.idTrip);
+      const listSuccessTripsIds = this.ListScanSuccess.map((trp) => trp.idTrip);
+      const listSuccessTripsRetourneeIds = this.ListScanSuccess.filter((trp) => trp.statusTrip === 'Retournee').map((trp) => trp.idTrip);
+      const listTreatedTripsIds = this.ListScanSuccess.map((trp) => trp.idTrip).concat(this.ListScanFailure.map((trp) => trp.idTrip));
+      const runsheetsToUpdate = this.activityRunsheet.listRunsheets;
+      const newRunsheets: Runsheet[] = [];
+      runsheetsToUpdate.forEach((runsheet) => {
+        const runsheetToPush = runsheet;
+        runsheetToPush.listColis = runsheet.listColis.map((colis) => {
+          if (listTreatedTripsIds.indexOf(colis.idTrip) >= 0 && colis.removed === false) {
+            colis.treated = true;
+            return colis;
+          } else {
+            if (listConflitTripsIds.indexOf(colis.idTrip) >= 0 && colis.removed === false) {
+              colis.survey = true;
+              return colis;
+            } else {
+              return colis;
+            }
+          }
+        });
+        newRunsheets.push(runsheetToPush);
+      });
+      newRunsheets.forEach((runsheet, index) => {
+        const treatedNumber = runsheet.listColis.filter((colis) => colis.treated === true && colis.removed === false).length;
+        if (treatedNumber === runsheet.listColis.filter((colis) => colis.removed === false).length) {
+          runsheet.status = 'closed';
+          runsheet.closedBy = this.user.idAdmin;
+          runsheet.closedDate = new Date();
+          newRunsheets[index] = runsheet;
+        }
+      });
+      this.activityRunsheet.nbColisNonLivree = this.ListScanFailure.length;
+      this.activityRunsheet.nbColisNLALivree = listLivraisonEnCoursIds.length;
+      this.activityRunsheet.nbColisNLRetour = this.ListScanFailure.length - listLivraisonEnCoursIds.length;
+      this.activityRunsheet.nbColisLivree = listSuccessTripsIds.length - listSuccessTripsRetourneeIds.length;
+      this.activityRunsheet.nbColisEncours = this.listColisNonTreated.length;
+      const activityConfirm = {listConflitTripsIds: listConflitTripsIds, listLivraisonEnCoursIds: listLivraisonEnCoursIds, listToUpdateChezLivreur: listToUpdateChezLivreur,
+        listChercheUnLivreur: listChercheUnLivreur, listEnCoursDeRetourIds: listEnCoursDeRetourIds, listSuccessTripsIds: listSuccessTripsIds,
+        listSuccessTripsRetourneeIds: listSuccessTripsRetourneeIds, listTreatedTripsIds: listTreatedTripsIds, listRelatedTrips: this.listRelatedTrips,
+        newRunsheets: newRunsheets, idAdmin: this.user.idAdmin, activityRunsheet: this.activityRunsheet, listConflit: this.listConflit,
+        depensesAvance: this.depensesAvance, depensesAutre: this.depensesAutre, depensesCarteTel: this.depensesCarteTel,
+        depensesGasoileEspece: this.depensesGasoileEspece};
+
+      this.activityRunsheetService.confirmActivity(activityConfirm).subscribe(() => {
+        this.openCheckSuccess('activityConfirmed');
+        this.spinner2.hide()
+      });
 
 
-  conirmeActivite(name: string) {
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      console.log(this.closeResult);
+    });
+  }
+
+
+    conirmeActivite(name: string) {
     this.modalService.open(MODALS[name]).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
       const listConflitTripsIds = this.listConflit.map((conflit) => conflit.colisId);
@@ -1384,8 +1457,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
            this.activityRunsheet.fraisSoutraitant = this.activityRunsheet.fraisSoutraitant + trip.fraisSoutraitant;
            trip.parentStop = true;
            this.listRelatedTrips.push(trip);
-         }
-         else{
+         } else {
            const relatedTrip = trip;
            relatedTrip.relatedRefStop = listRefTrips[listClientsJumia.indexOf(trip.destTrip.contactAdr)];
            relatedTrip.costTrip = 0;

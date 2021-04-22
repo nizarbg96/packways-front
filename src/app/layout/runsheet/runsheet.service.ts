@@ -85,4 +85,19 @@ export class RunsheetService {
     );
   }
 
+  addTrip(tripToAddInRunsheet: any){
+    return this.http
+      .post<IRunsheet>(this.resourceUrl + '/addTrip', tripToAddInRunsheet, { observe: 'response' });
+  }
+
+  deleteRunsheet(runsheetToDelete: any): Observable<EntityResponseType> {
+    return this.http
+      .post<IRunsheet>(this.resourceUrl + '/delete', runsheetToDelete, { observe: 'response' });
+  }
+
+  dispachRunsheet(dispachRunseet: any): Observable<EntityResponseType> {
+    return this.http
+      .post<IRunsheet>(this.resourceUrl + '/dispach', dispachRunseet, { observe: 'response' });
+  }
+
 }

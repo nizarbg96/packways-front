@@ -91,4 +91,12 @@ export class ActivityRunsheetService {
     );
   }
 
+  confirmActivity(activityConfirm: any): Observable<EntityResponseType> {
+    return this.http
+      .post<IActivity>(this.resourceUrl + '/confirm/', activityConfirm, { observe: 'response' });
+  }
+  getEditActivityTrips(activityTripsIds: any): Observable<HttpResponse<any>> {
+    return this.http
+      .post<any>(this.resourceUrl + '/edit-activity-trips/', activityTripsIds, { observe: 'response' });
+  }
 }

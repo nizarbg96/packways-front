@@ -30,6 +30,9 @@ import {TripExcelService} from '../trips/excel-trip.service';
 import * as XLSX from 'xlsx';
 import {User} from '../users/User';
 import {JumiaTrip} from '../../model/jumia.trip.model';
+import {NgxSpinnerService} from 'ngx-spinner';
+import Swal, {SweetAlertOptions} from 'sweetalert2';
+
 type AOA = any[][];
 
 
@@ -125,7 +128,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   constructor(public dservice: DashboardService, private statestiquesService: StatestiquesService, public dialog: MatDialog,  private modalService: NgbModal,
               public datepipe: DatePipe, private entrepotService: EntrepotService, private tservice: TripService, private snackBar: MatSnackBar,
-              private driverService: DriversService, private tripExcelService: TripExcelService) {
+              private driverService: DriversService, private tripExcelService: TripExcelService, private spinner: NgxSpinnerService) {
 
     if (localStorage.getItem('auth') === 'admin') {
       this.isVisible = true;
@@ -826,7 +829,25 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       trip.deliveredDate = value[31];
       trips.push(trip);
     });
-    this.statestiquesService.postJumiaTrips(trips).subscribe();
+    this.spinner.show();
+    this.statestiquesService.postJumiaTrips(trips).subscribe(() => {
+      this.spinner.hide();
+      const options = {
+        title: "succès",
+        text: "Colis ajoutés avec succès",
+        type: "success",
+      } as SweetAlertOptions;
+
+      Swal.fire(options);
+    },() => {
+      this.spinner.hide();
+      const options2 = {
+        title: "Ereur",
+        text: "Un Erreur a été survenu",
+        type: "error",
+      } as SweetAlertOptions;
+      Swal.fire(options2);
+    });
 
       const that = this;
       console.log('Test2');
@@ -860,9 +881,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
               if ((descriptionTrip === undefined) || (valueTrip === undefined) || (telContAdresseDest === undefined)
               || (contactAdresseDest === undefined) || (cityGlobalDest === undefined)) {
                   checkValidFile = false;
-                  this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
+                  /*this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
                       duration: 5000,
-                  });
+                  });*/
                   //this.openDialog();
 
                   return;
@@ -870,9 +891,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
               || (telContAdresseDest === null || telContAdresseDest === '')
               || (contactAdresseDest === null || contactAdresseDest === '') || (cityGlobalDest === null || cityGlobalDest === '')) {
                   checkValidFile = false;
-                  this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
+                  /*this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
                       duration: 5000,
-                  });
+                  });*/
                  // this.openDialog();
                   return;
               }
@@ -896,9 +917,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           /*this.tservice.addListTripsFromExel(this.listTripDataFromExcel);*/
 
       } else {
-          this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
+        /*  this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
               duration: 5000,
-          });
+          });*/
       }
 /*
       this.out = this.tripsFromExcel.length * 1000;

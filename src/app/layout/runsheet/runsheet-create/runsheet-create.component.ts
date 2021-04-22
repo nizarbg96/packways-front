@@ -191,18 +191,12 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
             if (this.runsheet.type === 'livraison') {
               if (obj.statusTrip === 'Chez Livreur') {
                 this.ListScan.push(obj);
-                this.tservice.updateRunsheet(obj.idTrip, new RunsheetHistory(this.runsheet.id, this.user.name, new Date)).subscribe(() => {
-                  this.tservice.getTripscanListById(obj.idTrip).subscribe((resT) => {
-                    const trip = resT.body;
-                    this.playSuccessAudio();
-                    trip.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  Runsheet: ' + this.runsheet.ref, 'Success'));
-                    this.tservice.updateOneTrip(trip).subscribe(() => {
-                      this.runsheet.listColis.push(new ColisRunsheet(trip.idTrip, false, this.user.idAdmin,
-                        new Date(), false));
-                      this.runsheetService.update(this.runsheet).subscribe();
-
-                    });
-                  });
+                this.runsheet.listColis.push(new ColisRunsheet(obj.idTrip, false, this.user.idAdmin, new Date(), false));
+                const tripToAddInRunsheet = {idTrip: obj.idTrip, runsheetHistory: new RunsheetHistory(this.runsheet.id, this.user.name, new Date),
+                  historiqueScan: new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  Runsheet: ' + this.runsheet.ref, 'Success'),
+                  runsheet: this.runsheet };
+                this.runsheetService.addTrip(tripToAddInRunsheet).subscribe(() => {
+                  this.playSuccessAudio();
                 });
 
               } else {
@@ -227,15 +221,12 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
             } else if (this.runsheet.type === 'retour') {
               if (obj.statusTrip === 'Retour') {
                 this.ListScan.push(obj);
-                this.playSuccessAudio();
-                obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  Runsheet: ' + this.runsheet.ref, 'Success'));
-                this.tservice.updateOneTrip(obj).subscribe((resTrip) => {
-                  const tripRes = resTrip.body;
-                  this.runsheet.listColis.push(new ColisRunsheet(tripRes.idTrip, false, this.user.idAdmin,
-                    new Date(), false));
-                  this.tservice.updateRunsheet(tripRes.idTrip, new RunsheetHistory(this.runsheet.id, this.user.name, new Date)).subscribe(() => {
-                    this.runsheetService.update(this.runsheet).subscribe();
-                  });
+                this.runsheet.listColis.push(new ColisRunsheet(obj.idTrip, false, this.user.idAdmin, new Date(), false));
+                const tripToAddInRunsheet = {idTrip: obj.idTrip, runsheetHistory: new RunsheetHistory(this.runsheet.id, this.user.name, new Date),
+                  historiqueScan: new HistoriqueScan(this.user.name, new Date(), 'Ajout dans la  Runsheet: ' + this.runsheet.ref, 'Success'),
+                  runsheet: this.runsheet };
+                this.runsheetService.addTrip(tripToAddInRunsheet).subscribe(() => {
+                  this.playSuccessAudio();
                 });
 
               } else {

@@ -24,6 +24,7 @@ import {Ng2CompleterModule} from 'ng2-completer';
 import {TripService} from '../trips/trips.service';
 import {DriversService} from '../drivers/drivers.service';
 import { RealTimeStatsComponent } from './components/real-time-stats/real-time-stats.component';
+import {NgxSpinnerModule} from 'ngx-spinner';
 
 @NgModule({
   imports: [
@@ -40,7 +41,8 @@ import { RealTimeStatsComponent } from './components/real-time-stats/real-time-s
     NgbModule,
     ReactiveFormsModule,
     Ng2CompleterModule,
-    FormsModule
+    FormsModule,
+    NgxSpinnerModule
   ],
   declarations: [
     DashboardComponent,

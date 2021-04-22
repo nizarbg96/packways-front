@@ -24,6 +24,8 @@ import {
 import {ColisFailureRunsheet} from '../../model/colis-failure-runsheet.model';
 import {CarService} from '../car/car.service';
 import {Car, ICar} from '../../model/car.model';
+import {NgxSpinnerService} from 'ngx-spinner';
+import Swal, {SweetAlertOptions} from 'sweetalert2';
 
 @Component({
   selector: 'app-runsheet',
@@ -47,11 +49,12 @@ export class RunsheetComponent implements OnInit {
   private closeResult: string;
   private cout: number;
    cars: ICar[] = [];
-   car: null
+   car: null;
 
 
   constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private modalService: NgbModal,
-              private router: Router, private tripService: TripService, private snackBar: MatSnackBar, private carService: CarService) { }
+              private router: Router, private tripService: TripService, private snackBar: MatSnackBar, private carService: CarService,
+              private spinner2: NgxSpinnerService) { }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
@@ -71,7 +74,7 @@ export class RunsheetComponent implements OnInit {
         this.affectedDriver = result.driver;
         this.affectedMatricule = result.matricule;
         this.cout = result.cout;
-        this.car = result.car
+        this.car = result.car;
         this.runsheetService.runsheetInfo = result;
         this.router.navigate(['/runsheet/create']);
       } else {
@@ -94,29 +97,28 @@ export class RunsheetComponent implements OnInit {
       this.filtredRunsheets = this.runsheets;
     });
   }
-  getCars(){
+  getCars() {
     this.carService.query().subscribe((res) => {
       this.cars = res.body.filter(value => value.deleted === false);
-    })
+    });
   }
   deleteRunsheet(runsheet: Runsheet) {
     this.runsheetService.scannedRunsheet = runsheet;
     this.modalService.open(MODALS['deleteRunsheet']).result.then(
       (result) => {
+        //
         this.closeResult = `Closed with: ${result}`;
-        const index = this.runsheets.indexOf(runsheet);
-        runsheet.deleted = true;
-        runsheet.deletedDate = new Date();
-        runsheet.deletedBy = this.user.idAdmin;
-        this.runsheetService.update(runsheet).subscribe();
-        this.runsheets[index] = runsheet;
         const listTripsToUpdate = runsheet.listColis.slice()
           .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
-        this.tripService.updateTripsWhenDeleteRunsheet(listTripsToUpdate).subscribe(() => {
+        const index = this.runsheets.indexOf(runsheet);
+        const runsheetToDelete = {listTripsToUpdate: listTripsToUpdate, runsheet: runsheet, idAdmin: this.user.idAdmin };
+        this.runsheetService.deleteRunsheet(runsheetToDelete).subscribe((res) => {
+          this.runsheets[index] = res.body;
           this.snackBar.open('Runsheet ' + runsheet.ref + ' has been successfuly deleted', 'Fermer', {
             duration: 8000,
           });
         });
+
       }, (reason) => {
         this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
         console.log(this.closeResult);
@@ -152,7 +154,36 @@ export class RunsheetComponent implements OnInit {
   }
 
   dispatchRunsheet() {
-    this.selectedRunsheet.status = 'dispached';
+    this.spinner2.show();
+    const index = this.runsheets.indexOf(this.selectedRunsheet);
+    const listTrips: string[] = this.selectedRunsheet.listColis
+      .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map((colis) => colis.idTrip);
+    const dispachRunsheet = {runsheet: this.selectedRunsheet, listTrips: listTrips, userName: this.user.name, userId: this.user.idAdmin};
+    this.runsheetService.dispachRunsheet(dispachRunsheet).subscribe((res) => {
+      this.selectedRunsheet = res.body;
+      this.runsheets[index] = this.selectedRunsheet;
+      this.spinner2.hide();
+      const options = {
+        title: 'succès',
+        text: 'Runsheet Expédiée avec succès',
+        type: 'success',
+      } as SweetAlertOptions;
+
+      Swal.fire(options);
+
+    }, () => {
+      this.spinner2.hide();
+      const options = {
+        title: 'Erreur',
+        text: 'Un erreur a été survenu',
+        type: 'error',
+      } as SweetAlertOptions;
+      Swal.fire(options);
+
+    });
+
+    ///
+    /*this.selectedRunsheet.status = 'dispached';
     this.selectedRunsheet.dispachedBy = this.user.idAdmin;
     this.selectedRunsheet.dispachedDate = new Date();
     this.runsheetService.update(this.selectedRunsheet).subscribe(() => {
@@ -182,11 +213,25 @@ export class RunsheetComponent implements OnInit {
           });
         }
       });
-    });
+    });*/
   }
   deleteSelectedRunsheet() {
     this.modalService.open(MODALS['deleteRunsheet']).result.then(
       (result) => {
+        //
+        this.closeResult = `Closed with: ${result}`;
+        const listTripsToUpdate = this.selectedRunsheet.listColis.slice()
+          .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
+        const index = this.runsheets.indexOf(this.selectedRunsheet);
+        const runsheetToDelete = {listTripsToUpdate: listTripsToUpdate, runsheet: this.selectedRunsheet, idAdmin: this.user.idAdmin };
+        this.runsheetService.deleteRunsheet(runsheetToDelete).subscribe((res) => {
+          this.runsheets[index] = res.body;
+          this.snackBar.open('Runsheet ' + this.selectedRunsheet.ref + ' has been successfuly deleted', 'Fermer', {
+            duration: 8000,
+          });
+        });
+        //
+       /*
         this.closeResult = `Closed with: ${result}`;
         const index = this.runsheets.indexOf(this.selectedRunsheet);
         this.selectedRunsheet.deleted = true;
@@ -200,7 +245,7 @@ export class RunsheetComponent implements OnInit {
           this.snackBar.open('Runsheet ' + this.selectedRunsheet.ref + ' has been successfuly deleted', 'Fermer', {
             duration: 5000,
           });
-        });
+        });*/
       }, (reason) => {
         this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
         console.log(this.closeResult);
@@ -273,7 +318,7 @@ export class DialogAddDriverToRunsheetComponent implements OnInit {
     }, error => {
     });
   }
-  getCars(){
+  getCars() {
     this.carService.query().subscribe((res) => {
       this.cars = res.body.filter(value => !value.deleted);
     });
@@ -285,11 +330,11 @@ export class DialogAddDriverToRunsheetComponent implements OnInit {
       this.driverService.getOneDriver(this.affectedDriver.idDriver).subscribe((oneDriver) => {
         this.runsheetInfo.driver =  oneDriver.json();
         this.cars = this.affectedDriver.affectedCars;
-        if(oneDriver.json().soutraitant){
+        if (oneDriver.json().soutraitant) {
           this.runsheetInfo.cout = oneDriver.json().fraisSoutraitance;
         }
       });
-    }else{
+    } else {
       this.affectedDriver = null;
       this.runsheetInfo.driver = null;
       this.cars = [];
