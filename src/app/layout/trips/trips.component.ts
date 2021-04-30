@@ -971,7 +971,7 @@ export class TripsComponent implements OnInit {
         const urlrecolterTrip = environment.serverUrl + '/trip/updaterecolter';
         console.log('idamdin' + this.idadmin);
         // http://147.135.136.78:8052/trip/updateclosed
-        this.http.post(urlrecolterTrip + '?idAdmin=' + this.idadmin, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
+        this.http.post(urlrecolterTrip + '?name=' + this.idadmin, this.closedTrips , {headers: this.headerOptions}).subscribe(data => {
             console.log(data['_body']);
             this.snackBar.open('Modifications enregistrès avec succès', 'Fermer', {
                 duration: 12000,
