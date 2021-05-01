@@ -39,6 +39,10 @@ export class DriversTableService {
     return this.http
       .get<IDriversTable[]>(this.resourceUrl + '/drivers', { observe: 'response' });
   }
+  getDriversTabeleByDate(dateRange: any): Observable<EntityArrayResponseType> {
+    return this.http
+      .post<IDriversTable[]>(this.resourceUrl + '/drivers', dateRange,{ observe: 'response' });
+  }
 
   delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });

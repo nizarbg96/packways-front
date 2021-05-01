@@ -16,7 +16,8 @@
                 <div class="row">
                   <div class="col-md-6 d-flex flex-column justify-content-center">
                     <div class="ml-xl-4">
-                      <h1>{{!!statClient?statClient.tripsLivreeRT:'-'}}</h1>
+                      <div class="lds-ellipsis" *ngIf="loadData"><div></div><div></div><div></div><div></div></div>
+                      <h1 *ngIf="!loadData">{{!!statClient?statClient.tripsLivreeRT:'-'}}</h1>
                       <h3 class="font-weight-light mb-xl-4">Colis Livrés</h3>
                       <p class="text-muted mb-2 mb-xl-0">nombre de vos colis livrés chez packways maintenant</p>
                     </div>
@@ -45,31 +46,48 @@
                           <table class="table table-borderless report-table">
                             <tr>
                               <td class="text-muted">Colis affecté "en cours de livraison"</td>
-                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsEnCoursDeLivraison:'-'}}</h5></td>
+                              <td>
+                                <div class="lds-ellipsis" *ngIf="loadData"><div></div><div></div><div></div><div></div></div>
+                                <h5 class="font-weight-bold mb-0" *ngIf="!loadData">{{!!statClient?statClient.todayTripsEnCoursDeLivraison:'-'}}</h5></td>
                             </tr>
                             <tr>
                               <td class="text-muted">Colis affecté "en cours de retour"</td>
-                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsEnCoursDeRetour:'-'}}</h5></td>
+                              <td>
+                                <div class="lds-ellipsis" *ngIf="loadData"><div></div><div></div><div></div><div></div></div>
+                                <h5 class="font-weight-bold mb-0" *ngIf="!loadData">{{!!statClient?statClient.todayTripsEnCoursDeRetour:'-'}}</h5></td>
                             </tr>
                             <tr>
                               <td class="text-muted">Colis affecté "transit livraion"</td>
-                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsTransitLivraison:'-'}}</h5></td>
+                              <td>
+                                <div class="lds-ellipsis" *ngIf="loadData"><div></div><div></div><div></div><div></div></div>
+
+                                <h5 class="font-weight-bold mb-0" *ngIf="!loadData">{{!!statClient?statClient.todayTripsTransitLivraison:'-'}}</h5></td>
                             </tr>
                             <tr>
                               <td class="text-muted">Colis affecté "transit retour"</td>
-                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsTransitRetour:'-'}}</h5></td>
+                              <td>
+                                <div class="lds-ellipsis" *ngIf="loadData"><div></div><div></div><div></div><div></div></div>
+
+                                <h5 class="font-weight-bold mb-0" *ngIf="!loadData">{{!!statClient?statClient.todayTripsTransitRetour:'-'}}</h5></td>
                             </tr>
                             <tr>
                               <td class="text-muted">Colis affecté "livré" </td>
-                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsLivree:'-'}}</h5></td>
+                              <td>
+                                <div class="lds-ellipsis" *ngIf="loadData"><div></div><div></div><div></div><div></div></div>
+
+                                <h5 class="font-weight-bold mb-0" *ngIf="!loadData">{{!!statClient?statClient.todayTripsLivree:'-'}}</h5></td>
                             </tr>
                             <tr>
                               <td class="text-muted">Colis affecté "retour" </td>
-                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsRetour:'-'}}</h5></td>
+                              <td>
+                                <div class="lds-ellipsis" *ngIf="loadData"><div></div><div></div><div></div><div></div></div>
+                                <h5 class="font-weight-bold mb-0" *ngIf="!loadData">{{!!statClient?statClient.todayTripsRetour:'-'}}</h5></td>
                             </tr>
                             <tr>
                               <td class="text-muted">Colis affecté à une autre tentative</td>
-                              <td><h5 class="font-weight-bold mb-0">{{!!statClient?statClient.todayTripsChezLivreur:'-'}}</h5></td>
+                              <td>
+                                <div class="lds-ellipsis" *ngIf="loadData"><div></div><div></div><div></div><div></div></div>
+                                <h5 class="font-weight-bold mb-0" *ngIf="!loadData">{{!!statClient?statClient.todayTripsChezLivreur:'-'}}</h5></td>
                             </tr>
                           </table>
                         </div>

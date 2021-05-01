@@ -17,6 +17,7 @@ import {EmployeeService} from '../employee/employee.service';
 import {CaisseDetailComponent} from './caisse-detail/caisse-detail.component';
 import {FormBuilder} from '@angular/forms';
 import {FLOAT} from 'html2canvas/dist/types/css/property-descriptors/float';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'app-caisse-state',
@@ -32,7 +33,7 @@ export class CaisseStateComponent implements OnInit {
   lastCoffre;
 
   constructor(public dialog: MatDialog, private gasTicketService: GasTicketService, private modalService: NgbModal,
-              private snackBar: MatSnackBar, private caisseService: CaisseService) {
+              private snackBar: MatSnackBar, private caisseService: CaisseService, private spinner2: NgxSpinnerService) {
   }
 
   ngOnInit() {
@@ -116,7 +117,7 @@ export class DialogOpenFundComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DialogOpenFundComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private snackBar: MatSnackBar, private fb: FormBuilder, private caisseService: CaisseService) {
+    private snackBar: MatSnackBar, private fb: FormBuilder, private caisseService: CaisseService,  private spinner2: NgxSpinnerService) {
   }
 
   editForm = this.fb.group({
@@ -149,7 +150,9 @@ export class DialogOpenFundComponent implements OnInit {
   save() {
     console.log('saving..');
     const caisse = this.createCaisseOuverte();
+    this.spinner2.show();
     this.caisseService.create(caisse).subscribe(() => {
+      this.spinner2.hide();
       this.dialogRef.close();
       this.caisseService.dialogExit.next(true);
     })
@@ -168,7 +171,7 @@ export class DialogCloseFundComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DialogCloseFundComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Caisse,
-    private snackBar: MatSnackBar, private fb: FormBuilder, private caisseService: CaisseService) {
+    private snackBar: MatSnackBar, private fb: FormBuilder, private caisseService: CaisseService, private spinner2: NgxSpinnerService) {
   }
 
   editForm = this.fb.group({
@@ -195,8 +198,10 @@ export class DialogCloseFundComponent implements OnInit {
 
   save() {
     console.log('saving..');
+    this.spinner2.show();
     const caisse = this.createCaisseFermee();
     this.caisseService.closeCoffre(caisse).subscribe(() => {
+      this.spinner2.hide();
       this.dialogRef.close();
       this.caisseService.dialogExit.next(true);
     });

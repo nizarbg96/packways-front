@@ -25,6 +25,7 @@ import {pluck} from 'rxjs/operators';
 import {CaisseService} from '../caisse-state/caisse.service';
 import {FileUploadService} from '../activity-payement/create-activity-payement/file-upload.service';
 import {environment} from '../../../environments/environment';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'app-depenses',
@@ -40,7 +41,7 @@ export class DepensesComponent implements OnInit, AfterViewInit {
 
   constructor(private depensesService: DepensesService, private modalService: NgbModal, private fb: FormBuilder,
               public dialog: MatDialog, private popUpDeleteService: PopUpDeleteService,
-              private snackBar: MatSnackBar, private caisseService: CaisseService) {
+              private snackBar: MatSnackBar, private caisseService: CaisseService, private spinner2: NgxSpinnerService) {
   }
 
   displayedColumns: string[] = ['createdDate', 'createdBy', 'type', 'montant', 'depenseFrom', 'depenseTo', 'action'];
@@ -70,7 +71,7 @@ export class DepensesComponent implements OnInit, AfterViewInit {
   getDepenses() {
     this.depensesService.query().subscribe(res => {
       this.isLoadingResults = false;
-      this.dataSource = new MatTableDataSource<Depenses>(res.body);
+      this.dataSource = new MatTableDataSource<Depenses>(res.body.reverse());
       this.dataSource.paginator = this.paginator;
     });
   }
@@ -78,7 +79,9 @@ export class DepensesComponent implements OnInit, AfterViewInit {
   openDialog() {
     let d = new Date();
     d.setHours(0,0,0,0);
+    this.spinner2.show();
     this.caisseService.query().subscribe((res) => {
+      this.spinner2.hide();
       const caisses = res.body.reverse();
       if(caisses.length === 0){
         this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
@@ -154,7 +157,7 @@ export class AddDepenseComponent implements OnInit, AfterViewInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private depensesService: DepensesService, private fb: FormBuilder,
               private tservice: TripService, private driverService: DriversService, private snackBar: MatSnackBar,
               private employeeService: EmployeeService, private carService: CarService, private gasTicketService: GasTicketService,
-              private fileUploadService: FileUploadService) {
+              private fileUploadService: FileUploadService, private spinner2: NgxSpinnerService) {
   }
 
   isSaving = false;
@@ -220,6 +223,7 @@ export class AddDepenseComponent implements OnInit, AfterViewInit {
   save(): void {
 
     const depenses = this.createFromForm();
+    this.spinner2.show();
     if(depenses.type === 'Carnet gasoil'){
       const gasTickets: GasTicket[] = [];
       this.items.forEach(item => {
@@ -230,6 +234,7 @@ export class AddDepenseComponent implements OnInit, AfterViewInit {
       });
       this.gasTicketService.createList(gasTickets).subscribe(() => {
         this.depensesService.create(depenses).subscribe((res) => {
+          this.spinner2.hide()
           const savedDepenses = res.body;
           const uploadImageData = new FormData();
           uploadImageData.append('imageFile', this.selectedFile, this.selectedFile.name);
@@ -242,6 +247,7 @@ export class AddDepenseComponent implements OnInit, AfterViewInit {
       this.depensesService.create(depenses).subscribe((res) => {
         const savedDepenses = res.body;
         const uploadImageData = new FormData();
+        this.spinner2.hide();
         uploadImageData.append('imageFile', this.selectedFile, this.selectedFile.name);
         uploadImageData.append('activity', JSON.stringify(savedDepenses));
         this.fileUploadService.postFileDepense(uploadImageData).subscribe((response) => {

@@ -31,9 +31,9 @@ export class CarUpdateComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
-    this.activatedRoute.data.subscribe(({ car }) => {
-      this.updateForm(car);
-    });
+    if(!!this.carService.carToUpdate){
+      this.updateForm(this.carService.carToUpdate);
+    }
   }
 
   updateForm(car: ICar): void {
@@ -53,7 +53,12 @@ export class CarUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const car = this.createFromForm();
-    this.subscribeToSaveResponse(this.carService.create(car));
+    if(!!this.carService.carToUpdate){
+      this.subscribeToSaveResponse(this.carService.update(car));
+    } else {
+      this.subscribeToSaveResponse(this.carService.create(car));
+
+    }
   }
 
   private createFromForm(): ICar {
@@ -82,12 +87,14 @@ export class CarUpdateComponent implements OnInit {
   }
 
   protected onSaveSuccess(): void {
+    this.carService.carToUpdate = null;
     this.isSaving = false;
     this.carService.carSubject.next(true);
     this.activeModal.close();
   }
 
   protected onSaveError(): void {
+    this.carService.carToUpdate = null;
     this.isSaving = false;
   }
   cancel(): void {

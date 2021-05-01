@@ -71,16 +71,9 @@
               <td>{{ car.createdDate | date:'mediumDate' }}</td>
               <td class="text-right">
                 <div class="btn-group">
-                  <button type="submit"
-                          [routerLink]="['/car', car.id, 'view']"
-                          class="btn btn-info btn-sm">
-                    <mat-icon>visibility</mat-icon>
-                    <span class="d-none d-md-inline" >View</span>
-                  </button>
 
                   <button type="submit"
-                          [routerLink]="['/car', car.id, 'edit']"
-                          class="btn btn-primary btn-sm">
+                          class="btn btn-primary btn-sm" (click)="updateCar(car)">
                     <mat-icon>create</mat-icon>
                     <span class="d-none d-md-inline" >Edit</span>
                   </button>

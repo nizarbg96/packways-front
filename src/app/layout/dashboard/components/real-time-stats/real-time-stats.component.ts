@@ -37,6 +37,7 @@ export class RealTimeStatsComponent implements OnInit {
   listColisMessage: Trip[] = [];
   date = new Date();
   nbColisMesg = [0, 0, 0, 0, 0, 0];
+  loadData = true;
   constructor(private statestiquesService: StatestiquesService) { }
 
   ngOnInit() {
@@ -60,6 +61,7 @@ export class RealTimeStatsComponent implements OnInit {
 
   getStatClient() {
     this.statestiquesService.getClientStats('admin').subscribe((res) => {
+      this.loadData = false;
       this.statClient = res.body;
       new f7(this.statClient.tripsLivreeRT, (this.statClient.tripsRetourRT + this.statClient.tripsEnCoursDeRetourRT + this.statClient.tripsTransitRetourRT),
         (this.statClient.tripsChezLivreurRT + this.statClient.tripsTransitLivraisonRT), this.statClient.tripsEnCoursDeLivraisonRT);

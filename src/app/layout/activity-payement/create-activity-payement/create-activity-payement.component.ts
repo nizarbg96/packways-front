@@ -26,6 +26,7 @@ import {
 import {FileUploadService} from './file-upload.service';
 import {TripExcelService} from '../../trips/excel-trip.service';
 import {environment} from '../../../../environments/environment';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'app-create-activity-payement',
@@ -107,7 +108,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
   constructor(private activityPayementService: ActivityPayementService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private fb: FormBuilder,
               private ramassageService: RamassageService, private userService: UserService, private activityRunsheetService: ActivityRunsheetService,
-              private entrepotService: EntrepotService, private fileUploadService: FileUploadService,
+              private entrepotService: EntrepotService, private fileUploadService: FileUploadService, private spinner2: NgxSpinnerService,
               private  tripExcelService: TripExcelService) {
   }
 
@@ -318,7 +319,9 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         this.activityPayement.status = 'confirmed';
         this.activityPayement.listEnCoursDePayementTrips = this.listColisToPay.map((trip) => trip.idTrip);
         this.activityPayement.listRapportTrips = this.listRapportTrips;
+        this.spinner2.show();
         this.activityPayementService.update(this.activityPayement).subscribe(() => {
+          this.spinner2.hide();
           this.openCheckSuccess('activityConfirmed');
         });
       });
@@ -339,6 +342,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         this.activityPayement.listRapportTrips = this.listRapportTrips;
         this.activityPayement.status = 'closed';
         this.activityPayement.closedDate = new Date();
+        this.spinner2.show()
         this.activityPayementService.update(this.activityPayement).subscribe((res) => {
           this.listRapportTrips.forEach((value, i) => {
             if(value.statusTrip === 'Livree'){
@@ -348,6 +352,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
             }
           } )
           this.tripService.updateListOfTips(trips).subscribe(( )=>{
+            this.spinner2.hide();
             this.onUpload();
           });
         });
@@ -924,6 +929,8 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
       } else {
         this.message = 'Image not uploaded successfully';
       }
+    },() => {
+      this.router.navigate(['/payements/']);
     });
 
   }

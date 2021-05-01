@@ -224,7 +224,9 @@ export class RunsheetComponent implements OnInit {
           .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).map(colis => colis.idTrip);
         const index = this.runsheets.indexOf(this.selectedRunsheet);
         const runsheetToDelete = {listTripsToUpdate: listTripsToUpdate, runsheet: this.selectedRunsheet, idAdmin: this.user.idAdmin };
+        this.spinner2.show();
         this.runsheetService.deleteRunsheet(runsheetToDelete).subscribe((res) => {
+          this.spinner2.hide();
           this.runsheets[index] = res.body;
           this.snackBar.open('Runsheet ' + this.selectedRunsheet.ref + ' has been successfuly deleted', 'Fermer', {
             duration: 8000,

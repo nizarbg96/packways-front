@@ -8,8 +8,8 @@
   </div>
 -->
   <ngx-spinner class="myspinner" bdColor = "rgba(255,255,255,0.8)" fullScreen="false" size = "large" color = "#000000" type = "ball-square-clockwise-spin">
-    <p style="color: black; font-size: large; margin-top: 100px; height: 100vh !important"> Veuillez patienter...</p>
-  </ngx-spinner>
+  <p style="color: black; font-size: large; margin-top: 100px; height: 100vh !important"> Veuillez patienter...</p>
+</ngx-spinner>
 <app-stat-client *ngIf="id !== 'admin'"></app-stat-client>
   <div *ngIf="id === 'admin'">
     <div class="row">
@@ -24,10 +24,11 @@
           <div class="card-body">
             <p class="card-title text-md-center text-xl-left">Nombre de colis livrés </p>
             <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
-              <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{nbColisLivree}}</h3>
+              <div class="lds-ellipsis" *ngIf="loadData2"><div></div><div></div><div></div><div></div></div>
+              <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0" *ngIf="!loadData2">{{nbColisLivree}}</h3>
               <i class="ti-check icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
             </div>
-            <p class="mb-0 mt-2 text-success">in {{date | date:'MMMM'}} /  <span class="text-black ml-1"><small>({{nbColisLivreeLastMonth}} last month)</small></span></p>
+            <p class="mb-0 mt-2 text-success" *ngIf="!loadData1">in {{date | date:'MMMM'}} (aujourd'hui non inclus) /  <span class="text-black ml-1"><small>({{nbColisLivreeLastMonth}} last month)</small></span></p>
           </div>
         </div>
       </div>
@@ -36,10 +37,11 @@
           <div class="card-body">
             <p class="card-title text-md-center text-xl-left">Nombre de colis retournés</p>
             <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
-              <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{nbColisRetournee}}</h3>
+              <div class="lds-ellipsis" *ngIf="loadData2"><div></div><div></div><div></div><div></div></div>
+              <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0" *ngIf="!loadData2" >{{nbColisRetournee}}</h3>
               <i class="ti-share icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
             </div>
-            <p class="mb-0 mt-2 text-success">in {{date | date:'MMMM'}} /  <span class="text-black ml-1"><small>({{nbColisRetourneeLastMonth}} last month)</small></span></p>
+            <p class="mb-0 mt-2 text-success" *ngIf="!loadData1">in {{date | date:'MMMM'}} (aujourd'hui non inclus) /  <span class="text-black ml-1"><small>({{nbColisRetourneeLastMonth}} last month)</small></span></p>
           </div>
         </div>
       </div>
@@ -48,10 +50,11 @@
           <div class="card-body">
             <p class="card-title text-md-center text-xl-left">Valeur des dépenses</p>
             <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
-              <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0">{{valDepenses+' TND'}}</h3>
+              <div class="lds-ellipsis" *ngIf="loadData2"><div></div><div></div><div></div><div></div></div>
+              <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0" *ngIf="!loadData2">{{valDepenses+' TND'}}</h3>
               <i class="ti-wallet icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
             </div>
-            <p class="mb-0 mt-2 text-success">in {{date | date:'MMMM'}} /  <span class="text-black ml-1"><small>({{valDepensesLastMonth}} TND last month)</small></span></p>
+            <p class="mb-0 mt-2 text-success" *ngIf="!loadData1">in {{date | date:'MMMM'}} (aujourd'hui non inclus) /  <span class="text-black ml-1"><small>({{valDepensesLastMonth}} TND last month)</small></span></p>
           </div>
         </div>
       </div>

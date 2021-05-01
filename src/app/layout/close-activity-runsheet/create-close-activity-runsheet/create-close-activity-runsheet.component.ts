@@ -25,6 +25,7 @@ import {
   NgbdModalConfirmLivree,
   NgbdModalConfirmNonLivree, NgbdModalConfirmReturned
 } from '../../reconcile-runsheet/create-activity-runsheet/create-activity-runsheet.component';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'app-create-close-activity-runsheet',
@@ -89,7 +90,8 @@ export class CreateCloseActivityRunsheetComponent implements OnInit {
 
   constructor(private activityRunsheetService: ActivityRunsheetService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
-              private fb: FormBuilder, private ramassageService: RamassageService, private userService: UserService) {
+              private fb: FormBuilder, private ramassageService: RamassageService, private userService: UserService,
+              private spinner2: NgxSpinnerService) {
   }
 
   ngOnInit() {
@@ -880,7 +882,9 @@ export class CreateCloseActivityRunsheetComponent implements OnInit {
         this.activityRunsheet.closedBy = this.user.idAdmin;
       this.activityRunsheet.closedByName = this.user.name;
       this.activityRunsheet.closedDate = new Date();
+      this.spinner2.show();
         this.activityRunsheetService.update(this.activityRunsheet).subscribe(() => {
+          this.spinner2.hide()
           this.tripService.updateTripsRecolted(listSuccessTripsIds, this.user.idAdmin).subscribe(() => {
             this.openCheckSuccess('activityClosed');
           });

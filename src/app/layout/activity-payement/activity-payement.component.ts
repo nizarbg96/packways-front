@@ -16,6 +16,7 @@ import {CaisseService} from '../caisse-state/caisse.service';
 import {environment} from '../../../environments/environment';
 import {IStatActivityJour} from '../../model/stat-activity-jour.model';
 import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'app-activity-payement',
@@ -48,7 +49,7 @@ export class ActivityPayementComponent implements OnInit {
 
   constructor(public dialog: MatDialog, private router: Router, private tripService: TripService, private userService: UserService,
               private activityPayementService: ActivityPayementService, private snackBar: MatSnackBar, private tripExcelService: TripExcelService,
-              private datePipe: DatePipe, private caisseService: CaisseService, private modalService: NgbModal) { }
+              private datePipe: DatePipe, private caisseService: CaisseService, private modalService: NgbModal, private spinner2: NgxSpinnerService,) { }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
@@ -70,7 +71,9 @@ export class ActivityPayementComponent implements OnInit {
 
   openDialog(): void { let d = new Date();
     d.setHours(0,0,0,0);
+    this.spinner2.show();
     this.caisseService.query().subscribe((res) => {
+      this.spinner2.hide();
       const caisses = res.body.reverse();
       if(caisses.length === 0){
         this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
@@ -200,6 +203,7 @@ export class ActivityPayementComponent implements OnInit {
     } else {
       this.keyFiltredTrip4 = '';
     }
+    this.spinner2.show();
     this.tripService.getFiltredTrips1('admin', 999, '', '',
       '', this.keyFiltredTrip1, '', '', this.keyFiltredTrip4,
       '', '', '').subscribe(data => {
@@ -209,6 +213,7 @@ export class ActivityPayementComponent implements OnInit {
         this.activityPayementInfo = {client: this.client, recoltedTrips: resTrips.body};
         this.activityPayementService.activityPayementInfo = this.activityPayementInfo;
         this.spinner = false;
+        this.spinner2.hide();
         this.router.navigate(['/payements/create']);
       });
     });
@@ -224,7 +229,9 @@ export class ActivityPayementComponent implements OnInit {
          }
   }
   generateExcelReportForClient(activityPayement: ActivityPayement) {
+    this.spinner2.show();
       this.userService.getUserById(activityPayement.clientId).subscribe((resUser) => {
+        this.spinner2.hide();
         const client = resUser.json();
         const listTripsRapport = activityPayement.listRapportTrips;
         const tripsByUser = [];

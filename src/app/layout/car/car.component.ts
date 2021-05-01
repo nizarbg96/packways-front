@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ICar} from '../../model/car.model';
+import {Car, ICar} from '../../model/car.model';
 import {combineLatest, Subscription} from 'rxjs';
 import {CarService} from './car.service';
 import {ActivatedRoute, Data, ParamMap, Router} from '@angular/router';
@@ -70,5 +70,11 @@ export class CarComponent implements OnInit, OnDestroy {
 
   addCar() {
     const modalRef = this.modalService.open(CarUpdateComponent, { size: 'lg', backdrop: 'static' });
+  }
+
+  updateCar(car: Car) {
+    this.carService.carToUpdate = car;
+    const modalRef = this.modalService.open(CarUpdateComponent, { size: 'lg', backdrop: 'static' });
+
   }
 }

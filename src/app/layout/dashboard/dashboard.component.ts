@@ -121,6 +121,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('button1') button1: ElementRef<HTMLElement>;
   private tripsFromExcelTemp: AOA;
   private tripsFromExcel: AOA;
+  loadData1 = true;
+  loadData2 = true;
+  loadData3 = true;
+  loadData4 = true;
+  loadData5 = true;
 
 
 
@@ -137,6 +142,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
   }
   ngAfterViewInit() {
+
     const firstDayCurrentMonth = new Date(this.date.getFullYear(), this.date.getMonth(), 1);
     let firstDayLastMonth: Date;
     if (this.date.getMonth() === 0) {
@@ -158,7 +164,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.dataSourceFiltred.paginator = this.paginator1;
     this.dataSourceDriversFiltred.paginator = this.paginator2;
     this.statestiquesService.queryByDate(firstDayCurrentMonth).subscribe((res) => {
-      const stats = res.body;
+      this.loadData1 = false;
+      const stats = res.body.reverse();
       this.dataSource = stats;
       this.dataSourceFiltred =  new MatTableDataSource<StatActivityJour>(stats);
       this.dataSourceFiltred.paginator = this.paginator1;
@@ -170,22 +177,28 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       });
     });
     this.statestiquesService.getDriversStats().subscribe((res) => {
-      const stats = res.body;
+      this.loadData2 = false;
+      const stats = res.body.reverse();
       this.dataSourceDrivers = stats;
       this.dataSourceDriversFiltred =  new MatTableDataSource<StatActivityDriver>(stats);
       this.dataSourceDriversFiltred.paginator = this.paginator2;
     });
     this.statestiquesService.getClientsActvityStats().subscribe((res) => {
-      const stats = res.body;
-      this.dataSourceClients = res.body;
+      this.loadData3 = false;
+
+      const stats = res.body.reverse();
+      this.dataSourceClients = res.body.reverse();
       this.dataSourceClientsFiltred =  new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients);
       this.dataSourceClientsFiltred.paginator = this.paginator3;
     });
     this.statestiquesService.getDriversRanking().subscribe((res) => {
+      this.loadData4 = false;
+
       this.dataSourceRanking = res.body;
       this.dataSourceRanking = this.dataSourceRanking.sort((a, b) => b.successRate - a.successRate);
     });
     this.statestiquesService.getClientsLastPickUpsDate().subscribe((res) => {
+      this.loadData5 = false;
       this.dataSourceNbPickUps = res.body.slice().sort((a, b) => b.nbColisPickUp - a.nbColisPickUp);
       console.log(this.dataSourceNbPickUps);
       this.dataSourceLastPickUps = res.body.slice().sort((a, b) => new Date(b.lasPickUpDate).getTime() - new Date(a.lasPickUpDate).getTime());
@@ -201,7 +214,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       console.log('user is Admin---');
       this.id = 'admin';
     } else {
-      console.log('user is Cleint---');
+      console.log('user is Client---');
       this.id = 'UT' + JSON.parse(localStorage.getItem('currentUser')).data[0].idUser;
     }
     // this.getTripPostées();

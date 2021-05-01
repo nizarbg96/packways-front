@@ -4,7 +4,7 @@ import {Observable, Subject} from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as moment from 'moment';
 import {environment} from '../../../environments/environment';
-import {ICar} from '../../model/car.model';
+import {Car, ICar} from '../../model/car.model';
 import {createRequestOption} from '../../shared/util/request-util';
 export const DATE_FORMAT = 'YYYY-MM-DD';
 export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm';
@@ -16,6 +16,7 @@ type EntityArrayResponseType = HttpResponse<ICar[]>;
 export class CarService {
   public resourceUrl = environment.serverUrl + '/api/cars';
   carSubject = new Subject<boolean>();
+  carToUpdate: Car;
 
   constructor(protected http: HttpClient) {}
 

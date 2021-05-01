@@ -12,6 +12,7 @@ import {ActivityRunsheetInfo, DialogAddDriverToReconcileRunsheetComponent} from 
 import {MoveableUnit} from '../../model/moveable-unit.model';
 import {environment} from '../../../environments/environment';
 import {CaisseService} from '../caisse-state/caisse.service';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'app-close-activity-runsheet',
@@ -35,7 +36,8 @@ export class CloseActivityRunsheetComponent implements OnInit {
 
 
   constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private router: Router, private tripService: TripService,
-              private activityRunsheetService: ActivityRunsheetService, private snackBar: MatSnackBar, private caisseService: CaisseService) { }
+              private activityRunsheetService: ActivityRunsheetService, private snackBar: MatSnackBar, private caisseService: CaisseService,
+              private spinner2: NgxSpinnerService) { }
 
   ngOnInit() {
     this.selectionList.selectedOptions = new SelectionModel<MatListOption>(false);
@@ -155,7 +157,9 @@ export class CloseActivityRunsheetComponent implements OnInit {
   editActivity(activityRunsheet: Activity) {
     let d = new Date();
     d.setHours(0,0,0,0);
+    this.spinner2.show();
     this.caisseService.query().subscribe((res) => {
+      this.spinner2.hide();
       const caisses = res.body.reverse();
       if(caisses.length === 0){
         this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});

@@ -196,4 +196,13 @@ export class DriverTableContentComponent implements OnInit, AfterViewInit {
 
   }
 
+  applyFilter() {
+    this.driversTableService.getDriversTabeleByDate({fromDate: this.dateDebut, toDate: this.dateFin}).subscribe(res => {
+      this.isLoadingResults = false;
+      this.dataSourceFiltred = new MatTableDataSource<DriversTable>(res.body.filter(value => !!value.driver.soutraitant && value.driver.soutraitant ));
+      this.dataSourceFiltred.paginator = this.paginator1;
+      this.dataSourceFiltred2 = new MatTableDataSource<DriversTable>(res.body.filter(value => !value.driver.soutraitant));
+      this.dataSourceFiltred2.paginator = this.paginator1;
+    });
+  }
 }
