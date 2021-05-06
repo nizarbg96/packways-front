@@ -126,6 +126,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   loadData3 = true;
   loadData4 = true;
   loadData5 = true;
+  user: any;
 
 
 
@@ -169,7 +170,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.dataSource = stats;
       this.dataSourceFiltred =  new MatTableDataSource<StatActivityJour>(stats);
       this.dataSourceFiltred.paginator = this.paginator1;
-      res.body.forEach(value => {
+      res.body.filter((value) => value.entrepot.nom === this.user.entrepot.nom).forEach(value => {
         this.nbColisLivree = this.nbColisLivree + value.nbColisLivree;
         this.nbColisRetournee = this.nbColisRetournee + value.nbColisRetournee;
         this.valDepenses = this.valDepenses + value.valDepenses;
@@ -206,6 +207,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
     this.getEntrepots();
     this.getAllDrivers();
     this.getAllUsers();
@@ -897,7 +899,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                   /*this.snackBar.open('Échec de l\'importation, veuillez réessayer. Assurez-vous d\'importer un fichier valide.', 'Fermer', {
                       duration: 5000,
                   });*/
-                  //this.openDialog();
+                  // this.openDialog();
 
                   return;
               } else if ((descriptionTrip === null || descriptionTrip === '') || (valueTrip === null || valueTrip === '')
