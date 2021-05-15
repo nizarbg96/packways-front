@@ -55,4 +55,8 @@ export class ActivityPayementService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
+  getRecoltedTrips(trips: Trip[]) {
+    return this.http.post<Trip[]>(`${this.resourceUrl}/excel-trips/filter/`, trips, {observe: 'response'});
+
+  }
 }
