@@ -1157,10 +1157,6 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
   }
 
 
-  getExcelFiltre() {
-    this.onFileChange()
-  }
-
   resetFiltres() {
     this.filtredRecoltedTrips = this.recoltedTrips;
   }

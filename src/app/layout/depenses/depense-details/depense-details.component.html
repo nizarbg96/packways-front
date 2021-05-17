@@ -14,7 +14,7 @@
   <p *ngIf="depense.type === 'Autre'"><strong>Autre Description: </strong>{{depense.depenseActivity.autreDesc}}</p>
   <p><strong>Montant:</strong> {{depense.montant}} TND</p>
   <p *ngIf="depense.type === 'Espèces gasoil' || depense.type === 'Maintenance Véhicule'">
-    <strong>Véhicule associé:</strong> {{depense.affectedCar.marqueVehicle + '-' + depense.affectedCar.modelVehicle + '-' + depense.affectedCar.matVehicle}} TND</p>
+    <strong>Véhicule associé:</strong> {{depense.affectedCar.marqueVehicle + '-' + depense.affectedCar.modelVehicle + '-' + depense.affectedCar.matVehicle}}</p>
   <p><strong>Prelevé de:</strong> {{depense.depenseFrom}}</p>
   <p *ngIf="!!depense.affectedTo"><strong>Bénéficiaire:</strong> {{depense.affectedTo.firstName + ' ' + depense.affectedTo.lastName}}</p>
   <p><strong>Commentaires:</strong> {{depense.description}}</p>

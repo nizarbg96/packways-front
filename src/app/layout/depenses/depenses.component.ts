@@ -37,10 +37,12 @@ export class DepensesComponent implements OnInit, AfterViewInit {
   private closeResult: string;
   isLoadingResults = false;
   private user: any;
+  private imgURL: any;
+  private selectedFile: any;
 
 
   constructor(private depensesService: DepensesService, private modalService: NgbModal, private fb: FormBuilder,
-              public dialog: MatDialog, private popUpDeleteService: PopUpDeleteService,
+              public dialog: MatDialog, private popUpDeleteService: PopUpDeleteService,  private fileUploadService: FileUploadService,
               private snackBar: MatSnackBar, private caisseService: CaisseService, private spinner2: NgxSpinnerService) {
   }
 
@@ -136,6 +138,26 @@ export class DepensesComponent implements OnInit, AfterViewInit {
 
       }
     );
+  }
+  onFileChanged($event: any) {
+    // @ts-ignore
+    this.selectedFile = event.target.files[0];
+    this.imgURL = this.selectedFile.name;
+  }
+
+  onFileChanged2($event: any, depense: Depenses) {
+    this.spinner2.show();
+    // @ts-ignore
+    this.selectedFile = event.target.files[0];
+    this.imgURL = this.selectedFile.name;
+    const uploadImageData = new FormData();
+    uploadImageData.append('imageFile', this.selectedFile, this.selectedFile.name);
+    uploadImageData.append('activity', JSON.stringify(depense));
+
+    this.fileUploadService.postFileDepense(uploadImageData).subscribe((response) => {
+      this.spinner2.hide();
+      this.depensesService.depenseDialogExit.next(true);
+    });
   }
 }
 
@@ -234,25 +256,33 @@ export class AddDepenseComponent implements OnInit, AfterViewInit {
       });
       this.gasTicketService.createList(gasTickets).subscribe(() => {
         this.depensesService.create(depenses).subscribe((res) => {
-          this.spinner2.hide()
-          const savedDepenses = res.body;
-          const uploadImageData = new FormData();
-          uploadImageData.append('imageFile', this.selectedFile, this.selectedFile.name);
-          uploadImageData.append('activity', JSON.stringify(savedDepenses));
-          this.fileUploadService.postFileDepense(uploadImageData).subscribe((response) => {
-          });
-        })
-      })
+          this.spinner2.hide();
+          this.depensesService.depenseDialogExit.next(true);
+          /* const savedDepenses = res.body;
+           const uploadImageData = new FormData();
+           uploadImageData.append('imageFile', this.selectedFile, this.selectedFile.name);
+           uploadImageData.append('activity', JSON.stringify(savedDepenses));
+           this.fileUploadService.postFileDepense(uploadImageData).subscribe((response) => {
+             this.depensesService.depenseDialogExit.next(true);
+           }, () => {
+             this.depensesService.depenseDialogExit.next(true);
+           });*/
+        });
+      });
     }else{
       this.depensesService.create(depenses).subscribe((res) => {
         const savedDepenses = res.body;
         const uploadImageData = new FormData();
         this.spinner2.hide();
-        uploadImageData.append('imageFile', this.selectedFile, this.selectedFile.name);
-        uploadImageData.append('activity', JSON.stringify(savedDepenses));
-        this.fileUploadService.postFileDepense(uploadImageData).subscribe((response) => {
-        });
-      })
+        this.depensesService.depenseDialogExit.next(true);
+        /* uploadImageData.append('imageFile', this.selectedFile, this.selectedFile.name);
+         uploadImageData.append('activity', JSON.stringify(savedDepenses));
+         this.fileUploadService.postFileDepense(uploadImageData).subscribe((response) => {
+           this.depensesService.depenseDialogExit.next(true);
+         }, () => {
+           this.depensesService.depenseDialogExit.next(true);
+         });*/
+      });
     }
   }
 
@@ -284,7 +314,7 @@ export class AddDepenseComponent implements OnInit, AfterViewInit {
 
 
     let montant = parseFloat(avance) + parseFloat(gasoilEspece) + parseFloat(carMaintaining) + parseFloat(desktopCharge) + parseFloat(autreValue)
-      + parseFloat(carnetGasoil);
+      + parseFloat(carnetGasoil) + parseFloat(carteTel);
     if (this.affectedType === this.depensesTypes[2]) {
       montant = 0;
       this.items.forEach((item, i) => {
@@ -453,6 +483,88 @@ export class AddDepenseComponent implements OnInit, AfterViewInit {
     this.imgURL = this.selectedFile.name;
   }
 
+  formIsValid() {
+    let avance =
+      !!this.editForm.get(['value']) ? this.editForm.get(['value'])!.value + '' : '0';
+    const avanceMois =
+      !!this.editForm.get(['month']) ? this.editForm.get(['month'])!.value + '' : null;
+    let gasoilEspece =
+      !!this.editForm.get(['gasoilEspece']) ? this.editForm.get(['gasoilEspece'])!.value + '' : '0';
+    let carteTel =
+      !!this.editForm.get(['carteTel']) ? this.editForm.get(['carteTel'])!.value + '' : '0';
+    let carMaintaining =
+      !!this.editForm.get(['carMaintaining']) ? this.editForm.get(['carMaintaining'])!.value + '' : '0';
+    let desktopCharge =
+      !!this.editForm.get(['desktopCharge']) ? this.editForm.get(['desktopCharge'])!.value + '' : '0';
+    const autreDesc =
+      !!this.editForm.get(['autreDesc']) ? this.editForm.get(['autreDesc'])!.value + '' : '0';
+    let autreValue =
+      !!this.editForm.get(['autreValue']) ? this.editForm.get(['autreValue'])!.value + '' : '0';
+    let carnetGasoil = !!this.editForm.get(['carnetGasoil']) ? this.editForm.get(['carnetGasoil'])!.value + '' : '0';
+    switch(this.affectedType) {
+      case this.depensesTypes[0]: {
+        if(!this.affectedEmployee || !avance || !avanceMois){
+          return false;
+        }else{
+          return true;
+        }
+
+        break;
+      }
+      case this.depensesTypes[1]: {
+        if(!this.affectedEmployee || !gasoilEspece || !this.carValue){
+          return false;
+        }else{
+          return true;
+        }
+        break;
+      }
+      case this.depensesTypes[2]: {
+        if( this.items.length > 0){
+          return false;
+        }else{
+          return true;
+        }
+        break;
+      }
+      case this.depensesTypes[3]: {
+        if( !carMaintaining || !this.carValue){
+          return false;
+        }else{
+          return true;
+        }
+        break;
+      }
+      case this.depensesTypes[4]: {
+        if(!this.affectedEmployee || !carteTel){
+          return false;
+        }else{
+          return true;
+        }
+        break;
+      }
+      case this.depensesTypes[5]: {
+        if(!desktopCharge){
+          return false;
+        }else{
+          return true;
+        }
+        break;
+      }
+      case this.depensesTypes[6]: {
+        if(!autreDesc || !autreValue){
+          return false;
+        }else{
+          return true;
+        }
+        break;
+      }
+      default: {
+        return false;
+        break;
+      }
+    }
+  }
 }
 const MODALS: { [name: string]: Type<any> } = {
   deletePopUp: PopUpDeleteComponent,

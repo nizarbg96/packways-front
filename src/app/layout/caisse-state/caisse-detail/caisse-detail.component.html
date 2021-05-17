@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title" id="modal-title">Details</h4>
-  <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+  <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismissAll('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -27,22 +27,22 @@
   <div *ngIf="caisse.payements.length > 0">
     <h5>Payements</h5>
     <div *ngFor="let payement of caisse.payements">
-      <p><strong>Montant:</strong> {{payement.amountToPay}} TND - <strong>Date de payement :</strong> {{payement.closedDate}}</p>
+      <p><strong>Montant:</strong> {{payement.amountToPay}} TND - <strong>Date de payement :</strong> {{payement.closedDate | date:'long'}}</p>
     </div>
   </div>
   <div *ngIf="caisse.recoltedActivities.length > 0">
     <h5>Activités Recoltés</h5>
     <div *ngFor="let activity of caisse.recoltedActivities">
-      <p><strong>Montant:</strong> {{activity.argentRecolte}} TND - <strong>Date de récolte :</strong> {{activity.closedDate}}</p>
+      <p><strong>Montant:</strong> {{activity.argentRecolte}} TND - <strong>Date de récolte :</strong> {{activity.closedDate | date:'long'}}</p>
     </div>
   </div>
   <div *ngIf="caisse.injections.length > 0">
     <h5>Injections Fond</h5>
     <div *ngFor="let injection of caisse.injections">
-      <p><strong>Montant:</strong> {{injection.montant}} TND - <strong>Date d'injection :</strong> {{injection.createdDate}}</p>
+      <p><strong>Montant:</strong> {{injection.montant}} TND - <strong>Date d'injection :</strong> {{injection.createdDate | date:'long'}}</p>
     </div>
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" ngbAutofocus class="btn btn-success" (click)="modal.close('Ok click')">D'accord</button>
+  <button type="button" ngbAutofocus class="btn btn-success" (click)="modal.dismissAll('Ok click')">D'accord</button>
 </div>

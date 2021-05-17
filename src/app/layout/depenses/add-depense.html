@@ -156,7 +156,7 @@
         </div>
         </div>
       </div>
-      <div class="row">
+      <!--<div class="row">
         <div class="col-md-12 mt-2">
             <div class="form-group">
               <input style="cursor: pointer" type="file"
@@ -165,7 +165,7 @@
               <p height="200" *ngIf="imgURL">{{imgURL}}</p>
             </div>
         </div>
-      </div>
+      </div>-->
       <div>
         <button mat-button type="button" (click)="resetStepper()" matStepperPrevious>Précédent</button>
         <button mat-button type="button" matStepperNext>Suivant</button>
@@ -176,7 +176,7 @@
       <p>Voulez vous Enregistrer cette dépense?</p>
       <div>
         <button mat-button type="button" matStepperPrevious>Précédent</button>
-        <button mat-button type="button" [disabled]="!selectedFile" (click)="save()" [mat-dialog-close]="null">Enregistrer</button>
+        <button mat-button type="button" [disabled]="!formIsValid()" (click)="save()" [mat-dialog-close]="null">Enregistrer</button>
       </div>
     </mat-step>
   </mat-horizontal-stepper>
