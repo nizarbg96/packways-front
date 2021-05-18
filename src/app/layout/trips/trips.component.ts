@@ -3691,6 +3691,9 @@ export class TripsComponent implements OnInit {
             tripsRes.forEach((trip) => {
               trip.entrepot = admin.entrepot
               trip.driverTrip = null ;
+              trip.currentRunsheetId = null;
+              trip.currentPickUpId = null;
+              trip.currentMUId = null
               tripsToUpdate.push(trip);
             });
             this.tservice.updateListOfTips(tripsToUpdate).subscribe(() => {
@@ -3720,6 +3723,9 @@ export class TripsComponent implements OnInit {
             trip.statusTrip = 'Chez Livreur'
             trip.entrepot = admin.entrepot
             trip.driverTrip = null ;
+            trip.currentRunsheetId = null;
+            trip.currentPickUpId = null;
+            trip.currentMUId = null
             tripsToUpdate.push(trip);
           });
           this.tservice.updateListOfTips(tripsToUpdate).subscribe(() => {

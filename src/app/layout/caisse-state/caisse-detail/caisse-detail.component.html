@@ -21,7 +21,7 @@
   <div *ngIf="caisse.depenses.length > 0">
     <h5>Dépenses</h5>
     <div *ngFor="let depense of caisse.depenses">
-      <p><strong>Type:</strong> {{depense.type}} - <strong>Montant :</strong> {{depense.montant}} TND - <strong>Date de dépense :</strong> {{depense.createdDate}}</p>
+      <p><strong>Type:</strong> {{depense.type}} - <strong>Montant :</strong> {{depense.montant}} TND - <strong>Date de dépense :</strong> {{depense.createdDate | date:'long'}}</p>
     </div>
   </div>
   <div *ngIf="caisse.payements.length > 0">
