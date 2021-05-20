@@ -14,6 +14,7 @@ import {environment} from '../../../environments/environment';
 import {CaisseService} from '../caisse-state/caisse.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {DriversService} from '../drivers/drivers.service';
+import get = Reflect.get;
 
 @Component({
   selector: 'app-close-activity-runsheet',
@@ -49,6 +50,20 @@ export class CloseActivityRunsheetComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
     this.activityRunsheetService.activityToEdit = null;
     this.getActivities();
+    this.getAllDrivers();
+  }
+  getAllDrivers() {
+    this.tripService.getDrivers().subscribe(data => {
+      const obj = Array.of(JSON.parse(data['_body']).data);
+      const jsonObj = obj[0];
+      for (let i = 0; i < jsonObj.length; i++) {
+        if ((jsonObj[i].accountActive === true) && (jsonObj[i].idDriver !== '5ca28097e4970623916b53e7')) {
+          this.Listdriver.push(jsonObj[i]);
+          this.Listdriverauto.push(jsonObj[i].nameDriver + ' ' + jsonObj[i].surnameDriver);
+        }
+      }
+    }, error => {
+    });
   }
 
   getSelectedDriver(driver: any) {
