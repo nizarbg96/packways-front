@@ -13,6 +13,7 @@ import {MoveableUnit} from '../../model/moveable-unit.model';
 import {environment} from '../../../environments/environment';
 import {CaisseService} from '../caisse-state/caisse.service';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {DriversService} from '../drivers/drivers.service';
 
 @Component({
   selector: 'app-close-activity-runsheet',
@@ -20,6 +21,10 @@ import {NgxSpinnerService} from 'ngx-spinner';
   styleUrls: ['./close-activity-runsheet.component.scss']
 })
 export class CloseActivityRunsheetComponent implements OnInit {
+  Listdriverauto = [];
+  Listdriver = [];
+  affectedDriver: any;
+  affectedDriverNgModel = '';
   date = new Date();
   private driver: any;
   private runsheets: Runsheet[] = [];
@@ -37,7 +42,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
 
   constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private router: Router, private tripService: TripService,
               private activityRunsheetService: ActivityRunsheetService, private snackBar: MatSnackBar, private caisseService: CaisseService,
-              private spinner2: NgxSpinnerService) { }
+              private spinner2: NgxSpinnerService, private driverService: DriversService) { }
 
   ngOnInit() {
     this.selectionList.selectedOptions = new SelectionModel<MatListOption>(false);
@@ -45,6 +50,26 @@ export class CloseActivityRunsheetComponent implements OnInit {
     this.activityRunsheetService.activityToEdit = null;
     this.getActivities();
   }
+
+  getSelectedDriver(driver: any) {
+
+    if (driver != null) {
+      const ind = this.Listdriverauto.indexOf(driver.title);
+      this.affectedDriver = this.Listdriver[ind];
+      this.driverService.getOneDriver(this.affectedDriver.idDriver).subscribe((oneDriver) => {
+        // this.runsheetInfo.driver =  oneDriver.json();
+        // this.cars = this.affectedDriver.affectedCars;
+        /*if(oneDriver.json().soutraitant){
+          this.runsheetInfo.cout = oneDriver.json().fraisSoutraitance;
+        }*/
+        this.activityRunsheetService.findAllByDriver(oneDriver.json().refEmployee).subscribe((res) => {
+          this.activitiesRunsheet = res.body;
+        });
+      });
+    }else{
+    }
+  }
+
 
   getActivities() {
     this.spinner = true;

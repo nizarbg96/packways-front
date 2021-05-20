@@ -60,6 +60,7 @@ export class RunsheetService {
     return this.http
       .get<IRunsheet[]>(`${this.resourceUrl}/status/${status}`, { observe: 'response' });
   }
+
   getList(runsheetsIds: string[]){
     return this.http
       .post<IRunsheet[]>(`${this.resourceUrl}/getRunsheetsList`, runsheetsIds, { observe: 'response' });

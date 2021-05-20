@@ -7,6 +7,7 @@ import {ActivityRunsheetInfo} from './reconcile-runsheet.component';
 import {Trip} from '../trips/Trip';
 import {Headers, Http, ResponseContentType} from '@angular/http';
 import {map} from 'rxjs/operators';
+import {IRunsheet} from '../../model/runsheet.model';
 type EntityResponseType = HttpResponse<IActivity>;
 type EntityArrayResponseType = HttpResponse<IActivity[]>;
 
@@ -60,6 +61,10 @@ export class ActivityRunsheetService {
       .get<IActivity[]>(this.resourceUrl, {observe: 'response' });
   }
 
+  findAllByDriver(idDriver: string): Observable<EntityArrayResponseType> {
+    return this.http
+      .get<IActivity[]>(`${this.resourceUrl}/byDriver/${idDriver}`, { observe: 'response' });
+  }
   findByStatus(status: string): Observable<EntityArrayResponseType> {
     return this.http
       .get<IActivity[]>(`${this.resourceUrl}/status/${status}`, {observe: 'response' });
