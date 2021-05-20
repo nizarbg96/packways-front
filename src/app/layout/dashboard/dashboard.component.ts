@@ -715,8 +715,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       for (let i = 0; i < listRapport.length; i++) {
         tab = [];
         const jTemp = listRapport[i];
-        tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.entrepot.nom, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, this.nbColisLivree,
-          this.nbColisRetournee, jTemp.nbColisEncours, jTemp.nbColisEntrepot,jTemp.nbColisEntrepotChezLivreur, jTemp.nbColisEntrepotRetour,
+        tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.entrepot.nom, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, jTemp.nbColisLivree,
+          jTemp.nbColisRetournee, jTemp.nbColisEncours, jTemp.nbColisEntrepot,jTemp.nbColisEntrepotChezLivreur, jTemp.nbColisEntrepotRetour,
           jTemp.nbColisPickUp, jTemp.nbColisPUNonTreated, jTemp.nbColisMUInALivree, jTemp.nbColisMUInRetour, jTemp.nbColisMUOutALivree, jTemp.nbColisMUOutRetour, jTemp.valColisLivree + ' TND',
           jTemp.valDepenses+' TND', jTemp.valMontantRecoltee+' TND');
         tripsByUser.push(tab);
@@ -738,8 +738,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     for (let i = 0; i < listRapport.length; i++) {
       tab = [];
       const jTemp = listRapport[i];
-      tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.driver.nameDriver + ' ' + jTemp.driver.surnameDriver, jTemp.entrepot.nom, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, this.nbColisLivree,
-        this.nbColisRetournee, jTemp.nbColisEncours, jTemp.nbColisEntrepot,jTemp.nbColisEntrepotChezLivreur, jTemp.nbColisEntrepotRetour,
+      tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.driver.nameDriver + ' ' + jTemp.driver.surnameDriver, jTemp.entrepot.nom, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, jTemp.nbColisLivree,
+        jTemp.nbColisRetournee, jTemp.nbColisEncours, jTemp.nbColisEntrepot,jTemp.nbColisEntrepotChezLivreur, jTemp.nbColisEntrepotRetour,
         jTemp.nbColisPickUp, jTemp.nbColisPUNonTreated, jTemp.nbColisMUInALivree, jTemp.nbColisMUInRetour, jTemp.nbColisMUOutALivree, jTemp.nbColisMUOutRetour, jTemp.valColisLivree + ' TND',
         jTemp.valDepenses+' TND', jTemp.valMontantRecoltee+' TND');
       tripsByUser.push(tab);
@@ -761,8 +761,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     for (let i = 0; i < listRapport.length; i++) {
       tab = [];
       const jTemp = listRapport[i];
-      tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.user.nameUser + ' ' + jTemp.user.surnameUser, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, this.nbColisLivree,
-        this.nbColisRetournee, jTemp.nbColisEncoursLivraison, jTemp.nbColisEntrepot,jTemp.nbColisEntrepotChezLivreur, jTemp.nbColisEntrepotRetour,
+      tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.user.nameUser + ' ' + jTemp.user.surnameUser, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, jTemp.nbColisLivree,
+        jTemp.nbColisRetournee, jTemp.nbColisEncoursLivraison, jTemp.nbColisEntrepot,jTemp.nbColisEntrepotChezLivreur, jTemp.nbColisEntrepotRetour,
         jTemp.nbColisPickUp, jTemp.nbColisPUNonTreated, jTemp.nbColisMUInALivree, jTemp.nbColisMUInRetour, jTemp.nbColisMUOutALivree, jTemp.nbColisMUOutRetour, jTemp.valColisLivree + ' TND',
         jTemp.valDepenses+' TND', jTemp.valMontantRecoltee+' TND');
       tripsByUser.push(tab);
