@@ -30,7 +30,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
   private driver: any;
   private runsheets: Runsheet[] = [];
   spinner = false;
-  activityRunsheetInfo: ActivityRunsheetInfo  = {driver: null, runsheets: null};
+  activityRunsheetInfo: ActivityRunsheetInfo = {driver: null, runsheets: null};
   activitiesRunsheet: Activity[] = [];
   @ViewChild(MatSelectionList)
   selectionList: MatSelectionList;
@@ -38,12 +38,14 @@ export class CloseActivityRunsheetComponent implements OnInit {
   checkedActivityStatus: string;
   user: any;
   moreDayCounter = 1;
-
+  pageIndex = 0;
+  pageSize = 1;
 
 
   constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private router: Router, private tripService: TripService,
               private activityRunsheetService: ActivityRunsheetService, private snackBar: MatSnackBar, private caisseService: CaisseService,
-              private spinner2: NgxSpinnerService, private driverService: DriversService) { }
+              private spinner2: NgxSpinnerService, private driverService: DriversService) {
+  }
 
   ngOnInit() {
     this.selectionList.selectedOptions = new SelectionModel<MatListOption>(false);
@@ -52,6 +54,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
     this.getActivities();
     this.getAllDrivers();
   }
+
   getAllDrivers() {
     this.tripService.getDrivers().subscribe(data => {
       const obj = Array.of(JSON.parse(data['_body']).data);
@@ -81,21 +84,22 @@ export class CloseActivityRunsheetComponent implements OnInit {
           this.activitiesRunsheet = res.body;
         });
       });
-    }else{
+    } else {
     }
   }
 
 
   getActivities() {
     this.spinner = true;
-    const  fromDate = new Date();
+    const fromDate = new Date();
     fromDate.setDate(fromDate.getDate() - this.moreDayCounter);
-    fromDate.setHours(0); fromDate.setMinutes(0); fromDate.setSeconds(0);
+    fromDate.setHours(0);
+    fromDate.setMinutes(0);
+    fromDate.setSeconds(0);
     const toDate = new Date();
-    this.activityRunsheetService.findByCreatedDateGreaterThan(fromDate).subscribe((resActivity) => {
-      this.activitiesRunsheet = resActivity.body.filter((activity) => ((activity.deleted === false) &&
-        (activity.status === 'confirmed' || activity.status === 'closed'))).reverse();
-      if(this.user.role !== 'superAdmin'){
+    this.activityRunsheetService.getNextActivities(this.pageIndex, this.pageSize).subscribe((resActivity) => {
+      resActivity.body.forEach(value => this.activitiesRunsheet.push(value));
+      if (this.user.role !== 'superAdmin') {
         this.activitiesRunsheet = this.activitiesRunsheet.filter((activity) => activity.entrepot.id === this.user.entrepot.id ||
           activity.closedBy === this.user.idAdmin);
       }
@@ -109,11 +113,11 @@ export class CloseActivityRunsheetComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      if ( !!result ) {
+      if (!!result) {
         this.driver = result;
         console.log(this.driver.idDriver);
-        const driverActivity = this.activitiesRunsheet.filter((activity) => (activity.driver.idDriver === this.driver.idDriver) && activity.deleted === false && activity.status === 'draft')
-        if (driverActivity.length > 0){
+        const driverActivity = this.activitiesRunsheet.filter((activity) => (activity.driver.idDriver === this.driver.idDriver) && activity.deleted === false && activity.status === 'draft');
+        if (driverActivity.length > 0) {
           this.snackBar.open('Le livreur a déja une activité-runsheet à l\'état " draft ": ', 'Fermer', {
             duration: 8000,
           });
@@ -123,7 +127,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
           // !!!!! FILTER BY ENTREPOT TOO
           const runsheetsToReconcile = res.body
             .filter((runsheet) => (runsheet.deleted === false && runsheet.driver.idDriver === this.driver.idDriver));
-          if(runsheetsToReconcile.length === 0) {
+          if (runsheetsToReconcile.length === 0) {
             this.snackBar.open('Le livreur n\'a pas des runsheets en cours ', 'Fermer', {
               duration: 8000,
             });
@@ -160,14 +164,16 @@ export class CloseActivityRunsheetComponent implements OnInit {
 
   getListColisLength(listColis: ColisRunsheet[]): number {
     return listColis.slice()
-      .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).length ;
+      .filter((colis) => (colis.removed === false || colis.removed == null || colis.removed === undefined)).length;
   }
+
   printRunsheet(activityRunsheet: Activity) {
     this.activityRunsheetService.exportPdf(activityRunsheet).subscribe((res) => {
       const path: string = res['_body'];
       this.downloadRapport(path);
-    } );
+    });
   }
+
   downloadRapport(path: string) {
     const index: number = path.indexOf('PDF/ActivityRunsheet') + 20;
     path = path.substring(index);
@@ -177,6 +183,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
       window.open(fileURL, '_blank');
     });
   }
+
   onAreaListControlChanged(activityRunsheet_option: MatListOption, activityRunsheet: Activity) {
     if (activityRunsheet_option.selected) {
       this.checkedActivityStatus = activityRunsheet.status;
@@ -185,6 +192,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
       this.selectedActivity = null;
     }
   }
+
   deleteSelectedActivity() {
     const index = this.activitiesRunsheet.indexOf(this.selectedActivity);
     this.selectedActivity.deleted = true;
@@ -196,36 +204,38 @@ export class CloseActivityRunsheetComponent implements OnInit {
 
   editActivity(activityRunsheet: Activity) {
     let d = new Date();
-    d.setHours(0,0,0,0);
+    d.setHours(0, 0, 0, 0);
     this.spinner2.show();
-    this.caisseService.query().subscribe((res) => {
+    this.caisseService.findLastCoffre().subscribe((res) => {
       this.spinner2.hide();
-      const caisses = res.body.reverse();
-      if(caisses.length === 0){
+
+      if (!res.body) {
         this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
       } else {
-        const caisse = caisses[0];
-        if(caisse.closed){
+        const caisse = res.body;
+        if (caisse.closed) {
           this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
-        }else {
-          if(caisse.openedDate < d){
+        } else {
+          if (caisse.openedDate < d) {
             this.snackBar.open('une anicenne caisse a été ouverte et n\'est pas encore fermée ', 'Fermer', {duration: 8000});
-          }
-          else{
-            this.activityRunsheetService.activityRunsheetInfo = {runsheets: activityRunsheet.listRunsheets, driver: activityRunsheet.driver};
+          } else {
+            this.activityRunsheetService.activityRunsheetInfo = {
+              runsheets: activityRunsheet.listRunsheets,
+              driver: activityRunsheet.driver
+            };
             this.activityRunsheetService.activityToEdit = activityRunsheet;
             this.router.navigate(['/close-activity-runsheet/create']);
           }
         }
       }
-    },() => {
+    }, () => {
       this.snackBar.open('Erreur Serveur', 'Fermer', {duration: 8000});
-    })
+    });
 
   }
 
   showMore() {
-    this.moreDayCounter = this.moreDayCounter  + 1;
+    this.pageIndex++;
     this.getActivities();
   }
 }

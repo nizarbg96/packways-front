@@ -77,12 +77,11 @@ export class InjectionFondComponent implements OnInit, AfterViewInit {
   openDialog() {
     let d = new Date();
     d.setHours(0,0,0,0);
-    this.caisseService.query().subscribe((res) => {
-      const caisses = res.body.reverse();
-      if(caisses.length === 0){
+    this.caisseService.findLastCoffre().subscribe((res) => {
+      if(!res.body){
         this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
       } else {
-        const caisse = caisses[0];
+        const caisse = res.body;
         if(caisse.closed){
           this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
         }else {

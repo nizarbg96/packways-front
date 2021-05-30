@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {Activity, IActivity} from '../../model/activity.model';
 import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
@@ -8,6 +8,7 @@ import {Trip} from '../trips/Trip';
 import {Headers, Http, ResponseContentType} from '@angular/http';
 import {map} from 'rxjs/operators';
 import {IRunsheet} from '../../model/runsheet.model';
+import {IActivityPayement} from '../../model/activity-payement.model';
 type EntityResponseType = HttpResponse<IActivity>;
 type EntityArrayResponseType = HttpResponse<IActivity[]>;
 
@@ -103,5 +104,13 @@ export class ActivityRunsheetService {
   getEditActivityTrips(activityTripsIds: any): Observable<HttpResponse<any>> {
     return this.http
       .post<any>(this.resourceUrl + '/edit-activity-trips/', activityTripsIds, { observe: 'response' });
+  }
+
+  getNextActivities(pageIndex, pageSize): Observable<EntityArrayResponseType> {
+    let params = new HttpParams();
+    params = params.append('page', pageIndex);
+    params = params.append('size', pageSize);
+    return this.http
+      .get<IActivity[]>(`${this.resourceUrl}/listPageable`, { observe: 'response', params: params });
   }
 }

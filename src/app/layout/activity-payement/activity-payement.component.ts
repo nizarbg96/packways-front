@@ -43,6 +43,8 @@ export class ActivityPayementComponent implements OnInit {
   private moreDayCounter = 1;
   url = environment.serverUrl;
   private closeResult: string;
+  pageIndex = 0;
+  pageSize = 1;
 
 
 
@@ -58,13 +60,10 @@ export class ActivityPayementComponent implements OnInit {
   }
 
   getActivities() {
-    const  fromDate = new Date();
-    fromDate.setDate(fromDate.getDate() - this.moreDayCounter);
-    fromDate.setHours(0); fromDate.setMinutes(0); fromDate.setSeconds(0);
     this.spinner = true;
-    this.activityPayementService.findByCreatedDateGreaterThan(fromDate).subscribe((resActivity) => {
-      this.activitiesPayement = resActivity.body.filter((activity) => ((activity.deleted === false) &&
-        (activity.status === 'draft' || activity.status === 'confirmed' || activity.status === 'closed'))).reverse();
+    this.activityPayementService.getNextActivities(this.pageIndex, this.pageSize).subscribe((resActivity) => {
+      resActivity.body.filter((activity) => ((activity.deleted === false))).forEach(
+          value => this.activitiesPayement.push(value) );
       this.spinner = false;
     });
   }
@@ -72,13 +71,12 @@ export class ActivityPayementComponent implements OnInit {
   openDialog(): void { let d = new Date();
     d.setHours(0,0,0,0);
     this.spinner2.show();
-    this.caisseService.query().subscribe((res) => {
+    this.caisseService.findLastCoffre().subscribe((res) => {
       this.spinner2.hide();
-      const caisses = res.body.reverse();
-      if(caisses.length === 0){
+      if(!res.body){
         this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
       } else {
-        const caisse = caisses[0];
+        const caisse = res.body;
         if(caisse.closed){
           this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
         }else {
@@ -278,7 +276,7 @@ export class ActivityPayementComponent implements OnInit {
     return dformat;
   }
   showMore() {
-    this.moreDayCounter = this.moreDayCounter  + 1;
+    this.pageIndex++;
     this.getActivities();
   }
 }

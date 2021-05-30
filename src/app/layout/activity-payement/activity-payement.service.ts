@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
 import {Trip} from '../trips/Trip';
@@ -7,6 +7,7 @@ import {ActivityPayement, IActivityPayement} from '../../model/activity-payement
 import {ActivityPayementInfo} from './activity-payement.component';
 import {IActivityPickUp} from '../../model/activity-pickUp.model';
 import {DatePipe} from '@angular/common';
+import {ICaisse} from '../../model/caisse.model';
 type EntityResponseType = HttpResponse<IActivityPayement>;
 type EntityArrayResponseType = HttpResponse<IActivityPayement[]>;
 
@@ -41,6 +42,15 @@ export class ActivityPayementService {
     return this.http
       .get<IActivityPayement[]>(this.resourceUrl, {observe: 'response' });
   }
+
+  getNextActivities(pageIndex, pageSize): Observable<EntityArrayResponseType> {
+    let params = new HttpParams();
+    params = params.append('page', pageIndex);
+    params = params.append('size', pageSize);
+    return this.http
+      .get<IActivityPayement[]>(`${this.resourceUrl}/listPageable`, { observe: 'response', params: params });
+  }
+
   findByCreatedDateGreaterThan(fromDate: Date): Observable<EntityArrayResponseType> {
     return this.http
       .post<IActivityPayement[]>(`${this.resourceUrl}/afterDate/`, fromDate, {observe: 'response' });

@@ -31,25 +31,50 @@ export class CaisseStateComponent implements OnInit {
   filtredTickets: GasTicket[] = [];
   filtredCaissses: Caisse[] = [];
   lastCoffre;
+  pageIndex = 0;
+  pageSize = 1 ;
+  private loadingNextPage = false;
+  private newCoffreCreated = false;
 
   constructor(public dialog: MatDialog, private gasTicketService: GasTicketService, private modalService: NgbModal,
               private snackBar: MatSnackBar, private caisseService: CaisseService, private spinner2: NgxSpinnerService) {
   }
 
   ngOnInit() {
-    this.getCaisses();
-    this.caisseService.dialogExit.subscribe(() => {
+    // this.getCaisses();
+    this.getNextCoffre();
+    this.caisseService.dialogExit.subscribe((reason) => {
       this.dialog.closeAll();
       this.isLoadingResults = true;
-      this.getCaisses();
+      this.getCaisses(reason);
     });
   }
 
-  getCaisses() {
-    this.isLoadingResults = true;
-    this.caisseService.query().subscribe((res) => {
-      this.isLoadingResults = false;
-      this.filtredCaissses = res.body.reverse();
+  getCaisses(reason: string) {
+    this.spinner2.show();
+    if(reason === 'update'){
+      this.pageSize = this.filtredCaissses.length;
+    }
+    else {
+      this.pageSize = this.filtredCaissses.length + 1;
+    }
+    this.pageIndex = 0;
+    this.caisseService.getNextCoffres(this.pageIndex, this.pageSize).subscribe((res) => {
+      this.newCoffreCreated = true;
+      this.spinner2.hide()
+      this.filtredCaissses = res.body;
+      if(this.filtredCaissses.length > 0) {
+        this.lastCoffre = this.filtredCaissses[0];
+        console.log(this.lastCoffre);
+      }
+    });
+  }
+  getNextCoffre() {
+    this.spinner2.show();
+    this.pageSize = 1;
+    this.caisseService.getNextCoffres(this.pageIndex, this.pageSize).subscribe((res) => {
+      this.spinner2.hide();
+      res.body.forEach(value => this.filtredCaissses.push(value));
       if(this.filtredCaissses.length > 0) {
         this.lastCoffre = this.filtredCaissses[0];
         console.log(this.lastCoffre);
@@ -104,6 +129,18 @@ export class CaisseStateComponent implements OnInit {
       maxHeight: '60vh',
     });
   }
+
+  showMore() {
+    this.loadingNextPage = true;
+    if(this.newCoffreCreated){
+      this.pageIndex = this.filtredCaissses.length - 1;
+      this.newCoffreCreated = false;
+    }
+    this.pageIndex++;
+    this.getNextCoffre();
+
+
+  }
 }
 
 @Component({
@@ -154,8 +191,8 @@ export class DialogOpenFundComponent implements OnInit {
     this.caisseService.create(caisse).subscribe(() => {
       this.spinner2.hide();
       this.dialogRef.close();
-      this.caisseService.dialogExit.next(true);
-    })
+      this.caisseService.dialogExit.next('create');
+    });
 
   }
 }
@@ -203,7 +240,7 @@ export class DialogCloseFundComponent implements OnInit {
     this.caisseService.closeCoffre(caisse).subscribe(() => {
       this.spinner2.hide();
       this.dialogRef.close();
-      this.caisseService.dialogExit.next(true);
+      this.caisseService.dialogExit.next('update');
     });
 
   }

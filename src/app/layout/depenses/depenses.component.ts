@@ -82,13 +82,12 @@ export class DepensesComponent implements OnInit, AfterViewInit {
     let d = new Date();
     d.setHours(0,0,0,0);
     this.spinner2.show();
-    this.caisseService.query().subscribe((res) => {
+    this.caisseService.findLastCoffre().subscribe((res) => {
       this.spinner2.hide();
-      const caisses = res.body.reverse();
-      if(caisses.length === 0){
+      if(!res.body){
         this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
       } else {
-        const caisse = caisses[0];
+        const caisse = res.body;
         if(caisse.closed){
           this.snackBar.open('Veuillez ouvrir la caisse d\'abords!', 'Fermer', {duration: 8000});
         }else {

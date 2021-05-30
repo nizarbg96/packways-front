@@ -18,7 +18,7 @@
       <div class="col-md-10 Aligner">
       </div>
       <div class="col-md-2 Aligner" *ngIf="!!lastCoffre">
-        <button style="width: 100%" mat-raised-button   color="primary" [disabled]="!!lastCoffre && lastCoffre.closed === false " (click)="openDialog()">Ouvrir la caisse</button>
+        <button style="width: 100%" mat-raised-button   color="primary" [disabled]="!!lastCoffre && lastCoffre.closed === false || lastCoffre == null" (click)="openDialog()">Ouvrir la caisse</button>
       </div>
       <div class="col-md-2 Aligner" *ngIf="!lastCoffre">
         <button style="width: 100%" mat-raised-button   color="primary"  (click)="openDialog()">Ouvrir la caisse</button>
@@ -129,4 +129,13 @@
       </mat-list-option>
     </div>
   </mat-selection-list>
+  <div class="row"  style="width: 100%;">
+    <div class="col-md-12 text-center">
+      <div class="container" style="cursor: pointer" (click)="showMore()">
+        <div class="chevron" style="cursor: pointer"></div>
+        <div class="chevron" style="cursor: pointer"></div>
+        <div class="chevron" style="cursor: pointer"></div>
+      </div>
+    </div>
+  </div>
 </div>
