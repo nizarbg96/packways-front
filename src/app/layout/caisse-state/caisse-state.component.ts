@@ -45,7 +45,6 @@ export class CaisseStateComponent implements OnInit {
     this.getNextCoffre();
     this.caisseService.dialogExit.subscribe((reason) => {
       this.dialog.closeAll();
-      this.isLoadingResults = true;
       this.getCaisses(reason);
     });
   }
@@ -61,7 +60,7 @@ export class CaisseStateComponent implements OnInit {
     this.pageIndex = 0;
     this.caisseService.getNextCoffres(this.pageIndex, this.pageSize).subscribe((res) => {
       this.newCoffreCreated = true;
-      this.spinner2.hide()
+      this.spinner2.hide();
       this.filtredCaissses = res.body;
       if(this.filtredCaissses.length > 0) {
         this.lastCoffre = this.filtredCaissses[0];
