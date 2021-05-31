@@ -49,9 +49,11 @@ export class ActivityPayementComponent implements OnInit {
 
 
 
+
+
   constructor(public dialog: MatDialog, private router: Router, private tripService: TripService, private userService: UserService,
               private activityPayementService: ActivityPayementService, private snackBar: MatSnackBar, private tripExcelService: TripExcelService,
-              private datePipe: DatePipe, private caisseService: CaisseService, private modalService: NgbModal, private spinner2: NgxSpinnerService,) { }
+              private datePipe: DatePipe, private caisseService: CaisseService, private modalService: NgbModal, private spinner2: NgxSpinnerService) { }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
@@ -114,7 +116,7 @@ export class ActivityPayementComponent implements OnInit {
       }
     },() => {
       this.snackBar.open('Erreur Serveur', 'Fermer', {duration: 8000});
-    })
+    });
   }
   openModalJustificatif(contentActivityJour: TemplateRef<any>, element: IActivityPayement) {
     this.selectedActivityPayement = element;

@@ -519,11 +519,7 @@ export class AddDepenseComponent implements OnInit, AfterViewInit {
         break;
       }
       case this.depensesTypes[2]: {
-        if( this.items.length > 0){
-          return false;
-        }else{
-          return true;
-        }
+        return true;
         break;
       }
       case this.depensesTypes[3]: {

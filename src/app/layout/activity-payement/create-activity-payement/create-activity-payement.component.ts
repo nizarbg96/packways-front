@@ -320,7 +320,9 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
     this.activityPayementService.activityPayementInfo = {client: this.activityPayement.clientName, recoltedTrips: this.recoltedTrips};
     this.modalService.open(MODALS[name]).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
+      this.spinner2.show();
       this.tripService.updateEncoursDePayement(this.listColisToPay.map((trip) => trip.idTrip), this.user.idAdmin).subscribe(() => {
+        this.spinner2.hide();
         this.activityPayement.listColisToPay = this.listColisToPay.map((trip) => trip.idTrip);
         this.activityPayement.totalAmount = this.totalAmount;
         this.activityPayement.shippingCosts = this.shippingCosts;
@@ -345,7 +347,9 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
     this.activityPayementService.activityPayementInfo = {client: this.activityPayement.clientName, recoltedTrips: this.recoltedTrips};
     this.modalService.open(MODALS[name]).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
+      this.spinner2.show();
       this.tripService.updatePayed(this.listColisToPay.map((trip) => trip.idTrip), this.user.idAdmin).subscribe((resTrips) => {
+        this.spinner2.hide();
         const trips: Trip[] = Array.of(JSON.parse(resTrips['_body']).trips)[0];
         this.activityPayement.listPayedTrips = this.listColisToPay.map((trip) => trip.idTrip);
         this.activityPayement.listRapportTrips = this.listRapportTrips;
