@@ -113,4 +113,9 @@ export class ActivityRunsheetService {
     return this.http
       .get<IActivity[]>(`${this.resourceUrl}/listPageable`, { observe: 'response', params: params });
   }
+
+  getNonRecoltedActivvities(): Observable<EntityArrayResponseType>{
+    return this.http
+      .get<IActivity[]>(`${this.resourceUrl}/nonRecolted`, { observe: 'response'});
+  }
 }

@@ -40,6 +40,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
   moreDayCounter = 1;
   pageIndex = 0;
   pageSize = 1;
+  showNonRecolted = false;
 
 
   constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private router: Router, private tripService: TripService,
@@ -90,7 +91,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
 
 
   getActivities() {
-    this.spinner = true;
+    this.spinner2.show();
     const fromDate = new Date();
     fromDate.setDate(fromDate.getDate() - this.moreDayCounter);
     fromDate.setHours(0);
@@ -99,6 +100,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
     const toDate = new Date();
     this.activityRunsheetService.getNextActivities(this.pageIndex, this.pageSize).subscribe((resActivity) => {
       resActivity.body.forEach(value => this.activitiesRunsheet.push(value));
+      this.spinner2.hide();
       if (this.user.role !== 'superAdmin') {
         this.activitiesRunsheet = this.activitiesRunsheet.filter((activity) => activity.entrepot.id === this.user.entrepot.id ||
           activity.closedBy === this.user.idAdmin);
@@ -237,5 +239,31 @@ export class CloseActivityRunsheetComponent implements OnInit {
   showMore() {
     this.pageIndex++;
     this.getActivities();
+  }
+
+  onToggleChange() {
+    if (!this.showNonRecolted) {
+      this.spinner2.show();
+      this.activityRunsheetService.getNonRecoltedActivvities().subscribe((res) => {
+        this.activitiesRunsheet = res.body;
+        this.spinner2.hide();
+      });
+
+    } else {
+      this.pageSize = this.pageIndex + 1;
+        this.pageIndex = 0;
+      this.spinner2.show();
+      this.activityRunsheetService.getNextActivities(this.pageIndex, this.pageSize).subscribe((resActivity) => {
+        this.activitiesRunsheet = resActivity.body;
+        if (this.user.role !== 'superAdmin') {
+          this.activitiesRunsheet = this.activitiesRunsheet.filter((activity) => activity.entrepot.id === this.user.entrepot.id ||
+            activity.closedBy === this.user.idAdmin);
+        }
+        this.spinner2.hide();
+        this.pageIndex = this.pageSize - 1;
+        this.pageSize = 1;
+      });
+    }
+
   }
 }

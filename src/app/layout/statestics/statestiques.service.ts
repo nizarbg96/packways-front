@@ -72,6 +72,15 @@ export class StatestiquesService {
     const options = createRequestOption(req);
     return this.http.get<IStatActivityDriver[]>(environment.serverUrl + `/api/stat-activity-jour-driver`, {params: options, observe: 'response'});
   }
+  getDriversStatsBetween(dateRange: any): Observable<HttpResponse<IStatActivityDriver[]>> {
+    return this.http.post<IStatActivityDriver[]>(environment.serverUrl + `/api/stat-activity-jour-driver/betweenDates/`, dateRange, {observe: 'response'});
+  }
+  getGlobalStatsBetween(dateRange: any): Observable<HttpResponse<IStatActivityJour[]>> {
+    return this.http.post<IStatActivityJour[]>(environment.serverUrl + `/api/stat-activity-jour/betweenDates2/`, dateRange, {observe: 'response'});
+  }
+  getClientsStatsBetween(dateRange: any): Observable<HttpResponse<IStatActivityJourClient[]>> {
+    return this.http.post<IStatActivityJourClient[]>(environment.serverUrl + `/api/stat-activity-jour-client/betweenDates/`, dateRange, {observe: 'response'});
+  }
   getClientsActvityStats(req?: any): Observable<HttpResponse<IStatActivityJourClient[]>> {
     const options = createRequestOption(req);
     return this.http.get<IStatActivityJourClient[]>(environment.serverUrl + `/api/stat-activity-jour-client`, {params: options, observe: 'response'});

@@ -19,7 +19,7 @@
 </div>
     </div>
     <div class="row">
-      <div class="col-md-4 grid-margin stretch-card">
+      <div class="col-md-3 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
             <p class="card-title text-md-center text-xl-left">Nombre de colis livrés </p>
@@ -32,7 +32,20 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4 grid-margin stretch-card">
+      <div class="col-md-3 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <p class="card-title text-md-center text-xl-left">Nombre de stops livrés </p>
+            <div class="d-flex flex-wrap justify-content-between justify-content-md-center justify-content-xl-between align-items-center">
+              <div class="lds-ellipsis" *ngIf="loadData2"><div></div><div></div><div></div><div></div></div>
+              <h3 class="mb-0 mb-md-2 mb-xl-0 order-md-1 order-xl-0" *ngIf="!loadData2">{{nbStopslivree}}</h3>
+              <i class="ti-check icon-md text-muted mb-0 mb-md-3 mb-xl-0"></i>
+            </div>
+            <p class="mb-0 mt-2 text-success" *ngIf="!loadData1">in {{date | date:'MMMM'}} (aujourd'hui non inclus) /  <span class="text-black ml-1"><small>({{nbStopsLivreeLastMonth}} last month)</small></span></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
             <p class="card-title text-md-center text-xl-left">Nombre de colis retournés</p>
@@ -45,7 +58,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4 grid-margin stretch-card">
+      <div class="col-md-3 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
             <p class="card-title text-md-center text-xl-left">Valeur des dépenses</p>
@@ -90,7 +103,7 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </div>
-                <div class="nav-content" tabindex="0">
+                <div class="nav-content" tabindex="0" style="overflow: scroll">
                   <ul>
                     <li><mat-form-field appearance="fill" style="display: block;">
                       <mat-label>Entrepôt</mat-label>
@@ -116,7 +129,9 @@
                       <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                       <mat-datepicker #picker2></mat-datepicker>
                     </mat-form-field></li>
-                    <li>
+
+                    <li class="mt-4">
+                      <button mat-raised-button color="primary" (click)="applyFilterGlobalActivity()" >appliquer filtre</button>
                       <button mat-button color="primary" (click)="generateExcelReportActivityGlobale(dataSourceFiltred.data)">Generate Excel</button>
                     </li>
                   </ul>
@@ -124,7 +139,11 @@
               </div>
               <main>
                 <div class="content">
-                  <div class="row">
+                  <div *ngIf="dataSourceFiltred.data.length == 0" class="row justify-content-center" style="height: 30vh; display: flex;
+  align-items: center;">
+                    <h5 style="color: grey">aucune donnée enregistrée</h5>
+                  </div>
+                  <div class="row" *ngIf="dataSourceFiltred.data.length > 0">
                     <div class="col-md-12">
                       <div>
                         <table mat-table [dataSource]="dataSourceFiltred" >
@@ -199,7 +218,8 @@
                     <li><ng2-completer [inputClass]="'form-control form-control-inline mt-n1'" [datasource]="Listdriverauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
                                        [textNoResults]="'Pas trouvé.'" [placeholder]="'Livreur'" (selected)="getSelectedDriver($event)" [(ngModel)]="affectedDriverNgModel">
                     </ng2-completer></li>
-                    <li>
+                    <li class="mt-4">
+                      <button mat-raised-button color="primary" (click)="applyFilterActivityDriver()" >appliquer filtre</button>
                       <button mat-button color="primary" class="mt-4" (click)="generateExcelReportActivityDriver(dataSourceDriversFiltred.data)">Generate Excel</button>
                     </li>
                   </ul>
@@ -207,7 +227,11 @@
               </div>
               <main>
                 <div class="content">
-                  <div class="row">
+                  <div *ngIf="dataSourceDriversFiltred.data.length == 0" class="row justify-content-center" style="height: 30vh; display: flex;
+  align-items: center;">
+                    <h5 style="color: grey">aucune donnée enregistrée</h5>
+                  </div>
+                  <div class="row" *ngIf="dataSourceDriversFiltred.data.length > 0">
                     <div class="col-md-12">
                       <div >
                         <table mat-table [dataSource]="dataSourceDriversFiltred">
@@ -276,7 +300,7 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </div>
-                <div class="nav-content" tabindex="0">
+                <div class="nav-content" tabindex="0" style="overflow: scroll">
                   <ul>
                     <li>                <mat-form-field appearance="fill">
                       <mat-label>Date de début</mat-label>
@@ -298,7 +322,8 @@
                                        [textNoResults]="'Pas trouvé.'" [placeholder]="'client'" id="clientFilter" name="clientFilter" [(ngModel)]="clientFilter"
                                        (selected)="getSelectedUser($event)">
                     </ng2-completer></li>
-                    <li>
+                    <li class="mt-4">
+                      <button mat-raised-button color="primary" (click)="applyFilterClientActivity()" >appliquer filtre</button>
                       <button mat-button color="primary" class="mt-4" (click)="generateExcelReportActivityClient(dataSourceClientsFiltred.data)">Generate Excel</button>
                     </li>
                   </ul>
@@ -306,7 +331,11 @@
               </div>
               <main>
                 <div class="content">
-                  <div class="row">
+                  <div *ngIf="dataSourceClientsFiltred.data.length == 0" class="row justify-content-center" style="height: 30vh; display: flex;
+  align-items: center;">
+                    <h5 style="color: grey">aucune donnée enregistrée</h5>
+                  </div>
+                  <div class="row" *ngIf="dataSourceClientsFiltred.data.length > 0">
                     <div class="col-md-12">
                       <div >
                         <table mat-table [dataSource]="dataSourceClientsFiltred">
@@ -538,8 +567,12 @@
             <td style="background-color: #ffffff">{{!!selectedActivityJour?selectedActivityJour.nbColisNLRetour:'-'}}</td>
           </tr>
           <tr class="table-active text-center" style="background-color: #ffffff;">
-            <td style="background-color: #ffffff">Livrés</td>
+            <td style="background-color: #ffffff">Colis Livrés</td>
             <td style="background-color: #ffffff">{{!!selectedActivityJour?selectedActivityJour.nbColisLivree:'-'}}</td>
+          </tr>
+          <tr class="table-active text-center" style="background-color: #ffffff;">
+            <td style="background-color: #ffffff">Stops Livrés</td>
+            <td style="background-color: #ffffff">{{!!selectedActivityJour?selectedActivityJour.nbStopLivree:'-'}}</td>
           </tr>
           <tr class="table-active text-center" style="background-color: #ffffff;">
             <td style="background-color: #ffffff">Retournés</td>
@@ -634,11 +667,12 @@
             <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.nbColisNLRetour:'-'}}</td>
           </tr>
           <tr class="table-active text-center" style="background-color: #ffffff;">
-            <td style="background-color: #ffffff">Livrés</td>
+            <td style="background-color: #ffffff">Colis Livrés</td>
             <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.nbColisLivree:'-'}}</td>
           </tr>
+
           <tr class="table-active text-center" style="background-color: #ffffff;">
-            <td style="background-color: #ffffff">Stops</td>
+            <td style="background-color: #ffffff">Stops Livrés</td>
             <td style="background-color: #ffffff">{{!!selectedActivityDriver?selectedActivityDriver.nbStopLivree:'-'}}</td>
           </tr>
           <tr class="table-active text-center" style="background-color: #ffffff;">

@@ -93,11 +93,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('pag2') paginator2: MatPaginator;
   @ViewChild('pag3') paginator3: MatPaginator;
   nbColisLivree = 0;
+  nbStopslivree = 0;
   nbColisRetournee = 0;
   valDepenses = 0;
   valMontantRecoltee = 0;
   benefice = 0;
   nbColisLivreeLastMonth = 0;
+  nbStopsLivreeLastMonth = 0;
   nbColisRetourneeLastMonth = 0;
   valDepensesLastMonth = 0;
   valMontantRecolteeLastMonth = 0;
@@ -156,6 +158,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     console.log(lastDayLastMonth);
     this.statestiquesService.queryByDateBetwwen(firstDayLastMonth, lastDayLastMonth).subscribe((res) => {
       res.body.forEach(value => {
+        this.nbStopsLivreeLastMonth = this.nbStopsLivreeLastMonth + value.nbStopLivree;
         this.nbColisLivreeLastMonth = this.nbColisLivreeLastMonth + value.nbColisLivree;
         this.nbColisRetourneeLastMonth = this.nbColisRetourneeLastMonth + value.nbColisRetournee;
         this.valDepensesLastMonth = this.valDepensesLastMonth + value.valDepenses;
@@ -172,19 +175,20 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       this.dataSourceFiltred.paginator = this.paginator1;
       res.body.filter((value) => value.entrepot.nom === this.user.entrepot.nom).forEach(value => {
         this.nbColisLivree = this.nbColisLivree + value.nbColisLivree;
+        this.nbStopslivree = this.nbStopslivree  + value.nbStopLivree;
         this.nbColisRetournee = this.nbColisRetournee + value.nbColisRetournee;
         this.valDepenses = this.valDepenses + value.valDepenses;
         this.benefice =  (this.nbColisLivree * 6) + (this.nbColisRetournee * 3) - this.valDepenses;
       });
     });
-    this.statestiquesService.getDriversStats().subscribe((res) => {
+    this.statestiquesService.getDriversStatsBetween({fromDate: firstDayCurrentMonth }).subscribe((res) => {
       this.loadData2 = false;
       const stats = res.body.reverse();
       this.dataSourceDrivers = stats;
       this.dataSourceDriversFiltred =  new MatTableDataSource<StatActivityDriver>(stats);
       this.dataSourceDriversFiltred.paginator = this.paginator2;
     });
-    this.statestiquesService.getClientsActvityStats().subscribe((res) => {
+    this.statestiquesService.getClientsStatsBetween({fromDate: firstDayCurrentMonth }).subscribe((res) => {
       this.loadData3 = false;
 
       const stats = res.body.reverse();
@@ -255,6 +259,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       const ind = this.Listdriverauto.indexOf(driver.title);
       this.affectedDriver = this.Listdriver[ind];
       this.driverService.getOneDriver(this.affectedDriver.idDriver).subscribe((oneDriver) => {
+        this.affectedDriver = oneDriver.json();
         this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers.filter(value => value.driver.idDriver === oneDriver.json().idDriver));
         this.dataSourceDriversFiltred.paginator = this.paginator2;
       });
@@ -291,7 +296,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
   addEventDateDebutActivityJour(input: string, $event: MatDatepickerInputEvent<Date>) {
     this.dateDebut = $event.value;
-    if (!$event.value) {
+    /*if (!$event.value) {
       this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource);
       this.dataSourceFiltred.paginator = this.paginator1;
     } else {
@@ -315,13 +320,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (!!this.entrepotValue){
       this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSourceFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
       this.dataSourceFiltred.paginator = this.paginator1;
-    }
+    }*/
 
   }
 
   addEventDateFinActivityJour(change: string, $event: MatDatepickerInputEvent<Date>) {
     this.dateFin = $event.value;
-    if (!$event.value) {
+    /*if (!$event.value) {
       this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource);
       this.dataSourceFiltred.paginator = this.paginator1;
     } else {
@@ -345,11 +350,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (!!this.entrepotValue){
       this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSourceFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
       this.dataSourceFiltred.paginator = this.paginator1;
-    }
+    }*/
   }
   addEventDateDebutActivityDriver(input: string, $event: MatDatepickerInputEvent<Date>) {
     this.dateDebut = $event.value;
-    if (!$event.value) {
+    /*if (!$event.value) {
       this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers);
       this.dataSourceDriversFiltred.paginator = this.paginator2;
     } else {
@@ -373,13 +378,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (!!this.entrepotValue){
       this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDriversFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
       this.dataSourceDriversFiltred.paginator = this.paginator2;
-    }
+    }*/
 
   }
 
   addEventDateFinActivityDriver(change: string, $event: MatDatepickerInputEvent<Date>) {
     this.dateFin = $event.value;
-    if (!$event.value) {
+    /*if (!$event.value) {
       this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers);
       this.dataSourceDriversFiltred.paginator = this.paginator2;
     } else {
@@ -403,11 +408,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (!!this.entrepotValue){
       this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDriversFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
       this.dataSourceDriversFiltred.paginator = this.paginator2;
-    }
+    }*/
   }
   addEventDateDebutActivityClient(input: string, $event: MatDatepickerInputEvent<Date>) {
     this.dateDebut = $event.value;
-    if (!$event.value) {
+    /*if (!$event.value) {
       this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients);
       this.dataSourceClientsFiltred.paginator = this.paginator3;
     } else {
@@ -431,13 +436,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (!!this.entrepotValue){
       this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClientsFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
       this.dataSourceClientsFiltred.paginator = this.paginator3;
-    }
+    }*/
 
   }
 
   addEventDateFinActivityClient(change: string, $event: MatDatepickerInputEvent<Date>) {
     this.dateFin = $event.value;
-    if (!$event.value) {
+    /*if (!$event.value) {
       this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients);
       this.dataSourceClientsFiltred.paginator = this.paginator3;
     } else {
@@ -461,11 +466,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (!!this.entrepotValue){
       this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClientsFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
       this.dataSourceClientsFiltred.paginator = this.paginator3;
-    }
+    }*/
   }
   affectEntrepotActivityGlobale(entrepot: Entrepot) {
     this.entrepotValue = entrepot;
-    if (!!entrepot) {
+    /*if (!!entrepot) {
       this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource.slice().filter((item) => item.entrepot.id === entrepot.id));
       this.dataSourceFiltred.paginator = this.paginator1;
     } else {
@@ -509,11 +514,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       } ));
       this.dataSourceFiltred.paginator = this.paginator1;
 
-    }
+    }*/
   }
   affectEntrepotActivityDriver(entrepot: Entrepot) {
     this.entrepotValue = entrepot;
-    if (!!entrepot) {
+    /*if (!!entrepot) {
       this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers.slice().filter((item) => item.entrepot.id === entrepot.id));
       this.dataSourceDriversFiltred.paginator = this.paginator2;
     } else {
@@ -557,7 +562,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       } ));
       this.dataSourceDriversFiltred.paginator = this.paginator2;
 
-    }
+    }*/
   }
 
 
@@ -715,7 +720,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       for (let i = 0; i < listRapport.length; i++) {
         tab = [];
         const jTemp = listRapport[i];
-        tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.entrepot.nom, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, jTemp.nbColisLivree,
+        tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.entrepot.nom, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, jTemp.nbColisLivree, jTemp.nbStopLivree,
           jTemp.nbColisRetournee, jTemp.nbColisEncours, jTemp.nbColisEntrepot,jTemp.nbColisEntrepotChezLivreur, jTemp.nbColisEntrepotRetour,
           jTemp.nbColisPickUp, jTemp.nbColisPUNonTreated, jTemp.nbColisMUInALivree, jTemp.nbColisMUInRetour, jTemp.nbColisMUOutALivree, jTemp.nbColisMUOutRetour, jTemp.valColisLivree + ' TND',
           jTemp.valDepenses+' TND', jTemp.valMontantRecoltee+' TND');
@@ -738,8 +743,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     for (let i = 0; i < listRapport.length; i++) {
       tab = [];
       const jTemp = listRapport[i];
-      tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.driver.nameDriver + ' ' + jTemp.driver.surnameDriver, jTemp.entrepot.nom, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, jTemp.nbColisLivree,
-        jTemp.nbColisRetournee, jTemp.nbColisEncours, jTemp.nbColisEntrepot,jTemp.nbColisEntrepotChezLivreur, jTemp.nbColisEntrepotRetour,
+      tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.jour, 'yyyy-MM-dd')), jTemp.driver.nameDriver + ' ' + jTemp.driver.surnameDriver,
+        jTemp.entrepot.nom, jTemp.nbColisNonLivree, jTemp.nbColisNLALivree, jTemp.nbColisNLRetour, jTemp.nbColisLivree,
+        jTemp.nbStopLivree, jTemp.nbColisRetournee, jTemp.nbColisEncours, jTemp.nbColisEntrepot, jTemp.nbColisEntrepotChezLivreur, jTemp.nbColisEntrepotRetour,
         jTemp.nbColisPickUp, jTemp.nbColisPUNonTreated, jTemp.nbColisMUInALivree, jTemp.nbColisMUInRetour, jTemp.nbColisMUOutALivree, jTemp.nbColisMUOutRetour, jTemp.valColisLivree + ' TND',
         jTemp.valDepenses+' TND', jTemp.valMontantRecoltee+' TND');
       tripsByUser.push(tab);
@@ -950,8 +956,31 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
 
+  applyFilterGlobalActivity() {
+    this.statestiquesService.getGlobalStatsBetween({fromDate: this.dateDebut, toDate: this.dateFin, entrepot: this.entrepotValue}).subscribe((res) => {
+      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(res.body);
+      this.dataSourceFiltred.paginator = this.paginator1;
+      this.dateDebut = null; this.dateFin = null; this.entrepotValue = null;});
+  }
 
+  applyFilterActivityDriver() {
+    this.statestiquesService.getDriversStatsBetween({fromDate: this.dateDebut, toDate: this.dateFin, driver: this.affectedDriver }).subscribe((res) => {
+      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(res.body);
+      this.dataSourceDriversFiltred.paginator = this.paginator2;
+      this.dateDebut = null;
+      this.dateFin = null;
+      this.affectedDriver = null;
+      this.entrepotValue = null;
+      this.affectedUser = null;
+    });
+  }
 
+  applyFilterClientActivity() {
+    this.statestiquesService.getClientsActvityStats({fromDate: this.dateDebut, toDate: this.dateFin, client: this.affectedUser }).subscribe((res) => {
+      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityDriver>(res.body);
+      this.dataSourceClientsFiltred.paginator = this.paginator3;
+    });
+  }
 }
 @Component({
   selector: 'dialog-stat-acivity-dialog',

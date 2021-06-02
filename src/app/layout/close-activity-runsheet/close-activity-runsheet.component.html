@@ -15,10 +15,13 @@
       </div>
     </div>
     <div class="row mt-2">
-      <div class="col-md-10 Aligner">
+      <div class="col-md-2 Aligner">
         <ng2-completer [inputClass]="'form-control form-control-inline'" [datasource]="Listdriverauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
                        [textNoResults]="'Pas trouvé.'" [placeholder]="'Livreur'" (selected)="getSelectedDriver($event)" [(ngModel)]="affectedDriverNgModel">
         </ng2-completer>
+      </div>
+      <div class="col-md-8 Aligner">
+        <mat-slide-toggle [(ngModel)]="showNonRecolted" (toggleChange)="onToggleChange()">  {{showNonRecolted? 'Activités non récoltés':'Tout les activités'}}</mat-slide-toggle>
       </div>
       <div class="col-md-2 Aligner ">
         <button mat-raised-button color="warn" class="ml-2"
@@ -108,7 +111,7 @@
       </mat-list-option>
     </div>
   </mat-selection-list>
-  <div class="row"  style="width: 100%;">
+  <div *ngIf="!showNonRecolted" class="row"  style="width: 100%;">
     <div class="col-md-12 text-center">
       <div class="container" style="cursor: pointer" (click)="showMore()">
         <div class="chevron" style="cursor: pointer" ></div>

@@ -17,6 +17,7 @@ export interface IStatActivityJour {
   nbColisPickUp?: number;
   nbColisPUNonTreated?: number;
   valColisLivree?: number;
+  nbStopLivree?: number;
   valDepenses?: number;
   valMontantRecoltee?: number;
   nbColisMUInALivree?: number;
@@ -45,6 +46,7 @@ export class StatActivityJour implements IStatActivityJour {
     public nbColisPickUp?: number,
     public nbColisPUNonTreated?: number,
     public valColisLivree?: number,
+    public nbStopLivree?: number,
     public valDepenses?: number,
     public valMontantRecoltee?: number,
     public nbColisMUInALivree?: number,

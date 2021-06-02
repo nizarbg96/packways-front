@@ -151,7 +151,7 @@ export class TripExcelService {
   generateExcelActivityJour(tripsData, nameuser, montantNet, mobile, adress) {
     // Excel Title, Header, Data
     const title = 'Rapport d\'activité globale : ';
-    const header = ['Jour','Entrepot', 'Non Livrés', 'Non Livrés Chez Livreur', 'Non Livrés Retour', 'Livrés', 'Retournés', 'En cours de livraison', 'Totale dans l\'entrepot à 10h:00','Chez Livreur dans l\'entrepot à 10h:00',
+    const header = ['Jour','Entrepot', 'Non Livrés', 'Non Livrés Chez Livreur', 'Non Livrés Retour', 'Colis Livrés', 'Stops Livrés',  'Retournés', 'En cours de livraison', 'Totale dans l\'entrepot à 10h:00','Chez Livreur dans l\'entrepot à 10h:00',
       'Retour dans l\'entrepot à 10h:00','Ramassés','Non traités dans un pick up','Chez Livreur reçus par MU','Retour reçus par MU','Expédiés transit livraison','Expédiés transit retour','Valeur de colis livrés',
       'Valeur de dépenses', 'Valeur des montants récoltés '];
     this.data = tripsData;
@@ -263,11 +263,10 @@ export class TripExcelService {
   generateExcelActivityDriver(tripsData, nameuser, montantNet, mobile, adress) {
     // Excel Title, Header, Data
     const title = 'Rapport d\'activité de livreurs : ';
-    const header = ['Jour','Livreur','Entrepot', 'Non Livrés', 'Non Livrés Chez Livreur', 'Non Livrés Retour', 'Livrés', 'Retournés', 'En cours de livraison', 'Totale dans l\'entrepot à 10h:00','Chez Livreur dans l\'entrepot à 10h:00',
+    const header = ['Jour','Livreur','Entrepot', 'Non Livrés', 'Non Livrés Chez Livreur', 'Non Livrés Retour', 'Colis Livrés', 'Stops Livrés', 'Retournés', 'En cours de livraison', 'Totale dans l\'entrepot à 10h:00','Chez Livreur dans l\'entrepot à 10h:00',
       'Retour dans l\'entrepot à 10h:00','Ramassés','Non traités dans un pick up','Chez Livreur reçus par MU','Retour reçus par MU','Expédiés transit livraison','Expédiés transit retour','Valeur de colis livrés',
       'Valeur de dépenses', 'Valeur des montants récoltés '];
     this.data = tripsData;
-
     console.log('dataexel:', tripsData);
     // Create workbook and worksheet
     // const workbook: ExcelProper.Workbook = new Excel.Workbook();
