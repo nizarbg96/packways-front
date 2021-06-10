@@ -1326,12 +1326,18 @@ export class TripsComponent implements OnInit {
         this.objTrip.destTrip = this.obj.destTrip;
 
         this.cityGlobalDestUp = this.obj.destTrip.cityAdr;
-        this.latGlobalDestUp = this.obj.destTrip.geolocAdr.lat;
-        this.lngGlobalDestUp = this.obj.destTrip.geolocAdr.lng;
+        if(this.obj.refJumia === null){
+          this.latGlobalDestUp = this.obj.destTrip.geolocAdr.lat;
+          this.lngGlobalDestUp = this.obj.destTrip.geolocAdr.lng;
+        }
+
 
         this.cityAdrUp = this.obj.destTrip.cityAdr;
+      if(this.obj.refJumia === null) {
+
         this.latAdrUp = this.obj.destTrip.geolocAdr.lat;
         this.lngAdrUp = this.obj.destTrip.geolocAdr.lng;
+      }
 
         this.objTrip.statusTrip = this.obj.statusTrip;
         this.objTrip.prevStatusTrip = this.obj.prevStatusTrip;
@@ -1722,7 +1728,7 @@ export class TripsComponent implements OnInit {
                 driver.lastUpdate = new Date(driver.lastUpdate);
             }
 
-          
+
           x = [driver];
         }
 
@@ -2306,7 +2312,7 @@ export class TripsComponent implements OnInit {
         if (this.dataUser.cout !== null) {
             this.pricePack = this.dataUser.cout;
         } else {
-            this.pricePack = 6;
+            this.pricePack = 7;
         }
         if (this.selectedTripType === 'doc' || this.selectedTripType === 'pack') {
             // this.pricePack = 6;
