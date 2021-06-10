@@ -566,20 +566,16 @@ export class TripsComponent implements OnInit {
         } else {
             this.keyFiltredTrip = '';
         }
-        if ((keyTp1 != null) && (keyTp1 !== 'tous')) {
+        if ((keyTp1 != null)) {
             this.keyFiltredTrip1 = keyTp1;
         } else {
             this.keyFiltredTrip1 = '';
         }
         if (keyTp2 != null) {
             console.log('keyTp2', keyTp2);
-            if (keyTp2 === 'tous') {
-                console.log('keyTp22 ok', keyTp2);
-                this.keyFiltredTrip2 = '';
-            } else {
+
                 console.log('keyTp233 ok', keyTp2);
                 this.keyFiltredTrip2 = keyTp2;
-            }
         } else {
             this.keyFiltredTrip2 = '';
         }
@@ -589,15 +585,12 @@ export class TripsComponent implements OnInit {
             this.keyFiltredTrip3 = '';
         }
         if (keyTp4 != null) {
-            if (keyTp4 === 'tous') {
-                this.keyFiltredTrip4 = '';
-            } else {
+
                 this.keyFiltredTrip4 = keyTp4;
-            }
         } else {
             this.keyFiltredTrip4 = '';
         }
-        if ((keyTp5 != null) && (keyTp5 !== 'tous')) {
+        if ((keyTp5 != null)) {
             this.keyFiltredTrip5 = keyTp5;
         } else {
             this.keyFiltredTrip5 = '';
