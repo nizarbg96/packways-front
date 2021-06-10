@@ -1722,14 +1722,7 @@ export class TripsComponent implements OnInit {
                 driver.lastUpdate = new Date(driver.lastUpdate);
             }
 
-          for (let i = 0; i < driver.vehicleDriver.length; i++) {
-              if (driver.vehicleDriver[i].createdday != null) {
-                driver.vehicleDriver[i].createdday = new Date(driver.vehicleDriver[i].createdday);
-              }
-              if (driver.vehicleDriver[i].updateday != null) {
-                driver.vehicleDriver[i].updateday = new Date(driver.vehicleDriver[i].updateday);
-              }
-          }
+          
           x = [driver];
         }
 
