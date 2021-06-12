@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import {environment} from '../../../environments/environment';
+import {map} from 'rxjs/operators';
 
 
 @Injectable()
@@ -77,7 +78,7 @@ export class AdresseService {
     } else {
         this.id = this.currentUser.data[0].idUser;
     }
-    this.getAdressByUser(this.id).subscribe(data => {
+    return this.getAdressByUser(this.id).pipe(map (data => {
         result = data['_body'];
 
         const jo = JSON.parse(result);
@@ -86,8 +87,8 @@ export class AdresseService {
         for (let index = 0; index < jsonObjAdr.length; index++) {
           itemsAdr.push(jsonObjAdr[index]);
         }
-    });
-    return itemsAdr;
+      return  itemsAdr;
+    }));
 }
 
 getAdressesForUser(id) {

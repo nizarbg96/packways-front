@@ -321,7 +321,7 @@ export class TripsComponent implements OnInit {
         this.getAllAdmins();
 
         this.id = this.id.replace('UT', '');
-        this.Adresses = this.adressService.getAdresses();
+        this.adressService.getAdresses().subscribe((res) => this.Adresses = res);
         console.log(this.Adresses);
 
     }

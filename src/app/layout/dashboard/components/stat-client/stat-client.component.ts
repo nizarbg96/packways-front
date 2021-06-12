@@ -69,7 +69,7 @@ export class StatClientComponent implements OnInit {
           if (trip.msgTrip.length > 0) {
             if (this.PreMessagesAction.indexOf(trip.msgTrip[trip.msgTrip.length - 1].contentMsg) >= 0) {
               this.nbColisMesg[this.PreMessagesAction.indexOf(trip.msgTrip[trip.msgTrip.length - 1].contentMsg)] = this.nbColisMesg[this.PreMessagesAction.indexOf(trip.msgTrip[trip.msgTrip.length - 1].contentMsg)] + 1 ;
-            } else {
+              } else {
               this.nbColisMesg[this.PreMessagesAction.indexOf('Autre')] = this.nbColisMesg[this.PreMessagesAction.indexOf('Autre')] + 1 ;
             }
           }

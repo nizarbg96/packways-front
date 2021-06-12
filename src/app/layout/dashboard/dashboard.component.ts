@@ -156,66 +156,71 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     const lastDayLastMonth = new Date(this.date.getFullYear(), this.date.getMonth(), 0);
     console.log(firstDayLastMonth);
     console.log(lastDayLastMonth);
-    this.statestiquesService.queryByDateBetwwen(firstDayLastMonth, lastDayLastMonth).subscribe((res) => {
-      res.body.forEach(value => {
-        this.nbStopsLivreeLastMonth = this.nbStopsLivreeLastMonth + value.nbStopLivree;
-        this.nbColisLivreeLastMonth = this.nbColisLivreeLastMonth + value.nbColisLivree;
-        this.nbColisRetourneeLastMonth = this.nbColisRetourneeLastMonth + value.nbColisRetournee;
-        this.valDepensesLastMonth = this.valDepensesLastMonth + value.valDepenses;
-        this.beneficeLastMonth =  (this.nbColisLivreeLastMonth * 6) + (this.nbColisRetourneeLastMonth * 3) - this.valDepensesLastMonth;
+
+    if (localStorage.getItem('auth') === 'admin') {
+      this.statestiquesService.queryByDateBetwwen(firstDayLastMonth, lastDayLastMonth).subscribe((res) => {
+        res.body.forEach(value => {
+          this.nbStopsLivreeLastMonth = this.nbStopsLivreeLastMonth + value.nbStopLivree;
+          this.nbColisLivreeLastMonth = this.nbColisLivreeLastMonth + value.nbColisLivree;
+          this.nbColisRetourneeLastMonth = this.nbColisRetourneeLastMonth + value.nbColisRetournee;
+          this.valDepensesLastMonth = this.valDepensesLastMonth + value.valDepenses;
+          this.beneficeLastMonth =  (this.nbColisLivreeLastMonth * 6) + (this.nbColisRetourneeLastMonth * 3) - this.valDepensesLastMonth;
+        });
       });
-    });
-    this.dataSourceFiltred.paginator = this.paginator1;
-    this.dataSourceDriversFiltred.paginator = this.paginator2;
-    this.statestiquesService.queryByDate(firstDayCurrentMonth).subscribe((res) => {
-      this.loadData1 = false;
-      const stats = res.body.reverse();
-      this.dataSource = stats;
-      this.dataSourceFiltred =  new MatTableDataSource<StatActivityJour>(stats);
       this.dataSourceFiltred.paginator = this.paginator1;
-      res.body.filter((value) => value.entrepot.nom === this.user.entrepot.nom).forEach(value => {
-        this.nbColisLivree = this.nbColisLivree + value.nbColisLivree;
-        this.nbStopslivree = this.nbStopslivree  + value.nbStopLivree;
-        this.nbColisRetournee = this.nbColisRetournee + value.nbColisRetournee;
-        this.valDepenses = this.valDepenses + value.valDepenses;
-        this.benefice =  (this.nbColisLivree * 6) + (this.nbColisRetournee * 3) - this.valDepenses;
-      });
-    });
-    this.statestiquesService.getDriversStatsBetween({fromDate: firstDayCurrentMonth }).subscribe((res) => {
-      this.loadData2 = false;
-      const stats = res.body.reverse();
-      this.dataSourceDrivers = stats;
-      this.dataSourceDriversFiltred =  new MatTableDataSource<StatActivityDriver>(stats);
       this.dataSourceDriversFiltred.paginator = this.paginator2;
-    });
-    this.statestiquesService.getClientsStatsBetween({fromDate: firstDayCurrentMonth }).subscribe((res) => {
-      this.loadData3 = false;
+      this.statestiquesService.queryByDate(firstDayCurrentMonth).subscribe((res) => {
+        this.loadData1 = false;
+        const stats = res.body.reverse();
+        this.dataSource = stats;
+        this.dataSourceFiltred =  new MatTableDataSource<StatActivityJour>(stats);
+        this.dataSourceFiltred.paginator = this.paginator1;
+        res.body.filter((value) => value.entrepot.nom === this.user.entrepot.nom).forEach(value => {
+          this.nbColisLivree = this.nbColisLivree + value.nbColisLivree;
+          this.nbStopslivree = this.nbStopslivree  + value.nbStopLivree;
+          this.nbColisRetournee = this.nbColisRetournee + value.nbColisRetournee;
+          this.valDepenses = this.valDepenses + value.valDepenses;
+          this.benefice =  (this.nbColisLivree * 6) + (this.nbColisRetournee * 3) - this.valDepenses;
+        });
+      });
+      this.statestiquesService.getDriversStatsBetween({fromDate: firstDayCurrentMonth }).subscribe((res) => {
+        this.loadData2 = false;
+        const stats = res.body.reverse();
+        this.dataSourceDrivers = stats;
+        this.dataSourceDriversFiltred =  new MatTableDataSource<StatActivityDriver>(stats);
+        this.dataSourceDriversFiltred.paginator = this.paginator2;
+      });
+      this.statestiquesService.getClientsStatsBetween({fromDate: firstDayCurrentMonth }).subscribe((res) => {
+        this.loadData3 = false;
 
-      const stats = res.body.reverse();
-      this.dataSourceClients = res.body.reverse();
-      this.dataSourceClientsFiltred =  new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients);
-      this.dataSourceClientsFiltred.paginator = this.paginator3;
-    });
-    this.statestiquesService.getDriversRanking().subscribe((res) => {
-      this.loadData4 = false;
+        const stats = res.body.reverse();
+        this.dataSourceClients = res.body.reverse();
+        this.dataSourceClientsFiltred =  new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients);
+        this.dataSourceClientsFiltred.paginator = this.paginator3;
+      });
+      this.statestiquesService.getDriversRanking().subscribe((res) => {
+        this.loadData4 = false;
 
-      this.dataSourceRanking = res.body;
-      this.dataSourceRanking = this.dataSourceRanking.sort((a, b) => b.successRate - a.successRate);
-    });
-    this.statestiquesService.getClientsLastPickUpsDate().subscribe((res) => {
-      this.loadData5 = false;
-      this.dataSourceNbPickUps = res.body.slice().sort((a, b) => b.nbColisPickUp - a.nbColisPickUp);
-      console.log(this.dataSourceNbPickUps);
-      this.dataSourceLastPickUps = res.body.slice().sort((a, b) => new Date(b.lasPickUpDate).getTime() - new Date(a.lasPickUpDate).getTime());
-    });
+        this.dataSourceRanking = res.body;
+        this.dataSourceRanking = this.dataSourceRanking.sort((a, b) => b.successRate - a.successRate);
+      });
+      this.statestiquesService.getClientsLastPickUpsDate().subscribe((res) => {
+        this.loadData5 = false;
+        this.dataSourceNbPickUps = res.body.slice().sort((a, b) => b.nbColisPickUp - a.nbColisPickUp);
+        console.log(this.dataSourceNbPickUps);
+        this.dataSourceLastPickUps = res.body.slice().sort((a, b) => new Date(b.lasPickUpDate).getTime() - new Date(a.lasPickUpDate).getTime());
+      });
+    }
+
   }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
-    this.getEntrepots();
-    this.getAllDrivers();
-    this.getAllUsers();
-
+    if (localStorage.getItem('auth') === 'admin') {
+      this.getEntrepots();
+      this.getAllDrivers();
+      this.getAllUsers();
+    }
     if (localStorage.getItem('auth') === 'admin') {
       console.log('user is Admin---');
       this.id = 'admin';

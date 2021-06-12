@@ -16,6 +16,7 @@ import {PopUpDeleteModule} from './shared/pop-up-delete/pop-up-delete.module';
 import {LoginService} from '../login/login.service';
 import { StatesticsComponent } from './statestics/statestics.component';
 import { DepensesComponent } from './depenses/depenses.component';
+import { UserTripsComponent } from './user-trips/user-trips.component';
 
 
 

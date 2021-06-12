@@ -10,6 +10,7 @@ const routes: Routes = [
       {path: '', redirectTo: 'dashboard', pathMatch: 'prefix'},
       {path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardModule'},
       {path: 'trips', loadChildren: './trips/trips.module#TripsModule'},
+      {path: 'user-trips', loadChildren: './user-trips/user-trips.module#UserTripsModule'},
       {path: 'runsheet', loadChildren: './runsheet/runsheet.module#RunsheetModule'},
       {path: 'runsheet-in-progress', loadChildren: './runsheet-in-progress/runsheet-in-progress.module#RunsheetInProgressModule'},
       {path: 'mu', loadChildren: './moveable-unit/moveable-unit.module#MoveableUnitModule'},

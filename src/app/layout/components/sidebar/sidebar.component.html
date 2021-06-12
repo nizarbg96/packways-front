@@ -4,10 +4,14 @@
             <i class="fa fa-fw fa-dashboard"></i>&nbsp;
             <span>{{ 'Dashboard' | translate }}</span>
         </a>
-        <a [routerLink]="['/trips']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-fw fa-table"></i>&nbsp;
-            <span>{{ 'Gestion des colis' | translate }}</span>
-        </a>
+      <a  *ngIf="!isVisible" [routerLink]="['/user-trips']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-fw fa-table"></i>&nbsp;
+        <span>{{ 'Gestion des colis' | translate }}</span>
+      </a>
+      <a  *ngIf="isVisible" [routerLink]="['/trips']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fa fa-fw fa-table"></i>&nbsp;
+        <span>{{ 'Gestion des colis' | translate }}</span>
+      </a>
         <a *ngIf="isVisible"  href="#runsheetSubmenu"  class="list-group-item dropdown-toggle" data-toggle="collapse" aria-expanded="false">
             <i class="fa fa-files-o"></i>&nbsp; Runsheets</a>
       <ul class="collapse list-unstyled" id="runsheetSubmenu">
