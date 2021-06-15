@@ -84,7 +84,7 @@ export class RunsheetComponent implements OnInit {
   }
   getRunsheets() {
     this.spinner = true;
-    this.runsheetService.query().subscribe((res) => {
+    this.runsheetService.getDraftAndConfirmedRunsheets().subscribe((res) => {
       this.runsheets = res.body;
       this.runsheets = this.runsheets.filter((runsheet: Runsheet) =>
       ((runsheet.status === 'draft' || runsheet.status === 'confirmed') && runsheet.deleted === false) );

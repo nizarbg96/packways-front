@@ -56,7 +56,7 @@ export class ReconcileRunsheetComponent implements OnInit {
 
   getActivities() {
     this.spinner = true;
-    this.activityRunsheetService.query().subscribe((resActivity) => {
+    this.activityRunsheetService.getDraftActivities().subscribe((resActivity) => {
       this.activitiesRunsheet = resActivity.body.filter((activity) => ((activity.deleted === false) && (activity.status === 'draft' || activity.status === 'confirmed')));
       if(this.user.role !== 'superAdmin'){
         this.activitiesRunsheet = this.activitiesRunsheet.filter((activity) => activity.entrepot.id === this.user.entrepot.id || activity.createdBy === this.user.idAdmin );

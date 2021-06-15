@@ -62,6 +62,11 @@ export class ActivityRunsheetService {
       .get<IActivity[]>(this.resourceUrl, {observe: 'response' });
   }
 
+  getDraftActivities(): Observable<EntityArrayResponseType> {
+    return this.http
+      .get<IActivity[]>(this.resourceUrl + '/draft', {observe: 'response' });
+  }
+
   findAllByDriver(idDriver: string): Observable<EntityArrayResponseType> {
     return this.http
       .get<IActivity[]>(`${this.resourceUrl}/byDriver/${idDriver}`, { observe: 'response' });

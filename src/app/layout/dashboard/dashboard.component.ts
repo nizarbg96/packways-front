@@ -167,8 +167,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           this.beneficeLastMonth =  (this.nbColisLivreeLastMonth * 6) + (this.nbColisRetourneeLastMonth * 3) - this.valDepensesLastMonth;
         });
       });
-      this.dataSourceFiltred.paginator = this.paginator1;
-      this.dataSourceDriversFiltred.paginator = this.paginator2;
+
       this.statestiquesService.queryByDate(firstDayCurrentMonth).subscribe((res) => {
         this.loadData1 = false;
         const stats = res.body.reverse();
@@ -301,273 +300,38 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
   addEventDateDebutActivityJour(input: string, $event: MatDatepickerInputEvent<Date>) {
     this.dateDebut = $event.value;
-    /*if (!$event.value) {
-      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource);
-      this.dataSourceFiltred.paginator = this.paginator1;
-    } else {
-      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource.slice().filter((item) => {
-        if (!!this.dateFin){
-          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          if (item.jour >= this.dateDebut) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      } ));
-      this.dataSourceFiltred.paginator = this.paginator1;
-    }
-    if (!!this.entrepotValue){
-      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSourceFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
-      this.dataSourceFiltred.paginator = this.paginator1;
-    }*/
 
   }
 
   addEventDateFinActivityJour(change: string, $event: MatDatepickerInputEvent<Date>) {
     this.dateFin = $event.value;
-    /*if (!$event.value) {
-      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource);
-      this.dataSourceFiltred.paginator = this.paginator1;
-    } else {
-      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource.slice().filter((item) => {
-        if (!!this.dateDebut){
-          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          if (item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      } ));
-      this.dataSourceFiltred.paginator = this.paginator1;
-    }
-    if (!!this.entrepotValue){
-      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSourceFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
-      this.dataSourceFiltred.paginator = this.paginator1;
-    }*/
+
   }
   addEventDateDebutActivityDriver(input: string, $event: MatDatepickerInputEvent<Date>) {
     this.dateDebut = $event.value;
-    /*if (!$event.value) {
-      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers);
-      this.dataSourceDriversFiltred.paginator = this.paginator2;
-    } else {
-      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers.slice().filter((item) => {
-        if (!!this.dateFin){
-          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          if (item.jour >= this.dateDebut) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      } ));
-      this.dataSourceDriversFiltred.paginator = this.paginator2;
-    }
-    if (!!this.entrepotValue){
-      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDriversFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
-      this.dataSourceDriversFiltred.paginator = this.paginator2;
-    }*/
 
   }
 
   addEventDateFinActivityDriver(change: string, $event: MatDatepickerInputEvent<Date>) {
     this.dateFin = $event.value;
-    /*if (!$event.value) {
-      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers);
-      this.dataSourceDriversFiltred.paginator = this.paginator2;
-    } else {
-      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers.slice().filter((item) => {
-        if (!!this.dateDebut){
-          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          if (item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      } ));
-      this.dataSourceDriversFiltred.paginator = this.paginator2;
-    }
-    if (!!this.entrepotValue){
-      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDriversFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
-      this.dataSourceDriversFiltred.paginator = this.paginator2;
-    }*/
+
   }
   addEventDateDebutActivityClient(input: string, $event: MatDatepickerInputEvent<Date>) {
     this.dateDebut = $event.value;
-    /*if (!$event.value) {
-      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients);
-      this.dataSourceClientsFiltred.paginator = this.paginator3;
-    } else {
-      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients.slice().filter((item) => {
-        if (!!this.dateFin){
-          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          if (item.jour >= this.dateDebut) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      } ));
-      this.dataSourceClientsFiltred.paginator = this.paginator3;
-    }
-    if (!!this.entrepotValue){
-      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClientsFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
-      this.dataSourceClientsFiltred.paginator = this.paginator3;
-    }*/
 
   }
 
   addEventDateFinActivityClient(change: string, $event: MatDatepickerInputEvent<Date>) {
     this.dateFin = $event.value;
-    /*if (!$event.value) {
-      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients);
-      this.dataSourceClientsFiltred.paginator = this.paginator3;
-    } else {
-      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClients.slice().filter((item) => {
-        if (!!this.dateDebut){
-          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          if (item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      } ));
-      this.dataSourceClientsFiltred.paginator = this.paginator3;
-    }
-    if (!!this.entrepotValue){
-      this.dataSourceClientsFiltred = new MatTableDataSource<StatActivityJourClient>(this.dataSourceClientsFiltred.data.slice().filter((item) => item.entrepot.id === this.entrepotValue.id));
-      this.dataSourceClientsFiltred.paginator = this.paginator3;
-    }*/
+
   }
   affectEntrepotActivityGlobale(entrepot: Entrepot) {
     this.entrepotValue = entrepot;
-    /*if (!!entrepot) {
-      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource.slice().filter((item) => item.entrepot.id === entrepot.id));
-      this.dataSourceFiltred.paginator = this.paginator1;
-    } else {
-      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSource);
-      this.dataSourceFiltred.paginator = this.paginator1;
-    }
-    if (!!this.dateDebut){
-      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSourceFiltred.data.slice().filter((item) => {
-        if (!!this.dateFin){
-          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          if (item.jour >= this.dateDebut) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      } ));
-      this.dataSourceFiltred.paginator = this.paginator1;
 
-    }
-    if(!!this.dateFin){
-      this.dataSourceFiltred = new MatTableDataSource<StatActivityJour>(this.dataSourceFiltred.data.slice().filter((item) => {
-        if (!!this.dateDebut){
-          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          if (item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      } ));
-      this.dataSourceFiltred.paginator = this.paginator1;
-
-    }*/
   }
   affectEntrepotActivityDriver(entrepot: Entrepot) {
     this.entrepotValue = entrepot;
-    /*if (!!entrepot) {
-      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers.slice().filter((item) => item.entrepot.id === entrepot.id));
-      this.dataSourceDriversFiltred.paginator = this.paginator2;
-    } else {
-      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDrivers);
-      this.dataSourceDriversFiltred.paginator = this.paginator2;
-    }
-    if (!!this.dateDebut){
-      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDriversFiltred.data.slice().filter((item) => {
-        if (!!this.dateFin){
-          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          if (item.jour >= this.dateDebut) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      } ));
-      this.dataSourceDriversFiltred.paginator = this.paginator2;
 
-    }
-    if(!!this.dateFin){
-      this.dataSourceDriversFiltred = new MatTableDataSource<StatActivityDriver>(this.dataSourceDriversFiltred.data.slice().filter((item) => {
-        if (!!this.dateDebut){
-          if (item.jour >= this.dateDebut && item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          if (item.jour <= this.dateFin) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      } ));
-      this.dataSourceDriversFiltred.paginator = this.paginator2;
-
-    }*/
   }
 
 

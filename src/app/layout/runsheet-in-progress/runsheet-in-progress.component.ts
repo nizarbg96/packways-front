@@ -76,7 +76,7 @@ export class RunsheetInProgressComponent implements OnInit {
   }
   getRunsheets() {
     this.spinner = true;
-    this.runsheetService.query().subscribe((res) => {
+    this.runsheetService.getDispachedRunsheets().subscribe((res) => {
       this.runsheets = res.body;
       this.runsheets = this.runsheets.filter((runsheet: Runsheet) =>
         ((runsheet.status === 'dispached') && runsheet.deleted === false) );

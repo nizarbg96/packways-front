@@ -306,7 +306,9 @@
                                                 <th style="width:2%">REF</th>
                                                 <th style="width:10%">Source</th>
                                                 <th style="width:10%">Déstination</th>
-                                                <th style="width:10%"><mfDefaultSorter by="statusTrip">Status</mfDefaultSorter></th>
+                                          <th style="width:10%">Déstinateur</th>
+
+                                          <th style="width:10%"><mfDefaultSorter by="statusTrip">Status</mfDefaultSorter></th>
                                                 <th style="width:6%"><mfDefaultSorter by="userTrip.nameUser">Expéditeur</mfDefaultSorter></th>
                                                 <th style="width:10%">Postulation</th>
                                                 <th style="width:2%">Frais</th>
@@ -338,6 +340,7 @@
                                                 <td *ngIf="!isVisible">{{trip.refTrip}}</td>
                                                 <td>{{trip.sourceTrip.cityAdr}}</td>
                                                 <td>{{trip.destTrip.cityAdr}}</td>
+                                                <td>{{!!trip.destinataireTrip?trip.destinataireTrip.nameUser+' '+trip.destinataireTrip.surnameUser:'-'}}</td>
                                                 <td>{{trip.statusTrip}}</td>
                                                 <td>{{ trip.userTrip.nameUser }}</td>
                                                 <td>{{changeDateFormat(trip.createdday)}}</td>
@@ -361,9 +364,9 @@
                                                         <button type="button" class="mat-mini-fab" title="Envoyer le bon de livraison">
                                                                 <i class="material-icons" (click)="openBlModal(content7, trip)"> call_made </i>
                                                         </button>
-                                                        <!--<button *ngIf="isVisible" type="button" class="mat-mini-fab" title="Envoyer un message" (click)="openMsgModal(contentMsg, trip)">
+                                                        <button *ngIf="isVisible" type="button" class="mat-mini-fab" title="Envoyer un message" (click)="openMsgModal(contentMsg, trip)">
                                                                 <i class="material-icons"> present_to_all </i>
-                                                        </button>-->
+                                                        </button>
                                                         <!--<button type="button" class="mat-mini-fab" title="Ajuster la position de déstinataire" (click)="openLinkPos(trip.idTrip)">
                                                                 <i class="material-icons"> my_location </i>
                                                         </button>-->

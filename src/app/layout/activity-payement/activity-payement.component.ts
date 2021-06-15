@@ -45,6 +45,7 @@ export class ActivityPayementComponent implements OnInit {
   private closeResult: string;
   pageIndex = 0;
   pageSize = 1;
+  showNonClosed = false;
 
 
 
@@ -63,11 +64,19 @@ export class ActivityPayementComponent implements OnInit {
 
   getActivities() {
     this.spinner = true;
-    this.activityPayementService.getNextActivities(this.pageIndex, this.pageSize).subscribe((resActivity) => {
-      resActivity.body.filter((activity) => ((activity.deleted === false))).forEach(
+    if (this.user.role === 'superAdmin' ) {
+      this.activityPayementService.getNextActivities(this.pageIndex, this.pageSize).subscribe((resActivity) => {
+        resActivity.body.filter((activity) => ((activity.deleted === false))).forEach(
           value => this.activitiesPayement.push(value) );
-      this.spinner = false;
-    });
+        this.spinner = false;
+      });
+    } else {
+      this.activityPayementService.getNextUserActivities(this.pageIndex, this.pageSize, this.user.idUser).subscribe((resActivity) => {
+        resActivity.body.filter((activity) => ((activity.deleted === false))).forEach(
+          value => this.activitiesPayement.push(value) );
+        this.spinner = false;
+      });
+    }
   }
 
   openDialog(): void { let d = new Date();
@@ -280,6 +289,32 @@ export class ActivityPayementComponent implements OnInit {
   showMore() {
     this.pageIndex++;
     this.getActivities();
+  }
+
+  onToggleChange() {
+    if (!this.showNonClosed) {
+      this.spinner2.show();
+      this.activityPayementService.getNonClosedActivities().subscribe((res) => {
+        this.activitiesPayement = res.body;
+        this.spinner2.hide();
+      });
+
+    } else {
+      this.pageSize = this.pageIndex + 1;
+      this.pageIndex = 0;
+      this.spinner2.show();
+      this.activityPayementService.getNextActivities(this.pageIndex, this.pageSize).subscribe((resActivity) => {
+        this.activitiesPayement = resActivity.body;
+        if (this.user.role !== 'superAdmin') {
+          this.activitiesPayement = this.activitiesPayement.filter((activity) => activity.entrepot.id === this.user.entrepot.id ||
+            activity.closedBy === this.user.idAdmin);
+        }
+        this.spinner2.hide();
+        this.pageIndex = this.pageSize - 1;
+        this.pageSize = 1;
+      });
+    }
+
   }
 }
 @Component({

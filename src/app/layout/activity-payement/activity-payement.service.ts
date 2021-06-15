@@ -8,6 +8,7 @@ import {ActivityPayementInfo} from './activity-payement.component';
 import {IActivityPickUp} from '../../model/activity-pickUp.model';
 import {DatePipe} from '@angular/common';
 import {ICaisse} from '../../model/caisse.model';
+import {IActivity} from '../../model/activity.model';
 type EntityResponseType = HttpResponse<IActivityPayement>;
 type EntityArrayResponseType = HttpResponse<IActivityPayement[]>;
 
@@ -51,6 +52,14 @@ export class ActivityPayementService {
       .get<IActivityPayement[]>(`${this.resourceUrl}/listPageable`, { observe: 'response', params: params });
   }
 
+  getNextUserActivities(pageIndex, pageSize, userId): Observable<EntityArrayResponseType> {
+    let params = new HttpParams();
+    params = params.append('page', pageIndex);
+    params = params.append('size', pageSize);
+    return this.http
+      .get<IActivityPayement[]>(`${this.resourceUrl}/listPageable/${userId}`, { observe: 'response', params: params });
+  }
+
   findByCreatedDateGreaterThan(fromDate: Date): Observable<EntityArrayResponseType> {
     return this.http
       .post<IActivityPayement[]>(`${this.resourceUrl}/afterDate/`, fromDate, {observe: 'response' });
@@ -68,5 +77,10 @@ export class ActivityPayementService {
   getRecoltedTrips(trips: Trip[]) {
     return this.http.post<Trip[]>(`${this.resourceUrl}/excel-trips/filter/`, trips, {observe: 'response'});
 
+  }
+
+  getNonClosedActivities(): Observable<EntityArrayResponseType>{
+    return this.http
+      .get<IActivity[]>(`${this.resourceUrl}/nonClosed`, { observe: 'response'});
   }
 }

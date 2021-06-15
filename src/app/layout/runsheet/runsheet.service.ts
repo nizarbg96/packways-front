@@ -72,6 +72,16 @@ export class RunsheetService {
       .get<IRunsheet[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
+  getDraftAndConfirmedRunsheets(): Observable<EntityArrayResponseType> {
+    return this.http
+      .get<IRunsheet[]>(this.resourceUrl + '/draft-confirmed', {observe: 'response' });
+  }
+
+  getDispachedRunsheets(): Observable<EntityArrayResponseType> {
+    return this.http
+      .get<IRunsheet[]>(this.resourceUrl + '/dispached', {observe: 'response' });
+  }
+
   delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
