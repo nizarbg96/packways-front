@@ -1140,7 +1140,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
 
       this.activityRunsheetService.confirmActivity(activityConfirm).subscribe(() => {
         this.openCheckSuccess('activityConfirmed');
-        this.spinner2.hide()
+        this.spinner2.hide();
       });
 
 

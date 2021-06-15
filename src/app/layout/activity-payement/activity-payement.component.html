@@ -15,12 +15,15 @@
       </div>
     </div>
     <div class="row mt-2">
-      <div class="col-md-10 Aligner">
+      <div class="col-md-9 Aligner">
         <mat-slide-toggle *ngIf="user.role === 'superAdmin'" [(ngModel)]="showNonClosed" (toggleChange)="onToggleChange()">  {{showNonClosed? 'Activités non fermés':'Tout les activités'}}</mat-slide-toggle>
       </div>
-      <div class="col-md-2 Aligner ">
+      <div class="col-md-3 Aligner ">
         <button mat-raised-button *ngIf="activityPayement_List.selectedOptions.selected.length === 0 && user.role === 'superAdmin' "
-                style="width:100%;" color="primary" (click)="openDialog()" class="ml-2">nouveau payement
+                style="width:100%;" color="primary" (click)="openDialog()" class="ml-2">nouveau paiement
+        </button>
+        <button mat-raised-button *ngIf="activityPayement_List.selectedOptions.selected.length === 0 && user.role === 'superAdmin' "
+                style="width:100%; background-color: #1e7e34; color: white"   class="ml-2" routerLink="/payements/clients">paiements à faire
         </button>
         <button mat-raised-button color="warn" class="ml-2"
                 style="width: 100%"

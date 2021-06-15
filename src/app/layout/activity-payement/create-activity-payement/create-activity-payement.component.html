@@ -5,12 +5,12 @@
   <mat-card [class.mat-elevation-z8]="true" style="width: 100%;" >
     <div class="row">
       <div class="col-md-12">
-        <app-page-header [heading]="'Activité Payements'" [icon]="'fa-table'"></app-page-header>
+        <app-page-header [heading]="'Activité Paiements'" [icon]="'fa-table'"></app-page-header>
       </div>
     </div>
     <div class="row">
       <div class="col-md-12">
-        <h5>Activité payement de client : {{!!activityPayement?activityPayement.clientName :'-'}}</h5>
+        <h5>Activité paiement de client : {{!!activityPayement?activityPayement.clientName :'-'}}</h5>
         <p style="color: grey; font-style: italic;">{{ date | date:'longDate'}}</p>
       </div>
     </div>

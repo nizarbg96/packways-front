@@ -9,6 +9,7 @@ import {IActivityPickUp} from '../../model/activity-pickUp.model';
 import {DatePipe} from '@angular/common';
 import {ICaisse} from '../../model/caisse.model';
 import {IActivity} from '../../model/activity.model';
+import {PaiementsClient} from '../../model/PaiementClient.model';
 type EntityResponseType = HttpResponse<IActivityPayement>;
 type EntityArrayResponseType = HttpResponse<IActivityPayement[]>;
 
@@ -58,6 +59,11 @@ export class ActivityPayementService {
     params = params.append('size', pageSize);
     return this.http
       .get<IActivityPayement[]>(`${this.resourceUrl}/listPageable/${userId}`, { observe: 'response', params: params });
+  }
+
+  getClientsPayements(): Observable<HttpResponse<PaiementsClient[]>> {
+    return this.http
+      .get<PaiementsClient[]>(this.resourceUrl + '/clients', {observe: 'response' });
   }
 
   findByCreatedDateGreaterThan(fromDate: Date): Observable<EntityArrayResponseType> {

@@ -3698,35 +3698,25 @@ export class TripsComponent implements OnInit {
 
   }
   test2Function() {
-    let check = true ;
-    this.checkedTrips.forEach((trip) => {
-      if(!(trip.statusTrip === 'livraison en cours')){
-        this.snackBar.open('ERROR check TRIP with REF : '+ trip.refTrip, 'Fermer', {duration: 5000});
-        check = false;
-        return;
-      }});
-    if(check){
-      this.tservice.getListOfTips(this.checkedTrips.map(trip => trip.idTrip)).subscribe((resTrip) => {
-        const tripsRes = resTrip.body;
-        const tripsToUpdate: Trip[] = [];
-        this.userService.getAdminById(this.dataUser.idAdmin).subscribe((resUser => {
-          const admin = resUser.json();
-          tripsRes.forEach((trip) => {
-            trip.statusTrip = 'Chez Livreur'
-            trip.entrepot = admin.entrepot
-            trip.driverTrip = null ;
-            trip.currentRunsheetId = null;
-            trip.currentPickUpId = null;
-            trip.currentMUId = null
-            tripsToUpdate.push(trip);
-          });
-          this.tservice.updateListOfTips(tripsToUpdate).subscribe(() => {
-            this.snackBar.open('Success : Trips.entrepot = User.entrepot & trips.driver = null', 'Fermer', {duration: 5000});
-          });
-        }));
-      });
-
-    }
+    this.tservice.getListOfTips(this.checkedTrips.map(trip => trip.idTrip)).subscribe((resTrip) => {
+      const tripsRes = resTrip.body;
+      const tripsToUpdate: Trip[] = [];
+      this.userService.getAdminById(this.dataUser.idAdmin).subscribe((resUser => {
+        const admin = resUser.json();
+        tripsRes.forEach((trip) => {
+          trip.statusTrip = 'Chez Livreur'
+          trip.entrepot = admin.entrepot
+          trip.driverTrip = null;
+          trip.currentRunsheetId = null;
+          trip.currentPickUpId = null;
+          trip.currentMUId = null;
+          tripsToUpdate.push(trip);
+        });
+        this.tservice.updateListOfTips(tripsToUpdate).subscribe(() => {
+          this.snackBar.open('Success : Trips.entrepot = User.entrepot & trips.driver = null', 'Fermer', {duration: 5000});
+        });
+      }));
+    });
 
   }
 }

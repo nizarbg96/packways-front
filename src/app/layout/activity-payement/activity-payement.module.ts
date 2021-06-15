@@ -16,14 +16,15 @@ import {NgxSpinnerModule} from 'ngx-spinner';
 import {Ng2CompleterModule} from 'ng2-completer';
 import {MaterialLibModule} from '../material/material.module';
 import {
-  CreateActivityPayementComponent, NgbdModalActivityPayementConfirmed,
-  NgbdModalConfirmActivityPayement
+  CreateActivityPayementComponent, NgbdModalActivityPayementConfirmed, NgbdModalConfirmActivityPayement
 } from './create-activity-payement/create-activity-payement.component';
+import {UserPayementsComponent} from './user-payements/user-payements.component';
 
 @NgModule({
   declarations: [ActivityPayementComponent, CreateActivityPayementComponent, DialogClientToActivityPayementComponent,
-    NgbdModalConfirmActivityPayement, NgbdModalActivityPayementConfirmed],
-  entryComponents: [DialogClientToActivityPayementComponent, NgbdModalConfirmActivityPayement, NgbdModalActivityPayementConfirmed],
+    NgbdModalConfirmActivityPayement, NgbdModalActivityPayementConfirmed, UserPayementsComponent],
+  entryComponents: [DialogClientToActivityPayementComponent, NgbdModalConfirmActivityPayement, NgbdModalActivityPayementConfirmed,
+    UserPayementsComponent],
   imports: [
     CommonModule,
     ActivityPayementRoutingModule, ReactiveFormsModule,
