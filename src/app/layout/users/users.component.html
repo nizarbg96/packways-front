@@ -49,6 +49,8 @@
                                     <!-- <th style="width:1%">#</th> -->
                                     <th style="width:10%">Nom et prènom</th>
                                     <th style="width:10%">Email</th>
+                                    <th style="width:10%">Telephone</th>
+                                    <th style="width:10%">Adresse</th>
                                     <th style="width:10%">Etat du compte</th>
                                     <th style="width:10%" hidden>Evaluation</th>
                                     <th style="width:10%">Date de création</th>
@@ -63,7 +65,9 @@
                                     <!-- <td scope="row"><input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1"></td> -->
                                     <td>{{user.nameUser}} {{user.surnameUser}}</td>
                                     <td>{{user.emailUser}}</td>
-                                    <td *ngIf="user.accountActive==true" id="user-tdactif-{{user.idUser}}">Actif</td>
+                                    <td>{{user.mobileUser}}</td>
+                                  <td>{{user.adressUser}}</td>
+                                  <td *ngIf="user.accountActive==true" id="user-tdactif-{{user.idUser}}">Actif</td>
                                     <td *ngIf="user.accountActive==false" id="user-tdinactif-{{user.idUser}}">Inactif</td>
                                     <td hidden>{{user.rateUser / user.nbrateUser}}</td>
                                     <td>{{changeDateFormat(user.createdday)}}</td>
