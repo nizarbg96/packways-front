@@ -41,6 +41,10 @@ export class DepensesService {
     return this.http
       .get<IDepenses[]>(this.resourceUrl, { observe: 'response' });
   }
+  getDepensesBetween(dateRange: any): Observable<EntityArrayResponseType> {
+    return this.http
+      .post<IDepenses[]>(this.resourceUrl + '/betweenDates', dateRange, { observe: 'response' });
+  }
 
   delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });

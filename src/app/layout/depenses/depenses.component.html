@@ -32,55 +32,95 @@
       </div>
 
       <div class="example-table-container">
-        <div class="mat-elevation-z8">
-          <table mat-table [dataSource]="dataSource">
-            <ng-container matColumnDef="createdDate">
-              <th mat-header-cell *matHeaderCellDef> Date </th>
-              <td mat-cell *matCellDef="let element" [ngStyle]="{'background': element.deleted?'gray': (!!element.filename ? 'green' : 'auto')}" > {{element.createdDate | date}} </td>
-            </ng-container>
-            <ng-container matColumnDef="createdBy">
-              <th mat-header-cell *matHeaderCellDef> Creé par  </th>
-              <td mat-cell *matCellDef="let element" [ngStyle]="{'background': element.deleted?'gray':(!!element.filename ? 'green' : 'auto')}"> {{element.createdByName}} </td>
-            </ng-container>
-            <ng-container matColumnDef="type">
-              <th mat-header-cell *matHeaderCellDef> Type </th>
-              <td mat-cell *matCellDef="let element" [ngStyle]="{'background': element.deleted?'gray':(!!element.filename ? 'green' : 'auto')}"> {{!!element.type?element.type:'-'}} </td>
-            </ng-container>
-            <ng-container matColumnDef="montant">
-              <th mat-header-cell *matHeaderCellDef> Montant </th>
-              <td mat-cell *matCellDef="let element" [ngStyle]="{'background': element.deleted?'gray':(!!element.filename ? 'green' : 'auto')}"> {{!!element.montant?element.montant:'-'}} TND </td>
-            </ng-container>
-            <ng-container matColumnDef="depenseFrom">
-              <th mat-header-cell *matHeaderCellDef> Prélevé de  </th>
-              <td mat-cell *matCellDef="let element" [ngStyle]="{'background': element.deleted?'gray':(!!element.filename ? 'green' : 'auto')}"> {{!!element.depenseFrom?element.depenseFrom:'-'}} </td>
-            </ng-container>
-            <ng-container matColumnDef="depenseTo">
-              <th mat-header-cell *matHeaderCellDef> Affecté à </th>
-              <td mat-cell *matCellDef="let element" [ngStyle]="{'background': element.deleted?'gray':(!!element.filename ? 'green' : 'auto')}"> {{!!element.affectedTo?element.affectedTo.firstName+' '+element.affectedTo.lastName:'-'}}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="action" style="width:50%">
-              <th mat-header-cell *matHeaderCellDef></th>
-              <td mat-cell *matCellDef="let element"  [ngStyle]="{'background': element.deleted?'gray':(!!element.filename ? 'green' : 'auto'),'padding-right':'0px'}">
-                <button mat-mini-fab color="primary" class="mr-2" (click)="viewDetails(element)" >
-                  <mat-icon  [ngStyle]="{'cursor':'pointer'}" >visibility</mat-icon>
-                </button>
-                <button mat-mini-fab color="warn" class="mr-2"  *ngIf="!element.deleted" (click)="deleteDepense(element)">
-                  <mat-icon  [ngStyle]="{'cursor':'pointer'}" >delete</mat-icon>
-                </button>
-                <button mat-mini-fab   *ngIf="!element.deleted" (click)="fileInput.click()" >
-                  <input #fileInput type="file" (change)="onFileChanged2($event, element)" style="display:none;" />
-                  <mat-icon  [ngStyle]="{'cursor':'pointer'}" >attach_file</mat-icon>
-                </button>
-              </td>
-            </ng-container>
+        <div class="nav-container" >
+          <div class="bg" ></div>
+          <div class="button mt-n2" tabindex="0" #button1 style="z-index:50000;float: left">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </div>
+          <div class="nav-content" tabindex="0" style="overflow: scroll">
+            <ul>
+              <li><mat-form-field appearance="fill">
+                <mat-label>Date de début</mat-label>
+                <input matInput [matDatepicker]="picker1"
+                       (dateInput)="addEventDateDebutDepenses('input', $event)" (dateChange)="addEventDateDebutDepenses('change', $event)">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+              </mat-form-field></li>
+              <li><mat-form-field appearance="fill">
+                <mat-label>Date de fin</mat-label>
+                <input matInput [matDatepicker]="picker2"
+                       (dateInput)="addEventDateFinDepenses('input', $event)" (dateChange)="addEventDateFinDepenses('change', $event)">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+              </mat-form-field></li>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
-
-          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+              <li class="mt-4">
+                <button mat-raised-button color="primary" (click)="applyFilterGlobalDepenses()" >appliquer filtre</button>
+                <button mat-button color="primary" (click)="generateExcelReportDepenses(dataSource.data)">Generate Excel</button>
+              </li>
+            </ul>
+          </div>
         </div>
+        <main>
+          <div class="content">
+            <div *ngIf="dataSource.data.length == 0" class="row justify-content-center" style="height: 30vh; display: flex;
+  align-items: center;">
+              <h5 style="color: grey">aucune donnée enregistrée</h5>
+            </div>
+            <div class="mat-elevation-z8">
+              <table mat-table [dataSource]="dataSource" *ngIf="dataSource.data.length > 0">
+                <ng-container matColumnDef="createdDate">
+                  <th mat-header-cell *matHeaderCellDef> Date </th>
+                  <td mat-cell *matCellDef="let element" [ngStyle]="{'background': element.deleted?'gray': (!!element.filename ? 'green' : 'auto')}" > {{element.createdDate | date}} </td>
+                </ng-container>
+                <ng-container matColumnDef="createdBy">
+                  <th mat-header-cell *matHeaderCellDef> Creé par  </th>
+                  <td mat-cell *matCellDef="let element" [ngStyle]="{'background': element.deleted?'gray':(!!element.filename ? 'green' : 'auto')}"> {{element.createdByName}} </td>
+                </ng-container>
+                <ng-container matColumnDef="type">
+                  <th mat-header-cell *matHeaderCellDef> Type </th>
+                  <td mat-cell *matCellDef="let element" [ngStyle]="{'background': element.deleted?'gray':(!!element.filename ? 'green' : 'auto')}"> {{!!element.type?element.type:'-'}} </td>
+                </ng-container>
+                <ng-container matColumnDef="montant">
+                  <th mat-header-cell *matHeaderCellDef> Montant </th>
+                  <td mat-cell *matCellDef="let element" [ngStyle]="{'background': element.deleted?'gray':(!!element.filename ? 'green' : 'auto')}"> {{!!element.montant?element.montant:'-'}} TND </td>
+                </ng-container>
+                <ng-container matColumnDef="depenseFrom">
+                  <th mat-header-cell *matHeaderCellDef> Prélevé de  </th>
+                  <td mat-cell *matCellDef="let element" [ngStyle]="{'background': element.deleted?'gray':(!!element.filename ? 'green' : 'auto')}"> {{!!element.depenseFrom?element.depenseFrom:'-'}} </td>
+                </ng-container>
+                <ng-container matColumnDef="depenseTo">
+                  <th mat-header-cell *matHeaderCellDef> Affecté à </th>
+                  <td mat-cell *matCellDef="let element" [ngStyle]="{'background': element.deleted?'gray':(!!element.filename ? 'green' : 'auto')}"> {{!!element.affectedTo?element.affectedTo.firstName+' '+element.affectedTo.lastName:'-'}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="action" style="width:50%">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                  <td mat-cell *matCellDef="let element"  [ngStyle]="{'background': element.deleted?'gray':(!!element.filename ? 'green' : 'auto'),'padding-right':'0px'}">
+                    <button mat-mini-fab color="primary" class="mr-2" (click)="viewDetails(element)" >
+                      <mat-icon  [ngStyle]="{'cursor':'pointer'}" >visibility</mat-icon>
+                    </button>
+                    <button mat-mini-fab color="warn" class="mr-2"  *ngIf="!element.deleted" (click)="deleteDepense(element)">
+                      <mat-icon  [ngStyle]="{'cursor':'pointer'}" >delete</mat-icon>
+                    </button>
+                    <button mat-mini-fab   *ngIf="!element.deleted" (click)="fileInput.click()" >
+                      <input #fileInput type="file" (change)="onFileChanged2($event, element)" style="display:none;" />
+                      <mat-icon  [ngStyle]="{'cursor':'pointer'}" >attach_file</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+
+              <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            </div>
+
+          </div>
+        </main>
       </div>
     </div>
 

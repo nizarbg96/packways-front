@@ -31,6 +31,6 @@ import {DepenseDetailsComponent} from './depense-details/depense-details.compone
     NgxSpinnerModule, MatSnackBarModule, Ng2CompleterModule, MaterialLibModule,
     ReactiveFormsModule
   ],
-  providers:[DatePipe, TripService, DriversService]
+  providers:[DatePipe, TripService, DriversService, DatePipe]
 })
 export class DepensesModule { }

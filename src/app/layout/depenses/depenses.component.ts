@@ -1,5 +1,13 @@
 import {AfterViewInit, Component, Inject, OnInit, TemplateRef, Type, ViewChild} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatPaginator, MatSnackBar, MatStepper, MatTableDataSource} from '@angular/material';
+import {
+  MAT_DIALOG_DATA,
+  MatDatepickerInputEvent,
+  MatDialog,
+  MatPaginator,
+  MatSnackBar,
+  MatStepper,
+  MatTableDataSource
+} from '@angular/material';
 import {Depenses, IDepenses} from '../../model/depenses.model';
 import {DepensesService} from './depenses.service';
 import {IStatActivityJour, StatActivityJour} from '../../model/stat-activity-jour.model';
@@ -26,6 +34,8 @@ import {CaisseService} from '../caisse-state/caisse.service';
 import {FileUploadService} from '../activity-payement/create-activity-payement/file-upload.service';
 import {environment} from '../../../environments/environment';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {DatePipe} from '@angular/common';
+import {TripExcelService} from '../trips/excel-trip.service';
 
 @Component({
   selector: 'app-depenses',
@@ -39,11 +49,14 @@ export class DepensesComponent implements OnInit, AfterViewInit {
   private user: any;
   private imgURL: any;
   private selectedFile: any;
+  private dateDebut: any;
+  private dateFin: any;
 
 
   constructor(private depensesService: DepensesService, private modalService: NgbModal, private fb: FormBuilder,
               public dialog: MatDialog, private popUpDeleteService: PopUpDeleteService,  private fileUploadService: FileUploadService,
-              private snackBar: MatSnackBar, private caisseService: CaisseService, private spinner2: NgxSpinnerService) {
+              private snackBar: MatSnackBar, private caisseService: CaisseService,
+              private spinner2: NgxSpinnerService, public datepipe: DatePipe, private tripExcelService: TripExcelService) {
   }
 
   displayedColumns: string[] = ['createdDate', 'createdBy', 'type', 'montant', 'depenseFrom', 'depenseTo', 'action'];
@@ -157,6 +170,58 @@ export class DepensesComponent implements OnInit, AfterViewInit {
       this.spinner2.hide();
       this.depensesService.depenseDialogExit.next(true);
     });
+  }
+
+
+
+  addEventDateDebutDepenses(input: string, $event: MatDatepickerInputEvent<unknown>) {
+    this.dateDebut = $event.value;
+  }
+
+  addEventDateFinDepenses(input: string, $event: MatDatepickerInputEvent<unknown>) {
+    this.dateFin = $event.value;
+  }
+
+  applyFilterGlobalDepenses() {
+    this.depensesService.getDepensesBetween({fromDate: this.dateDebut, toDate: this.dateFin}).subscribe((res) => {
+      this.dataSource = new MatTableDataSource<Depenses>(res.body);
+      this.dataSource.paginator = this.paginator;
+      this.dateDebut = null; this.dateFin = null;});
+  }
+
+  generateExcelReportDepenses(data: Depenses[]) {
+    if (data.length === 0) {
+      this.snackBar.open('il n y a pas des depenses à générer.', 'Fermer', {
+        duration: 10000,
+      });
+      return;
+    }
+    let tab = [];
+    const tripsByUser = [];
+    for (let i = 0; i < data.length; i++) {
+      tab = [];
+      const jTemp = data[i];
+      tab.push(this.splitDateFormatMDY2(this.datepipe.transform(jTemp.createdDate, 'yyyy-MM-dd')), jTemp.type, jTemp.description, jTemp.montant + ' TND',
+        !!jTemp.affectedTo?jTemp.affectedTo.firstName + ' ' + jTemp.affectedTo.lastName :'none', jTemp.depenseFrom, jTemp.createdByName,
+        !!jTemp.affectedCar?jTemp.affectedCar.modelVehicle + ' ' +jTemp.affectedCar.marqueVehicle:'',
+        !!jTemp.depenseActivity?jTemp.depenseActivity.avance+ ' TND':'', !!jTemp.depenseActivity?jTemp.depenseActivity.avanceMois:'', !!jTemp.depenseActivity?jTemp.depenseActivity.autreDesc: '',
+        !!jTemp.depenseActivity?jTemp.depenseActivity.autreValue + ' TND':'', !!jTemp.depenseActivity?jTemp.depenseActivity.desktopCharge+ ' TND':'',
+      !!jTemp.depenseActivity?jTemp.depenseActivity.carteTel+ ' TND':'',
+        !!jTemp.depenseActivity?jTemp.depenseActivity.gasoilEspece+ ' TND':'', !!jTemp.depenseActivity?jTemp.depenseActivity.carMaintaining+ ' TND':'');
+      tripsByUser.push(tab);
+    }
+    this.tripExcelService.generateExcelDepenses(tripsByUser, '', '', '', '');
+
+  }
+
+  splitDateFormatMDY2(dd) {
+    let dformat = '';
+    if (dd != null) {
+      const d = '' + dd;
+      const arr = d.split('-');
+      dformat = arr[1] + '/' + arr[0] + '/' + arr[2];
+    }
+    return dformat;
   }
 }
 
