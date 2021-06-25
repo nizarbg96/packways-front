@@ -617,7 +617,7 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
   checked = false;
   driver: any;
 
-  constructor(private modal: NgbActiveModal, private activityMoveableUnitService: ActivityMuService) {
+  constructor(public modal: NgbActiveModal, private activityMoveableUnitService: ActivityMuService) {
   }
 
   ngOnInit() {
@@ -640,7 +640,7 @@ export class NgbdModalActivityMuConfirmed implements OnInit {
   checked = true;
   driver: any;
 
-  constructor(private modal: NgbActiveModal, private activityMoveableUnitService: ActivityMuService) {
+  constructor(public modal: NgbActiveModal, private activityMoveableUnitService: ActivityMuService) {
   }
 
   ngOnInit() {

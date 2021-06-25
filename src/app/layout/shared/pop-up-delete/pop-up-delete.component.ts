@@ -11,7 +11,7 @@ export class PopUpDeleteComponent implements OnInit {
   activity: any;
   activityName: string;
 
-  constructor(private modal: NgbActiveModal, private popUpDeleteService: PopUpDeleteService) {
+  constructor(public modal: NgbActiveModal, private popUpDeleteService: PopUpDeleteService) {
   }
 
   ngOnInit() {

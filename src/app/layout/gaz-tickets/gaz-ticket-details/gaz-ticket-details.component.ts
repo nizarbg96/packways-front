@@ -11,7 +11,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 export class GazTicketDetailsComponent implements OnInit {
    gasTicket = new GasTicket();
 
-  constructor(private gasTicketService: GasTicketService, private modal: NgbActiveModal) { }
+  constructor(private gasTicketService: GasTicketService, public modal: NgbActiveModal) { }
 
   ngOnInit() {
     this.gasTicket = this.gasTicketService.selectedGasTicket;

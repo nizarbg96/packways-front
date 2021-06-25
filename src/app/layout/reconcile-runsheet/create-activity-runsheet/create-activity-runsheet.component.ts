@@ -1484,7 +1484,7 @@ export class NgbdModalConfirmNonLivree implements OnInit {
   trip: Trip = null;
   newStatus: string;
 
-  constructor(private modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -1506,7 +1506,7 @@ export class NgbdModalConfirmLivree implements OnInit {
   trip: Trip = null;
   newStatus: string;
 
-  constructor(private modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -1529,7 +1529,7 @@ export class NgbdModalConfirmActivity implements OnInit {
   checked = false;
   driver: any;
 
-  constructor(private modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -1552,7 +1552,7 @@ export class NgbdModalActivityConfirmed implements OnInit {
   checked = true;
   driver: any;
 
-  constructor(private modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -1582,7 +1582,7 @@ export class NgbdModalConfirmReturned implements OnInit {
   trip: Trip = null;
   newStatus: string;
 
-  constructor(private modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {

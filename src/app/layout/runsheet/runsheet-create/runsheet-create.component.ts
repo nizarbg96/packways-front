@@ -528,7 +528,7 @@ export class NgbdModalCreateForceRetour implements OnInit {
   trip: Trip = null;
   newStatus: string;
 
-  constructor(private modal: NgbActiveModal, private runsheetService: RunsheetService) {
+  constructor(private public: NgbActiveModal, private runsheetService: RunsheetService) {
   }
 
   ngOnInit() {

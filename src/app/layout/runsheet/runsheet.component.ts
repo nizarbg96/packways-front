@@ -374,7 +374,7 @@ export class NgbdModalDeleteRunsheet implements OnInit {
   runsheet: Runsheet = null;
   newStatus: string;
 
-    constructor(private modal: NgbActiveModal, private runsheetService: RunsheetService) {
+    constructor(public modal: NgbActiveModal, private runsheetService: RunsheetService) {
     }
 
   ngOnInit() {

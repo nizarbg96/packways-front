@@ -15,7 +15,7 @@ export class DepenseDetailsComponent implements OnInit {
   url = environment.serverUrl;
 
 
-  constructor(private modal: NgbActiveModal, private depensesService: DepensesService) {
+  constructor(public modal: NgbActiveModal, private depensesService: DepensesService) {
   }
   ngOnInit() {
     this.depense = this.depensesService.depenseDeatil;

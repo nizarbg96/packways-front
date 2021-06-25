@@ -451,7 +451,7 @@ export class DialogAddDriverToCreateMUComponent implements OnInit {
 export class NgbdModalCreateForceRetourMu implements OnInit {
   trip: Trip = null;
 
-  constructor(private modal: NgbActiveModal, private moveableUnitService: MoveableUnitService) {
+  constructor(public modal: NgbActiveModal, private moveableUnitService: MoveableUnitService) {
   }
 
   ngOnInit() {

@@ -928,7 +928,7 @@ export class NgbdModalCloseActivity implements OnInit {
   checked = false;
   driver: any;
 
-  constructor(private modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -951,7 +951,7 @@ export class NgbdModalActivityClosed implements OnInit {
   checked = true;
   driver: any;
 
-  constructor(private modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {

@@ -1178,7 +1178,7 @@ export class NgbdModalConfirmActivityPayement implements OnInit {
   client: any;
   typeConfirm: string;
 
-  constructor(private modal: NgbActiveModal, private activityPayementService: ActivityPayementService) {
+  constructor(public modal: NgbActiveModal, private activityPayementService: ActivityPayementService) {
   }
 
   ngOnInit() {
@@ -1203,7 +1203,7 @@ export class NgbdModalActivityPayementConfirmed implements OnInit {
   driver: any;
   typeConfirm: string;
 
-  constructor(private modal: NgbActiveModal, private activityPayementService: ActivityPayementService) {
+  constructor(public modal: NgbActiveModal, private activityPayementService: ActivityPayementService) {
   }
 
   ngOnInit() {

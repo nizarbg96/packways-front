@@ -14,7 +14,7 @@ export class InjectionFonDetailsComponent implements OnInit {
 
    injection: InjectionFond;
 
-  constructor(private modal: NgbActiveModal, private injectionFondService: InjectionFondService) {
+  constructor(public modal: NgbActiveModal, private injectionFondService: InjectionFondService) {
   }
   ngOnInit() {
     this.injection = this.injectionFondService.injectionDetails;

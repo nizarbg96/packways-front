@@ -448,7 +448,7 @@ export class NgbdModalConfirmInventaire implements OnInit {
   checked = false;
   driver: any;
 
-  constructor(private modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -470,7 +470,7 @@ export class NgbdModalInventaireConfirmed implements OnInit {
   checked = true;
   driver: any;
 
-  constructor(private modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
