@@ -111,7 +111,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
    depensesAutre: {affectedCar: Car,  createdByName: any; depenseFrom: string; affectedTo: any; description: string; montant: any; type: string; deletedBy?: string; createdDate: Date; deleted?: boolean; deletedByName?: string; createdBy: string; deletedDate?: Date; carnetGasoil?: string; id?: string; depenseActivity: { gasoilEspece: null; autreValue: any; avanceMois: null; avance: null; autreDesc: any; carMaintaining: null; gasoilCarteValue?: string; carteTel: null; gasoilCarteNumber?: string; desktopCharge: null } };
    listRelatedTrips: Trip[] = [];
   constructor(public activityRunsheetService: ActivityRunsheetService, private _formBuilder: FormBuilder, private tripService: TripService,
-              private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
+              private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, public runsheetService: RunsheetService,
               private fb: FormBuilder, public ramassageService: RamassageService, private userService: UserService, private http: Http,
               private conflitService: ConflitService, private depensesService: DepensesService, private employeeService: EmployeeService,
               private spinner2: NgxSpinnerService) {

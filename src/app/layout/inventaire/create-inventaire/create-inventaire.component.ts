@@ -40,7 +40,7 @@ export class CreateInventaireComponent implements OnInit, AfterViewInit {
   spinner = false;
   closeResult: string;
   selectedInProgressTrips: Trip[] = [];
-  @ViewChild('stepper') private myStepper: MatStepper;
+  @ViewChild('stepper') public myStepper: MatStepper;
   user: any;
   driver: any;
   listColisNonTreated: Trip[] = [];
@@ -70,10 +70,10 @@ export class CreateInventaireComponent implements OnInit, AfterViewInit {
    inventaireStepper = true;
 
 
-  constructor(private inventaireService: InventaireService, private _formBuilder: FormBuilder, private tripService: TripService,
-              private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private fb: FormBuilder,
-              public ramassageService: RamassageService, private userService: UserService, private runsheetService: RunsheetService,
-              public moveableUnitService: MoveableUnitService, private conflictService: ConflitService) {
+  constructor(public inventaireService: InventaireService, public _formBuilder: FormBuilder, private tripService: TripService,
+              public modalService: NgbModal, public router: Router, public snackBar: MatSnackBar, private fb: FormBuilder,
+              public ramassageService: RamassageService, public userService: UserService, public runsheetService: RunsheetService,
+              public moveableUnitService: MoveableUnitService, public conflictService: ConflitService) {
   }
 
   ngOnInit() {
@@ -345,7 +345,7 @@ export class CreateInventaireComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private getDismissReason(reason: any): string {
+  public getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {

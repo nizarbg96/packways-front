@@ -212,8 +212,8 @@ export class DialogAddDriverToReconcileMuComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToReconcileMuComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService,
-    private entrepotService: EntrepotService, private driverService: DriversService) {}
+    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, public muService: MoveableUnitService,
+    public entrepotService: EntrepotService, private driverService: DriversService) {}
 
   ngOnInit(): void {
     this.getAllDrivers();

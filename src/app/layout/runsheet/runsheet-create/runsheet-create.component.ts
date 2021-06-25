@@ -59,7 +59,7 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
   routeSub: Subscription;
   confirmed = false;
   runsheetInfo: RunsheetInfo;
-   affectedMatricule: string;
+  affectedMatricule: string;
 
 
   ngOnInit() {
@@ -433,8 +433,8 @@ export class DialogAddDriverToCreateRunsheetComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToCreateRunsheetComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService,
-    private entrepotService: EntrepotService, private runsheetService: RunsheetService, private driverService: DriversService,
+    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, public muService: MoveableUnitService,
+    public entrepotService: EntrepotService, private runsheetService: RunsheetService, private driverService: DriversService,
     private carService: CarService) {
   }
 
@@ -528,7 +528,7 @@ export class NgbdModalCreateForceRetour implements OnInit {
   trip: Trip = null;
   newStatus: string;
 
-  constructor(public modal: NgbActiveModal, private runsheetService: RunsheetService) {
+  constructor(public modal: NgbActiveModal, public runsheetService: RunsheetService) {
   }
 
   ngOnInit() {

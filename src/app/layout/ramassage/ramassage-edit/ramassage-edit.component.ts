@@ -295,7 +295,7 @@ export class DialogAddDriverToEditPickUpComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToEditPickUpComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private entrepotService: EntrepotService,
+    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, public entrepotService: EntrepotService,
     private driverService: DriversService, public ramassageService: RamassageService) {}
 
   ngOnInit(): void {

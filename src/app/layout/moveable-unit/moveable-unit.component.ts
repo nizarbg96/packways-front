@@ -38,7 +38,7 @@ export class MoveableUnitComponent implements OnInit {
    affectedEntrepotSrc: Entrepot;
    affectedEntrepotDest: Entrepot;
 
-  constructor(public dialog: MatDialog, private muService: MoveableUnitService, private router: Router, private tripService: TripService,
+  constructor(public dialog: MatDialog, public muService: MoveableUnitService, private router: Router, private tripService: TripService,
               private modalService: NgbModal, private popUpDeleteService: PopUpDeleteService, private userService: UserService) { }
 
   ngOnInit() {
@@ -204,8 +204,8 @@ export class DialogAddDriverToMUComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToMUComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService,
-    private entrepotService: EntrepotService, private driverService: DriversService) {}
+    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, public muService: MoveableUnitService,
+    public entrepotService: EntrepotService, private driverService: DriversService) {}
 
   ngOnInit(): void {
     this.getAllDrivers();

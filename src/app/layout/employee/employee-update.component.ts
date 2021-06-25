@@ -44,7 +44,7 @@ export class EmployeeUpdateComponent implements OnInit {
 
 
   constructor(public employeeService: EmployeeService, protected activatedRoute: ActivatedRoute, private fb: FormBuilder,
-              public activeModal: NgbActiveModal, private entrepotService: EntrepotService) {}
+              public activeModal: NgbActiveModal, public entrepotService: EntrepotService) {}
 
   ngOnInit(): void {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];

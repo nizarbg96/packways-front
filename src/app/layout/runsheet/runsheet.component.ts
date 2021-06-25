@@ -52,7 +52,7 @@ export class RunsheetComponent implements OnInit {
    car: null;
 
 
-  constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private modalService: NgbModal,
+  constructor(public dialog: MatDialog, public runsheetService: RunsheetService, private modalService: NgbModal,
               private router: Router, private tripService: TripService, private snackBar: MatSnackBar, private carService: CarService,
               private spinner2: NgxSpinnerService) { }
 
@@ -294,8 +294,8 @@ export class DialogAddDriverToRunsheetComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToRunsheetComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService,
-    private entrepotService: EntrepotService, private driverService: DriversService, private carService: CarService) {}
+    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, public muService: MoveableUnitService,
+    public entrepotService: EntrepotService, public driverService: DriversService, private carService: CarService) {}
 
   ngOnInit(): void {
     this.getAllDrivers();
@@ -374,7 +374,7 @@ export class NgbdModalDeleteRunsheet implements OnInit {
   runsheet: Runsheet = null;
   newStatus: string;
 
-    constructor(public modal: NgbActiveModal, private runsheetService: RunsheetService) {
+    constructor(public modal: NgbActiveModal, public runsheetService: RunsheetService) {
     }
 
   ngOnInit() {

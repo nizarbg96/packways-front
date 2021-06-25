@@ -335,8 +335,8 @@ export class DialogClientToActivityPayementComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogClientToActivityPayementComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService,
-    private entrepotService: EntrepotService, private userService: UserService) {}
+    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, public muService: MoveableUnitService,
+    public entrepotService: EntrepotService, private userService: UserService) {}
 
   ngOnInit(): void {
     this.getAllUsers();

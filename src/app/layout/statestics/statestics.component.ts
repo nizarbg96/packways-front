@@ -16,7 +16,7 @@ export class StatesticsComponent implements OnInit, AfterViewInit {
   healthStats = new HealthStats(0,0,0,0,0,)
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  constructor(private statestiquesService: StatestiquesService) { }
+  constructor(public statestiquesService: StatestiquesService) { }
 
 
 

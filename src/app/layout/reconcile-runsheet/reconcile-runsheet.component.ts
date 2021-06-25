@@ -43,9 +43,9 @@ export class ReconcileRunsheetComponent implements OnInit {
 
 
 
-  constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private router: Router, private tripService: TripService,
+  constructor(public dialog: MatDialog, public runsheetService: RunsheetService, private router: Router, public tripService: TripService,
               public activityRunsheetService: ActivityRunsheetService, private snackBar: MatSnackBar, private http: Http,
-              private popUpDeleteService: PopUpDeleteService, private modalService: NgbModal) { }
+              public popUpDeleteService: PopUpDeleteService, public modalService: NgbModal) { }
 
   ngOnInit() {
     this.selectionList.selectedOptions = new SelectionModel<MatListOption>(false);
@@ -212,8 +212,8 @@ export class DialogAddDriverToReconcileRunsheetComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToReconcileRunsheetComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService,
-    private entrepotService: EntrepotService, private driverService: DriversService) {}
+    @Inject(MAT_DIALOG_DATA) public data: any, public tservice: TripService, public muService: MoveableUnitService,
+    public entrepotService: EntrepotService, public driverService: DriversService) {}
 
   ngOnInit(): void {
     this.getAllDrivers();

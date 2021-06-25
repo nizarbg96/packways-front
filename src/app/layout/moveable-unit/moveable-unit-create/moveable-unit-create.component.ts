@@ -368,7 +368,7 @@ export class DialogAddDriverToCreateMUComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToCreateMUComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService, private entrepotService: EntrepotService,
+    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, public muService: MoveableUnitService, public entrepotService: EntrepotService,
     public moveableUnitService: MoveableUnitService, private driverService: DriversService) {
   }
 

@@ -135,7 +135,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
 
   constructor(public dservice: DashboardService, private statestiquesService: StatestiquesService, public dialog: MatDialog,  private modalService: NgbModal,
-              public datepipe: DatePipe, private entrepotService: EntrepotService, private tservice: TripService, private snackBar: MatSnackBar,
+              public datepipe: DatePipe, public entrepotService: EntrepotService, private tservice: TripService, private snackBar: MatSnackBar,
               private driverService: DriversService, private tripExcelService: TripExcelService, private spinner: NgxSpinnerService) {
 
     if (localStorage.getItem('auth') === 'admin') {

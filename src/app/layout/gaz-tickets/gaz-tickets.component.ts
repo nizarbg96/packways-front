@@ -103,8 +103,8 @@ export class DialogAffecterBordereauComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogAffecterBordereauComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService,
-    private entrepotService: EntrepotService, private runsheetService: RunsheetService, private driverService: DriversService,
+    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, public muService: MoveableUnitService,
+    public entrepotService: EntrepotService, private runsheetService: RunsheetService, private driverService: DriversService,
     private carService: CarService, private employeeService: EmployeeService, private gasTicketService: GasTicketService,
     private snackBar: MatSnackBar) {
   }

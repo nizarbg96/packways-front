@@ -55,10 +55,10 @@ export class RunsheetEditComponent implements OnInit, OnDestroy {
    cout: number;
    car: Car;
 
-  constructor(private tservice: TripService, private snackBar: MatSnackBar, public runsheetService: RunsheetService,
-    private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,
-    public dialog: MatDialog, private modalService: NgbModal, private userService: UserService,
-              private conflitService: ConflitService, public ramassageService: RamassageService, public moveableUnitService: MoveableUnitService){ }
+  constructor(public tservice: TripService, private snackBar: MatSnackBar, public runsheetService: RunsheetService,
+    private activatedRoute: ActivatedRoute, public driverService: DriversService, private router: Router,
+    public dialog: MatDialog, private modalService: NgbModal, public userService: UserService,
+              public conflitService: ConflitService, public ramassageService: RamassageService, public moveableUnitService: MoveableUnitService){ }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];
@@ -424,8 +424,8 @@ ngOnDestroy(): void {
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToEditRunsheetComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService,
-    private entrepotService: EntrepotService, private runsheetService: RunsheetService, private  driverService: DriversService,
+    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, public muService: MoveableUnitService,
+    public entrepotService: EntrepotService, public runsheetService: RunsheetService, private  driverService: DriversService,
     private carService: CarService) {}
 
   ngOnInit(): void {
@@ -508,7 +508,7 @@ export class NgbdModalEditForceRetour implements OnInit {
   trip: Trip = null;
   newStatus: string;
 
-  constructor(public modal: NgbActiveModal, private runsheetService: RunsheetService) {
+  constructor(public modal: NgbActiveModal, public runsheetService: RunsheetService) {
   }
 
   ngOnInit() {

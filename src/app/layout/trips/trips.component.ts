@@ -276,7 +276,7 @@ export class TripsComponent implements OnInit {
     constructor( public dialog: MatDialog, private imageCompress: NgxImageCompressService,  private modalService: NgbModal, public adressService: AdresseService, private tservice: TripService,
          public loginService: LoginService, public http: Http, public sanitizer: DomSanitizer, public router: Router,
          private spinner: NgxSpinnerService, private snackBar: MatSnackBar, private tripExcelService: TripExcelService,
-                 private runsheetService: RunsheetService, private userService: UserService) {
+                 public runsheetService: RunsheetService, private userService: UserService) {
             this.auth = localStorage.getItem('auth');
             if (this.auth === 'admin') {
                 this.isVisible = true;

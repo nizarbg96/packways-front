@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit {
   private closeResult: string;
   private entrepots: IEntrepot[] = [];
     constructor(private translate: TranslateService, public router: Router, private idle: Idle, private keepalive: Keepalive,
-                private modalService: NgbModal, private entrepotService: EntrepotService, private userService: UserService,
+                private modalService: NgbModal, public entrepotService: EntrepotService, private userService: UserService,
                 private snackBar: MatSnackBar, private loginservice: LoginService) {
       if(!!JSON.parse(localStorage.getItem('currentUser'))){
         this.objUser = JSON.parse(localStorage.getItem('currentUser')).data[0];

@@ -34,7 +34,7 @@ export class EntrepotCreateComponent implements OnInit {
   });
    user: any;
 
-  constructor(protected entrepotService: EntrepotService, protected activatedRoute: ActivatedRoute, private fb: FormBuilder) {}
+  constructor(public entrepotService: EntrepotService, protected activatedRoute: ActivatedRoute, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ entropot }) => {
@@ -74,7 +74,7 @@ export class EntrepotCreateComponent implements OnInit {
     }
   }
 
-  private createFromForm(): IEntrepot {
+  public createFromForm(): IEntrepot {
     return {
       ...new Entrepot(),
       id: this.editForm.get(['id'])!.value,

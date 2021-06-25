@@ -117,7 +117,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
   constructor(private activityPayementService: ActivityPayementService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private fb: FormBuilder,
               public ramassageService: RamassageService, private userService: UserService, public activityRunsheetService: ActivityRunsheetService,
-              private entrepotService: EntrepotService, private fileUploadService: FileUploadService, private spinner2: NgxSpinnerService,
+              public entrepotService: EntrepotService, private fileUploadService: FileUploadService, private spinner2: NgxSpinnerService,
               private  tripExcelService: TripExcelService) {
   }
 

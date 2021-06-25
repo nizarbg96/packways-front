@@ -368,7 +368,7 @@ export class DialogAddDriverToEditMUComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToEditMUComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, public moveableUnitService: MoveableUnitService,
-    private entrepotService: EntrepotService, private driverService: DriversService) {}
+    public entrepotService: EntrepotService, private driverService: DriversService) {}
 
   ngOnInit(): void {
     this.getAllDrivers();
