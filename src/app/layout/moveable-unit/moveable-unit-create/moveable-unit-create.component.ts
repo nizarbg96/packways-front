@@ -51,9 +51,9 @@ export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
   routeSub: Subscription;
   confirmed = false;
   muInfo: MuInfo;
-  private affectedMatricule: string;
-  private affectedEntrepotSrc: Entrepot;
-  private affectedEntrepotDest: Entrepot;
+   affectedMatricule: string;
+   affectedEntrepotSrc: Entrepot;
+   affectedEntrepotDest: Entrepot;
 
 
   ngOnInit() {

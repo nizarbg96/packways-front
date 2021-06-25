@@ -74,10 +74,10 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
       autreValue: [null, Validators.required],
     }
   );
-  private trips: Trip[] = [];
+   trips: Trip[] = [];
   listConflit: Conflit[] = [];
-  private ListScanMoveableUnitNB: any;
-  private muStepper = false;
+   ListScanMoveableUnitNB: any;
+   muStepper = false;
   actions = ['lost', 'non expédié', 'damaged'];
    listSurvey: Trip[] = [];
 

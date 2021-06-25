@@ -27,8 +27,8 @@ export class CloseActivityRunsheetComponent implements OnInit {
   affectedDriver: any;
   affectedDriverNgModel = '';
   date = new Date();
-  private driver: any;
-  private runsheets: Runsheet[] = [];
+   driver: any;
+   runsheets: Runsheet[] = [];
   spinner = false;
   activityRunsheetInfo: ActivityRunsheetInfo = {driver: null, runsheets: null};
   activitiesRunsheet: Activity[] = [];

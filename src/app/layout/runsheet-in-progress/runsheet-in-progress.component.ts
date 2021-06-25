@@ -35,14 +35,14 @@ export class RunsheetInProgressComponent implements OnInit {
   inProgressRunsheets: InProgressRunsheet[] = [];
   spinner = false;
   user: any;
-  private checkedRunsheetStatus: string;
+   checkedRunsheetStatus: string;
   @ViewChild(MatSelectionList)
-  private selectionList: MatSelectionList;
-  private selectedRunsheet: Runsheet;
+   selectionList: MatSelectionList;
+   selectedRunsheet: Runsheet;
   //for modal
   closeResult: string;
-  private selectedInProgressTrips: Trip[] = [];
-  private filtredInProgressRunsheet: InProgressRunsheet[] = [];
+   selectedInProgressTrips: Trip[] = [];
+   filtredInProgressRunsheet: InProgressRunsheet[] = [];
 
 
 

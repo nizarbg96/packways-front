@@ -34,13 +34,13 @@ export class MuInProgressComponent implements OnInit {
   filtredInProgressMoveableUnits: InProgressMoveableUnit[] = [];
   spinner = false;
   user: any;
-  private checkedMoveableUnitStatus: string;
+   checkedMoveableUnitStatus: string;
   @ViewChild(MatSelectionList)
-  private selectionList: MatSelectionList;
-  private selectedMoveableUnit: MoveableUnit;
+   selectionList: MatSelectionList;
+   selectedMoveableUnit: MoveableUnit;
   // for modal
   closeResult: string;
-  private selectedInProgressTrips: Trip[] = [];
+   selectedInProgressTrips: Trip[] = [];
 
 
 

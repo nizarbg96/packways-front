@@ -41,13 +41,13 @@ export class RunsheetComponent implements OnInit {
   filtredRunsheets: Runsheet[] = [];
   spinner = false;
   user: any;
-  private checkedRunsheetStatus: string;
+   checkedRunsheetStatus: string;
   @ViewChild(MatSelectionList)
-  private selectionList: MatSelectionList;
-  private selectedRunsheet: Runsheet;
-  private affectedMatricule: string;
-  private closeResult: string;
-  private cout: number;
+   selectionList: MatSelectionList;
+   selectedRunsheet: Runsheet;
+   affectedMatricule: string;
+   closeResult: string;
+   cout: number;
    cars: ICar[] = [];
    car: null;
 

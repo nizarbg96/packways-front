@@ -27,7 +27,7 @@ export class InventaireComponent implements OnInit {
   selectedInventaire: Inventaire;
   checkedInventaireStatus: string;
   user: any;
-  private moreDayCounter = 1;
+   moreDayCounter = 1;
 
 
 

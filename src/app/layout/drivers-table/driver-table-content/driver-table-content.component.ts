@@ -15,8 +15,8 @@ type AOA = any[][];
 })
 export class DriverTableContentComponent implements OnInit, AfterViewInit {
 
-  private user: any;
-  private isLoadingResults = true;
+   user: any;
+   isLoadingResults = true;
   displayedColumns1: string[] = ['mois', 'driver', 'nbColisLivree', 'nbClientsLivree', 'coutPrestation', 'avance', 'gasoil', 'chargesFixe', 'reste', 'action'];
   displayedColumns2: string[] = ['mois', 'driver', 'nbColisLivree', 'nbClientsLivree', 'coutPrestation', 'avance', 'gasoil', 'chargesFixe', 'reste', 'action'];
   @ViewChild('pag1') paginator1: MatPaginator;
@@ -32,8 +32,8 @@ export class DriverTableContentComponent implements OnInit, AfterViewInit {
   dateDebut: Date;
   dateFin: Date;
   @ViewChild('button1') button1: ElementRef<HTMLElement>;
-  private tripsFromExcelTemp: AOA;
-  private tripsFromExcel: AOA;
+   tripsFromExcelTemp: AOA;
+   tripsFromExcel: AOA;
   constructor(private driversTableService: DriversTableService, private driverService: DriversService, private tservice: TripService) { }
   ngAfterViewInit() {
     this.isLoadingResults = true;

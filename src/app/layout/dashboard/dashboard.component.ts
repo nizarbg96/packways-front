@@ -107,7 +107,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   selectedActivityJour: IStatActivityJour;
   selectedActivityDriver: IStatActivityDriver;
   selectedActivityClient: IStatActivityJourClient;
-  private closeResult: string;
+   closeResult: string;
 
   Listdriverauto = [];
   Listdriver = [];
@@ -121,8 +121,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   dateDebut: Date;
   dateFin: Date;
   @ViewChild('button1') button1: ElementRef<HTMLElement>;
-  private tripsFromExcelTemp: AOA;
-  private tripsFromExcel: AOA;
+   tripsFromExcelTemp: AOA;
+   tripsFromExcel: AOA;
   loadData1 = true;
   loadData2 = true;
   loadData3 = true;

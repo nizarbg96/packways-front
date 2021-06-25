@@ -32,7 +32,7 @@ export class EntrepotCreateComponent implements OnInit {
     // deletedBy: [],
     // deletedDate: [],
   });
-  private user: any;
+   user: any;
 
   constructor(protected entrepotService: EntrepotService, protected activatedRoute: ActivatedRoute, private fb: FormBuilder) {}
 

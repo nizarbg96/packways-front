@@ -35,13 +35,13 @@ export class RamassageInProgressComponent implements OnInit {
   filtredInProgressPickUps: InProgressPickUp[] = [];
   spinner = false;
   user: any;
-  private checkedPickUpsStatus: string;
+   checkedPickUpsStatus: string;
   @ViewChild(MatSelectionList)
-  private selectionList: MatSelectionList;
-  private selectedPickUp: PickUp;
+   selectionList: MatSelectionList;
+   selectedPickUp: PickUp;
   // for modal
   closeResult: string;
-  private selectedInProgressTrips: Trip[] = [];
+   selectedInProgressTrips: Trip[] = [];
 
 
 

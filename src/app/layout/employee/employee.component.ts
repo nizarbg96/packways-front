@@ -34,7 +34,7 @@ export class EmployeeComponent implements OnInit {
   affectedCars = [];
   affectedCarsIds = [];
   selectedEmployee: Employee;
-  private closeResult: string;
+   closeResult: string;
 
   constructor(
     protected employeeService: EmployeeService,

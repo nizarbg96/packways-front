@@ -44,13 +44,13 @@ import {TripExcelService} from '../trips/excel-trip.service';
 })
 export class DepensesComponent implements OnInit, AfterViewInit {
   date = new Date();
-  private closeResult: string;
+   closeResult: string;
   isLoadingResults = false;
-  private user: any;
-  private imgURL: any;
-  private selectedFile: any;
-  private dateDebut: any;
-  private dateFin: any;
+   user: any;
+   imgURL: any;
+   selectedFile: any;
+   dateDebut: any;
+   dateFin: any;
 
 
   constructor(private depensesService: DepensesService, private modalService: NgbModal, private fb: FormBuilder,

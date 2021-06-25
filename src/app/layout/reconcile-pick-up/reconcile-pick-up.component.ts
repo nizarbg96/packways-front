@@ -27,8 +27,8 @@ import {environment} from '../../../environments/environment';
 })
 export class ReconcilePickUpComponent implements OnInit {
   date = new Date();
-  private driver: any;
-  private pickUps: PickUp[] = [];
+   driver: any;
+   pickUps: PickUp[] = [];
   spinner = false;
   activityPickUpInfo: ActivityPickUpInfo  = {driver: null, pickUps: null};
   activitiesPickUp: ActivityPickUp[] = [];
@@ -38,7 +38,7 @@ export class ReconcilePickUpComponent implements OnInit {
   selectedActivity: Activity;
   checkedActivityStatus: string;
   user: any;
-  private moreDayCounter = 1;
+   moreDayCounter = 1;
 
 
 

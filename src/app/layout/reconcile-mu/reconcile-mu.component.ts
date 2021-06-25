@@ -25,7 +25,7 @@ import {environment} from '../../../environments/environment';
 export class ReconcileMuComponent implements OnInit {
 
   date = new Date();
-  private driver: any;
+   driver: any;
   spinner = false;
   activityMoveableUnitInfo: ActivityMoveableUnitInfo  = {driver: null, moveableUnits: null};
   activitiesMoveableUnit: ActivityMu[] = [];

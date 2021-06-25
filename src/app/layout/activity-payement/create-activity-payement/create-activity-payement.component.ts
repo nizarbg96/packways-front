@@ -108,8 +108,8 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
   public imagePath;
   imgURL: any;
   url = environment.serverUrl;
-  private tripsFromExcelTemp: AOA;
-  private tripsFromExcel: AOA
+  tripsFromExcelTemp: AOA;
+  tripsFromExcel: AOA
   tripsExcelRecoltedFound: Trip[] = [];
   tripsExcelNotRecolted: Trip[] = [];
 

@@ -14,7 +14,7 @@ import {EntrepotDeleteComponent} from './entrepot-delete/entrepot-delete.compone
 })
 export class EntrepotComponent implements OnInit, OnDestroy {
   entrepots?: IEntrepot[];
-  private user: any;
+   user: any;
 
   constructor(protected entrepotService: EntrepotService, protected modalService: NgbModal) {}
 

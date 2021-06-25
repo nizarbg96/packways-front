@@ -33,12 +33,12 @@ export class RamassageComponent implements OnInit {
   filtredPickUps: PickUp[] = [];
   spinner = false;
   user: any;
-  private checkedPickUpStatus: string;
+   checkedPickUpStatus: string;
   @ViewChild(MatSelectionList)
-  private selectionList: MatSelectionList;
-  private selectedPickUp: PickUp;
-  private affectedMatricule: string;
-  private affectedEntrepot: Entrepot;
+   selectionList: MatSelectionList;
+   selectedPickUp: PickUp;
+   affectedMatricule: string;
+   affectedEntrepot: Entrepot;
 
   constructor(public dialog: MatDialog, private ramassageService: RamassageService, private router: Router, private tripService: TripService,
               private popUpDeleteService: PopUpDeleteService, private modalService: NgbModal) { }

@@ -65,9 +65,9 @@ export class CreateInventaireComponent implements OnInit, AfterViewInit {
       autreValue: [null, Validators.required],
     }
   );
-  private trips: Trip[] = [];
-  private ListScanInventaireNB: any;
-  private inventaireStepper = true;
+   trips: Trip[] = [];
+   ListScanInventaireNB: any;
+   inventaireStepper = true;
 
 
   constructor(private inventaireService: InventaireService, private _formBuilder: FormBuilder, private tripService: TripService,

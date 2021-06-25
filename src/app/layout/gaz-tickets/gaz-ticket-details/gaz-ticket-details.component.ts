@@ -9,7 +9,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./gaz-ticket-details.component.scss']
 })
 export class GazTicketDetailsComponent implements OnInit {
-  private gasTicket = new GasTicket();
+   gasTicket = new GasTicket();
 
   constructor(private gasTicketService: GasTicketService, private modal: NgbActiveModal) { }
 

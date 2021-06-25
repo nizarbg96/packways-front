@@ -30,13 +30,13 @@ export class MoveableUnitComponent implements OnInit {
   filtredMoveableUnits: MoveableUnit[] = [];
   spinner = false;
   user: any;
-  private checkedMUStatus: string;
+   checkedMUStatus: string;
   @ViewChild(MatSelectionList)
-  private selectionList: MatSelectionList;
-  private selectedMU: MoveableUnit;
-  private affectedMatricule: string;
-  private affectedEntrepotSrc: Entrepot;
-  private affectedEntrepotDest: Entrepot;
+   selectionList: MatSelectionList;
+   selectedMU: MoveableUnit;
+   affectedMatricule: string;
+   affectedEntrepotSrc: Entrepot;
+   affectedEntrepotDest: Entrepot;
 
   constructor(public dialog: MatDialog, private muService: MoveableUnitService, private router: Router, private tripService: TripService,
               private modalService: NgbModal, private popUpDeleteService: PopUpDeleteService, private userService: UserService) { }

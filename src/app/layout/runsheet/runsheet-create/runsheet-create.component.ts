@@ -33,8 +33,8 @@ import {CarService} from '../../car/car.service';
   styleUrls: ['./runsheet-create.component.scss']
 })
 export class RunsheetCreateComponent implements OnInit, OnDestroy {
-  private closeResult: string;
-  private car: Car;
+   closeResult: string;
+   car: Car;
 
   constructor(private tservice: TripService, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
               private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,

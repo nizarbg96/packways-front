@@ -46,8 +46,8 @@ export class RamassageCreateComponent implements OnInit, OnDestroy {
   routeSub: Subscription;
   confirmed = false;
   pickUpInfo: PickUpInfo;
-  private affectedMatricule: string;
-  private affectedEntrepot: Entrepot;
+   affectedMatricule: string;
+   affectedEntrepot: Entrepot;
 
 
 

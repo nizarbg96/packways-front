@@ -29,8 +29,8 @@ import {PopUpDeleteComponent} from '../shared/pop-up-delete/pop-up-delete.compon
 })
 export class ReconcileRunsheetComponent implements OnInit {
   date = new Date();
-  private driver: any;
-  private runsheets: Runsheet[] = [];
+   driver: any;
+   runsheets: Runsheet[] = [];
   spinner = false;
   activityRunsheetInfo: ActivityRunsheetInfo  = {driver: null, runsheets: null};
   activitiesRunsheet: Activity[] = [];

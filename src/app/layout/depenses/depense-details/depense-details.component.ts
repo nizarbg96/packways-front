@@ -11,7 +11,7 @@ import {environment} from '../../../../environments/environment';
   styleUrls: ['./depense-details.component.scss']
 })
 export class DepenseDetailsComponent implements OnInit {
-  private depense: Depenses;
+   depense: Depenses;
   url = environment.serverUrl;
 
 

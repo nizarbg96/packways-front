@@ -29,7 +29,7 @@ export class ConflictTripsComponent implements OnInit {
     'Reconcile M.U - Lost', 'Reconcile M.U - Damaged', 'Reconcile Activity Pick Up - Non Expédié', 'Reconcile Activity Pick Up - Lost',
     'Reconcile Activity Pick Up - Damaged'];
   conflitInventaire = ['Inventaire - Non Treated'];
-  private moreDayCounter = 1;
+   moreDayCounter = 1;
 
   constructor(private conflitService: ConflitService, private tripService: TripService) { }
 

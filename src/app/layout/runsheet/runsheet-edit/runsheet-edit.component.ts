@@ -50,10 +50,10 @@ export class RunsheetEditComponent implements OnInit, OnDestroy {
   routeSub: Subscription;
   confirmed = false;
   runsheetInfo: RunsheetInfo;
-  private affectedMatricule: string;
-  private closeResult: string;
+   affectedMatricule: string;
+   closeResult: string;
    cout: number;
-  private car: Car;
+   car: Car;
 
   constructor(private tservice: TripService, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
     private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,

@@ -11,7 +11,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 export class EntrepotDeleteComponent implements OnInit{
 
   entropot?: IEntrepot;
-  private user: any;
+   user: any;
 
   constructor(protected entropotService: EntrepotService, public activeModal: NgbActiveModal) {}
 

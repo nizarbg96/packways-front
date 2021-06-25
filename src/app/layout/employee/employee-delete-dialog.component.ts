@@ -8,7 +8,7 @@ import {IEmployee} from '../../model/employee.model';
 })
 export class EmployeeDeleteDialogComponent {
   employee?: IEmployee;
-  private user: any;
+   user: any;
 
   constructor(protected employeeService: EmployeeService, public activeModal: NgbActiveModal) {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];

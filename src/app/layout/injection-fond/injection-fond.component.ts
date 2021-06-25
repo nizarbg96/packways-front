@@ -32,9 +32,9 @@ import {CaisseService} from '../caisse-state/caisse.service';
 export class InjectionFondComponent implements OnInit, AfterViewInit {
 
   date = new Date();
-  private closeResult: string;
+   closeResult: string;
   isLoadingResults = false;
-  private user: any;
+   user: any;
 
 
   constructor(private modalService: NgbModal, private fb: FormBuilder, private injectionFondService: InjectionFondService,

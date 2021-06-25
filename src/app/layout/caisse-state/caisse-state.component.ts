@@ -33,8 +33,8 @@ export class CaisseStateComponent implements OnInit {
   lastCoffre;
   pageIndex = 0;
   pageSize = 1 ;
-  private loadingNextPage = false;
-  private newCoffreCreated = false;
+   loadingNextPage = false;
+   newCoffreCreated = false;
 
   constructor(public dialog: MatDialog, private gasTicketService: GasTicketService, private modalService: NgbModal,
               private snackBar: MatSnackBar, private caisseService: CaisseService, private spinner2: NgxSpinnerService) {

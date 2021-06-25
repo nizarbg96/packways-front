@@ -28,7 +28,7 @@ import {GazTicketDetailsComponent} from './gaz-ticket-details/gaz-ticket-details
 export class GazTicketsComponent implements OnInit {
 
   date = new Date();
-  private isLoadingResults = false;
+   isLoadingResults = false;
   filtredTickets: GasTicket[] = [];
 
   constructor(public dialog: MatDialog, private gasTicketService: GasTicketService, private modalService: NgbModal,

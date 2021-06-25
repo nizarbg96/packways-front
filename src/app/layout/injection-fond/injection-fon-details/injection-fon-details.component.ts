@@ -12,7 +12,7 @@ import {InjectionFondService} from '../injection-fond.service';
 })
 export class InjectionFonDetailsComponent implements OnInit {
 
-  private injection: InjectionFond;
+   injection: InjectionFond;
 
   constructor(private modal: NgbActiveModal, private injectionFondService: InjectionFondService) {
   }

@@ -27,7 +27,7 @@ import {CaisseService} from '../caisse-state/caisse.service';
 export class ChargeFixeComponent implements OnInit {
 
   date = new Date();
-  private isLoadingResults = false;
+   isLoadingResults = false;
   filtredCharges: ChargeFixe[] = [];
 
   constructor(public dialog: MatDialog, private chargeFixeService: ChargeFixeService, private modalService: NgbModal,
