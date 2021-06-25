@@ -55,10 +55,10 @@ export class RunsheetEditComponent implements OnInit, OnDestroy {
    cout: number;
    car: Car;
 
-  constructor(private tservice: TripService, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
+  constructor(private tservice: TripService, private snackBar: MatSnackBar, public runsheetService: RunsheetService,
     private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,
     public dialog: MatDialog, private modalService: NgbModal, private userService: UserService,
-              private conflitService: ConflitService, private ramassageService: RamassageService, private moveableUnitService: MoveableUnitService){ }
+              private conflitService: ConflitService, public ramassageService: RamassageService, public moveableUnitService: MoveableUnitService){ }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('currentUser')).data[0];

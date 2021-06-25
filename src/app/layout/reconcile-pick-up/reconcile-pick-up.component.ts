@@ -42,7 +42,7 @@ export class ReconcilePickUpComponent implements OnInit {
 
 
 
-  constructor(public dialog: MatDialog, private ramassageService: RamassageService, private router: Router, private tripService: TripService,
+  constructor(public dialog: MatDialog, public ramassageService: RamassageService, private router: Router, private tripService: TripService,
               private activityPickUpService: ActivityPickUpService, private snackBar: MatSnackBar, private popUpDeleteService: PopUpDeleteService,
               private modalService: NgbModal, private driverService: DriversService) { }
 

@@ -45,14 +45,14 @@ export class MoveableUnitEditComponent implements OnInit, OnDestroy {
   routeSub: Subscription;
   confirmed = false;
   muInfo: MuInfo;
-  private affectedMatricule: string;
-  private affectedEntrepotSrc: Entrepot;
-  private affectedEntrepotDest: Entrepot;
-  private closeResult: string;
+   affectedMatricule: string;
+   affectedEntrepotSrc: Entrepot;
+   affectedEntrepotDest: Entrepot;
+   closeResult: string;
 
-  constructor(private tservice: TripService, private snackBar: MatSnackBar, private moveableUnitService: MoveableUnitService,
+  constructor(private tservice: TripService, private snackBar: MatSnackBar, public moveableUnitService: MoveableUnitService,
               private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,
-              public dialog: MatDialog, private modalService: NgbModal, private runsheetService: RunsheetService, private ramassageService: RamassageService,
+              public dialog: MatDialog, private modalService: NgbModal, private runsheetService: RunsheetService, public ramassageService: RamassageService,
               private userService: UserService, private conflitService: ConflitService) { }
 
 
@@ -367,7 +367,7 @@ export class DialogAddDriverToEditMUComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToEditMUComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private moveableUnitService: MoveableUnitService,
+    @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, public moveableUnitService: MoveableUnitService,
     private entrepotService: EntrepotService, private driverService: DriversService) {}
 
   ngOnInit(): void {
@@ -445,7 +445,7 @@ export class DialogAddDriverToEditMUComponent implements OnInit {
 export class NgbdModalEditForceRetourMu implements OnInit {
   trip: Trip = null;
 
-  constructor(public modal: NgbActiveModal, private moveableUnitService: MoveableUnitService) {
+  constructor(public modal: NgbActiveModal, public moveableUnitService: MoveableUnitService) {
   }
 
   ngOnInit() {

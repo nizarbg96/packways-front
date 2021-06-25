@@ -29,7 +29,7 @@
             </ng2-completer></li>
             <li class="mt-4">
               <button mat-raised-button color="primary" (click)="applyFilter()" >appliquer filtre</button>
-              <button mat-button color="primary" class="ml-2" (click)="generateExcelReportActivityDriver(dataSourceDriversFiltred.data)">Generate Excel</button>
+              <button mat-button color="primary" class="ml-2" (click)="generateExcelReportActivityDriver(dataSourceFiltred.data)">Generate Excel</button>
             </li>
           </ul>
         </div>
@@ -129,7 +129,7 @@
                                [textNoResults]="'Pas trouvé.'" [placeholder]="'Livreur'" (selected)="getSelectedDriver2($event)" [(ngModel)]="affectedDriverNgModel">
             </ng2-completer></li>
             <li>
-              <button mat-button color="primary" class="mt-4" (click)="generateExcelReportActivityDriver(dataSourceDriversFiltred.data)">Generate Excel</button>
+              <button mat-button color="primary" class="mt-4" (click)="generateExcelReportActivityDriver(dataSourceFiltred.data)">Generate Excel</button>
             </li>
           </ul>
         </div>

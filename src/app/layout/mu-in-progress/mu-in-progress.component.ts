@@ -47,7 +47,7 @@ export class MuInProgressComponent implements OnInit {
 
 
 
-  constructor(public dialog: MatDialog, private moveableUnitService: MoveableUnitService, private router: Router, private tripService: TripService,
+  constructor(public dialog: MatDialog, public moveableUnitService: MoveableUnitService, private router: Router, private tripService: TripService,
               private modalService: NgbModal, private runsheetService: RunsheetService) { }
 
   ngOnInit() {

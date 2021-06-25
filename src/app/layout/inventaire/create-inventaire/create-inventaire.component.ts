@@ -72,8 +72,8 @@ export class CreateInventaireComponent implements OnInit, AfterViewInit {
 
   constructor(private inventaireService: InventaireService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private fb: FormBuilder,
-              private ramassageService: RamassageService, private userService: UserService, private runsheetService: RunsheetService,
-              private moveableUnitService: MoveableUnitService, private conflictService: ConflitService) {
+              public ramassageService: RamassageService, private userService: UserService, private runsheetService: RunsheetService,
+              public moveableUnitService: MoveableUnitService, private conflictService: ConflitService) {
   }
 
   ngOnInit() {
@@ -448,7 +448,7 @@ export class NgbdModalConfirmInventaire implements OnInit {
   checked = false;
   driver: any;
 
-  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, public activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -470,7 +470,7 @@ export class NgbdModalInventaireConfirmed implements OnInit {
   checked = true;
   driver: any;
 
-  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, public activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {

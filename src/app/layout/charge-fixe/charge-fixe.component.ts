@@ -95,11 +95,11 @@ export class ChargeFixeComponent implements OnInit {
   templateUrl: 'affecter-charge-fixe.html',
 })
 export class DialogAffecterChargeFixeComponent implements OnInit {
-  private user: any;
-  private listEmployeeAuto = [];
-  private affectedEmployee: any;
-  private listEmployee: IEmployee[] = [];
-  private filtredCharges: IChargeFixe[] = [];
+   user: any;
+   listEmployeeAuto = [];
+   affectedEmployee: any;
+   listEmployee: IEmployee[] = [];
+   filtredCharges: IChargeFixe[] = [];
 
 
   constructor(

@@ -40,7 +40,7 @@ export class RamassageComponent implements OnInit {
    affectedMatricule: string;
    affectedEntrepot: Entrepot;
 
-  constructor(public dialog: MatDialog, private ramassageService: RamassageService, private router: Router, private tripService: TripService,
+  constructor(public dialog: MatDialog, public ramassageService: RamassageService, private router: Router, private tripService: TripService,
               private popUpDeleteService: PopUpDeleteService, private modalService: NgbModal) { }
 
   ngOnInit() {

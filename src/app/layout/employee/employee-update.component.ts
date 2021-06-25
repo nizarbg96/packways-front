@@ -43,7 +43,7 @@ export class EmployeeUpdateComponent implements OnInit {
    roles: any[] = [];
 
 
-  constructor(protected employeeService: EmployeeService, protected activatedRoute: ActivatedRoute, private fb: FormBuilder,
+  constructor(public employeeService: EmployeeService, protected activatedRoute: ActivatedRoute, private fb: FormBuilder,
               public activeModal: NgbActiveModal, private entrepotService: EntrepotService) {}
 
   ngOnInit(): void {

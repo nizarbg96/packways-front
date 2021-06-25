@@ -139,12 +139,12 @@ export class InjectionFondComponent implements OnInit, AfterViewInit {
   templateUrl: './add-fond.html',
 })
 export class AddFondComponent implements OnInit {
-  private user: any;
+   user: any;
   @ViewChild('stepper')  myStepper: MatStepper;
-  private affectedType: any;
-  private listEmployee: IEmployee[] = [];
-  private listEmployeeAuto: string[] = [];
-  private affectedEmployee: IEmployee;
+   affectedType: any;
+   listEmployee: IEmployee[] = [];
+   listEmployeeAuto: string[] = [];
+   affectedEmployee: IEmployee;
 
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,  private snackBar: MatSnackBar,

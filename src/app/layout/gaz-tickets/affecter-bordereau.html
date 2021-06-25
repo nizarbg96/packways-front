@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Veuillez entrer les informations de bordereau gasoile à affecter</h1>
 <div mat-dialog-content>
   <ng2-completer [inputClass]="'form-control form-control-inline'" [datasource]="listEmployeeAuto" [minSearchLength]="0" [textSearching]="'Cherche...'"
-                  [textNoResults]="'Pas trouvé.'" [placeholder]="'Employé'" (selected)="getSelectedEmployee($event)" [(ngModel)]="affectedEmployeeNgModel" [ngModelOptions]="{standalone: true}" >
+                  [textNoResults]="'Pas trouvé.'" [placeholder]="'Employé'" (selected)="getSelectedEmployee($event)"  [ngModelOptions]="{standalone: true}" >
   </ng2-completer>
   <mat-form-field appearance="fill" class="mt-3" style="display: block; width: 100%">
     <mat-label>Véhicule</mat-label>

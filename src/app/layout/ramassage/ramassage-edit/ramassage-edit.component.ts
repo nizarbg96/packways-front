@@ -27,9 +27,9 @@ import {ConflitService} from '../../conflict-trips/conflit.service';
 export class RamassageEditComponent implements OnInit, OnDestroy {
 
 
-  constructor(private tservice: TripService, private snackBar: MatSnackBar, private ramassageService: RamassageService,
+  constructor(private tservice: TripService, private snackBar: MatSnackBar, public ramassageService: RamassageService,
               private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,
-              public dialog: MatDialog, private runsheetService: RunsheetService, private moveableUnitService: MoveableUnitService,
+              public dialog: MatDialog, private runsheetService: RunsheetService, public moveableUnitService: MoveableUnitService,
               private userService: UserService, private conflitService: ConflitService) { }
 
   date: Date;
@@ -296,7 +296,7 @@ export class DialogAddDriverToEditPickUpComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToEditPickUpComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private entrepotService: EntrepotService,
-    private driverService: DriversService, private ramassageService: RamassageService) {}
+    private driverService: DriversService, public ramassageService: RamassageService) {}
 
   ngOnInit(): void {
     this.getAllDrivers();

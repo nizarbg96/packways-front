@@ -110,9 +110,9 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
    depensesAvance: { affectedCar: Car, createdByName: any; depenseFrom: string; affectedTo: any; description: string; montant: any; type: string; deletedBy?: string; createdDate: Date; deleted?: boolean; deletedByName?: string; createdBy: string; deletedDate?: Date; carnetGasoil?: string; id?: string; depenseActivity: { gasoilEspece: null; autreValue: null; avanceMois: null; avance: any; autreDesc: null; carMaintaining: null; gasoilCarteValue?: string; carteTel: null; gasoilCarteNumber?: string; desktopCharge: null } };
    depensesAutre: {affectedCar: Car,  createdByName: any; depenseFrom: string; affectedTo: any; description: string; montant: any; type: string; deletedBy?: string; createdDate: Date; deleted?: boolean; deletedByName?: string; createdBy: string; deletedDate?: Date; carnetGasoil?: string; id?: string; depenseActivity: { gasoilEspece: null; autreValue: any; avanceMois: null; avance: null; autreDesc: any; carMaintaining: null; gasoilCarteValue?: string; carteTel: null; gasoilCarteNumber?: string; desktopCharge: null } };
    listRelatedTrips: Trip[] = [];
-  constructor(private activityRunsheetService: ActivityRunsheetService, private _formBuilder: FormBuilder, private tripService: TripService,
+  constructor(public activityRunsheetService: ActivityRunsheetService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
-              private fb: FormBuilder, private ramassageService: RamassageService, private userService: UserService, private http: Http,
+              private fb: FormBuilder, public ramassageService: RamassageService, private userService: UserService, private http: Http,
               private conflitService: ConflitService, private depensesService: DepensesService, private employeeService: EmployeeService,
               private spinner2: NgxSpinnerService) {
   }
@@ -1484,7 +1484,7 @@ export class NgbdModalConfirmNonLivree implements OnInit {
   trip: Trip = null;
   newStatus: string;
 
-  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, public activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -1506,7 +1506,7 @@ export class NgbdModalConfirmLivree implements OnInit {
   trip: Trip = null;
   newStatus: string;
 
-  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, public activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -1529,7 +1529,7 @@ export class NgbdModalConfirmActivity implements OnInit {
   checked = false;
   driver: any;
 
-  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, public activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -1552,7 +1552,7 @@ export class NgbdModalActivityConfirmed implements OnInit {
   checked = true;
   driver: any;
 
-  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, public activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -1582,7 +1582,7 @@ export class NgbdModalConfirmReturned implements OnInit {
   trip: Trip = null;
   newStatus: string;
 
-  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, public activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {

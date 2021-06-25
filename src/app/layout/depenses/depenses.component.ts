@@ -230,15 +230,15 @@ export class DepensesComponent implements OnInit, AfterViewInit {
   templateUrl: './add-depense.html',
 })
 export class AddDepenseComponent implements OnInit, AfterViewInit {
-  private user: any;
+   user: any;
   @ViewChild('stepper')  myStepper: MatStepper;
 
   idBorderau = 0;
-  private listEmployee: IEmployee[] = [];
-  private listEmployeeAuto: string[] = [];
-  private affectedEmployee: any;
-  private carValue: ICar;
-  private selectedFile: any;
+   listEmployee: IEmployee[] = [];
+   listEmployeeAuto: string[] = [];
+   affectedEmployee: any;
+   carValue: ICar;
+   selectedFile: any;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private depensesService: DepensesService, private fb: FormBuilder,
               private tservice: TripService, private driverService: DriversService, private snackBar: MatSnackBar,

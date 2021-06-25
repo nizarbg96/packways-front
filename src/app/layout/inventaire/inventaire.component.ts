@@ -31,7 +31,7 @@ export class InventaireComponent implements OnInit {
 
 
 
-  constructor(public dialog: MatDialog, private ramassageService: RamassageService, private router: Router, private tripService: TripService,
+  constructor(public dialog: MatDialog, public ramassageService: RamassageService, private router: Router, private tripService: TripService,
               private inventaireService: InventaireService, private snackBar: MatSnackBar, private popUpDeleteService: PopUpDeleteService,
               private modalService: NgbModal) { }
 

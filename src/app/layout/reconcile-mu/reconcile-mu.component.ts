@@ -39,7 +39,7 @@ export class ReconcileMuComponent implements OnInit {
 
 
 
-  constructor(public dialog: MatDialog, private moveableUnitService: MoveableUnitService, private router: Router, private tripService: TripService,
+  constructor(public dialog: MatDialog, public moveableUnitService: MoveableUnitService, private router: Router, private tripService: TripService,
               private activityMoveableUnitService: ActivityMuService, private snackBar: MatSnackBar, private popUpDeleteService: PopUpDeleteService,
               private modalService: NgbModal) { }
 

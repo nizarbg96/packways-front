@@ -27,7 +27,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 export class CaisseStateComponent implements OnInit {
 
   date = new Date();
-  private isLoadingResults = false;
+  isLoadingResults = false;
   filtredTickets: GasTicket[] = [];
   filtredCaissses: Caisse[] = [];
   lastCoffre;

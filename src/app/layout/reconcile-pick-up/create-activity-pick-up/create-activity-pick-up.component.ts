@@ -79,7 +79,7 @@ export class CreateActivityPickUpComponent implements OnInit, AfterViewInit {
 
   constructor(private activityPickUpService: ActivityPickUpService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private fb: FormBuilder,
-              private ramassageService: RamassageService, private userService: UserService, private activityRunsheetService: ActivityRunsheetService,
+              public ramassageService: RamassageService, private userService: UserService, public activityRunsheetService: ActivityRunsheetService,
               private conflitService: ConflitService) {}
 
   ngOnInit() {
@@ -622,7 +622,7 @@ export class NgbdModalConfirmActivityPickUp implements OnInit {
   checked = false;
   driver: any;
 
-  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, public activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -645,7 +645,7 @@ export class NgbdModalActivityPickUpConfirmed implements OnInit {
   checked = true;
   driver: any;
 
-  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, public activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {

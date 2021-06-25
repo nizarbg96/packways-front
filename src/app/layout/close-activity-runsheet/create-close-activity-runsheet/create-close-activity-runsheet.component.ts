@@ -88,9 +88,9 @@ export class CreateCloseActivityRunsheetComponent implements OnInit {
   private pickUpStepper = false;
 
 
-  constructor(private activityRunsheetService: ActivityRunsheetService, private _formBuilder: FormBuilder, private tripService: TripService,
+  constructor(public activityRunsheetService: ActivityRunsheetService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
-              private fb: FormBuilder, private ramassageService: RamassageService, private userService: UserService,
+              private fb: FormBuilder, public ramassageService: RamassageService, private userService: UserService,
               private spinner2: NgxSpinnerService) {
   }
 
@@ -928,7 +928,7 @@ export class NgbdModalCloseActivity implements OnInit {
   checked = false;
   driver: any;
 
-  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, public activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {
@@ -951,7 +951,7 @@ export class NgbdModalActivityClosed implements OnInit {
   checked = true;
   driver: any;
 
-  constructor(public modal: NgbActiveModal, private activityRunsheetService: ActivityRunsheetService) {
+  constructor(public modal: NgbActiveModal, public activityRunsheetService: ActivityRunsheetService) {
   }
 
   ngOnInit() {

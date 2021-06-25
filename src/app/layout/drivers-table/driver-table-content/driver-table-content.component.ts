@@ -205,4 +205,8 @@ export class DriverTableContentComponent implements OnInit, AfterViewInit {
       this.dataSourceFiltred2.paginator = this.paginator1;
     });
   }
+
+  openDialog(element: any) {
+
+  }
 }

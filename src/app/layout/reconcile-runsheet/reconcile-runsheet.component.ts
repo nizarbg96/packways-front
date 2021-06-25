@@ -44,7 +44,7 @@ export class ReconcileRunsheetComponent implements OnInit {
 
 
   constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private router: Router, private tripService: TripService,
-              private activityRunsheetService: ActivityRunsheetService, private snackBar: MatSnackBar, private http: Http,
+              public activityRunsheetService: ActivityRunsheetService, private snackBar: MatSnackBar, private http: Http,
               private popUpDeleteService: PopUpDeleteService, private modalService: NgbModal) { }
 
   ngOnInit() {

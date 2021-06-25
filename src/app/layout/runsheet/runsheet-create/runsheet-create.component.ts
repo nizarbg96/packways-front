@@ -39,7 +39,7 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
   constructor(private tservice: TripService, private snackBar: MatSnackBar, private runsheetService: RunsheetService,
               private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,
               public dialog: MatDialog, private userService: UserService, private modalService: NgbModal,
-              private conflitService: ConflitService, private ramassageService: RamassageService, private moveableUnitService: MoveableUnitService,
+              private conflitService: ConflitService, public ramassageService: RamassageService, public moveableUnitService: MoveableUnitService,
               private carService: CarService) {
   }
 
@@ -59,7 +59,7 @@ export class RunsheetCreateComponent implements OnInit, OnDestroy {
   routeSub: Subscription;
   confirmed = false;
   runsheetInfo: RunsheetInfo;
-  private affectedMatricule: string;
+   affectedMatricule: string;
 
 
   ngOnInit() {

@@ -35,7 +35,7 @@ export class EmployeeComponent implements OnInit {
   affectedCarsIds = [];
   selectedEmployee: Employee;
    closeResult: string;
-
+date = new Date();
   constructor(
     protected employeeService: EmployeeService,
     protected activatedRoute: ActivatedRoute,

@@ -12,7 +12,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 export class CaisseDetailComponent implements OnInit {
   caisse = new Caisse();
 
-  constructor(private caisseService: CaisseService, private depensesService: DepensesService, private modal: NgbModal) {}
+  constructor(private caisseService: CaisseService, private depensesService: DepensesService, public modal: NgbModal) {}
 
   ngOnInit() {
     this.caisse = this.caisseService.selectedCaisse;

@@ -84,7 +84,7 @@ export class CreateActivityMuComponent implements OnInit, AfterViewInit {
 
   constructor(private activityMoveableUnitService: ActivityMuService, private _formBuilder: FormBuilder, private tripService: TripService,
               private modalService: NgbModal, private router: Router, private snackBar: MatSnackBar, private fb: FormBuilder,
-              private ramassageService: RamassageService, private userService: UserService, private conflitService: ConflitService, private moveableUnitService: MoveableUnitService) {
+              public ramassageService: RamassageService, private userService: UserService, private conflitService: ConflitService, public moveableUnitService: MoveableUnitService) {
   }
 
   ngOnInit() {

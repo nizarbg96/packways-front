@@ -44,7 +44,7 @@ export class CloseActivityRunsheetComponent implements OnInit {
 
 
   constructor(public dialog: MatDialog, private runsheetService: RunsheetService, private router: Router, private tripService: TripService,
-              private activityRunsheetService: ActivityRunsheetService, private snackBar: MatSnackBar, private caisseService: CaisseService,
+              public activityRunsheetService: ActivityRunsheetService, private snackBar: MatSnackBar, private caisseService: CaisseService,
               private spinner2: NgxSpinnerService, private driverService: DriversService) {
   }
 

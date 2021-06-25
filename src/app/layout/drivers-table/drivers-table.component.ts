@@ -16,6 +16,7 @@ type AOA = any[][];
   styleUrls: ['./drivers-table.component.scss']
 })
 export class DriversTableComponent implements OnInit, AfterViewInit {
+  date = new Date();
   constructor() {
   }
 

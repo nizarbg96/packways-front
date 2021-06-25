@@ -30,9 +30,9 @@ import {ConflitService} from '../../conflict-trips/conflit.service';
 export class MoveableUnitCreateComponent implements OnInit, OnDestroy {
   private closeResult: string;
 
-  constructor(private tservice: TripService, private snackBar: MatSnackBar, private moveableUnitService: MoveableUnitService,
+  constructor(private tservice: TripService, private snackBar: MatSnackBar, public moveableUnitService: MoveableUnitService,
               private activatedRoute: ActivatedRoute, private driverService: DriversService, private router: Router,
-              public dialog: MatDialog, private modalService: NgbModal, private runsheetService: RunsheetService, private ramassageService: RamassageService,
+              public dialog: MatDialog, private modalService: NgbModal, private runsheetService: RunsheetService, public ramassageService: RamassageService,
               private userService: UserService, private conflitService: ConflitService) {
   }
 
@@ -369,7 +369,7 @@ export class DialogAddDriverToCreateMUComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DialogAddDriverToCreateMUComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private tservice: TripService, private muService: MoveableUnitService, private entrepotService: EntrepotService,
-    private moveableUnitService: MoveableUnitService, private driverService: DriversService) {
+    public moveableUnitService: MoveableUnitService, private driverService: DriversService) {
   }
 
   ngOnInit(): void {
@@ -451,7 +451,7 @@ export class DialogAddDriverToCreateMUComponent implements OnInit {
 export class NgbdModalCreateForceRetourMu implements OnInit {
   trip: Trip = null;
 
-  constructor(public modal: NgbActiveModal, private moveableUnitService: MoveableUnitService) {
+  constructor(public modal: NgbActiveModal, public moveableUnitService: MoveableUnitService) {
   }
 
   ngOnInit() {
