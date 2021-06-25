@@ -83,9 +83,9 @@ export class CreateCloseActivityRunsheetComponent implements OnInit {
       autreValue: [null, Validators.required],
     }
   );
-  private trips: Trip[] = [];
-  private ListScanPickUpNB: any;
-  private pickUpStepper = false;
+   trips: Trip[] = [];
+   ListScanPickUpNB: any;
+   pickUpStepper = false;
 
 
   constructor(public activityRunsheetService: ActivityRunsheetService, private _formBuilder: FormBuilder, private tripService: TripService,
