@@ -306,7 +306,7 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
     }
     //
     if (verif === false) {
-      this.tripService.getTripscanListById(this.searchTermscanFailure, this.user).subscribe(data => {
+      this.tripService.getTripscanListById(this.searchTermscanFailure).subscribe(data => {
         let obj;
         if(this.user.role === 'superAdmin'){
            obj = Array.of(JSON.parse(data['_body']).data);
