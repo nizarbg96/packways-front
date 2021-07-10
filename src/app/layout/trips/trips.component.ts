@@ -40,6 +40,8 @@ import {RunsheetService} from '../runsheet/runsheet.service';
 import {IRunsheet} from '../../model/runsheet.model';
 import {IHistoriqueScan} from '../../model/historique-scan.model';
 import {UserService} from '../users/users.service';
+import {JumiaTrip} from '../../model/jumia.trip.model';
+import Swal, {SweetAlertOptions} from "sweetalert2";
 
 declare var angular: any;
 declare var UIkit: any;
@@ -102,6 +104,8 @@ export class TripsComponent implements OnInit {
     datas: any = null;
     obj: any;
     objTrip= new Trip() ;
+  filtredExcelTrips: Trip[] = [];
+  NonFoundfiltredExcelTrips: Trip[] = [];
 
     checkedTrips = [];
     closedTrips = [];
@@ -3718,6 +3722,78 @@ export class TripsComponent implements OnInit {
       }));
     });
 
+  }
+
+  onFileChangeExcelFilter(evt: any, contentImport) {
+    /* wire up file reader */
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length !== 1) { throw new Error('Cannot use multiple files'); }
+    console.log('type', target.files[0].type);
+    const typeFile = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    /* if (target.files[0].type !== typeFile) {
+        /* this.snackBar.open('Échec, le fichier est invalide, les extensions autorisées sont: .xlsx et xls.', 'Fermer', {
+             duration: 5000,
+         });
+         return;
+     } else {*/
+    const reader: FileReader = new FileReader();
+    reader.onload = (e: any) => {
+      /* read workbook */
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+
+      /* grab first sheet */
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+
+      /* save data */
+      this.tripsFromExcelTemp = <AOA>(XLSX.utils.sheet_to_json(ws, {header: 1}));
+      this.tripsFromExcel = this.tripsFromExcelTemp;
+      this.tripsFromExcel.shift();
+      console.log(this.tripsFromExcel);
+      this.addTripsFromExcelFile2(contentImport);
+    };
+    reader.readAsBinaryString(target.files[0]);
+    //         // }
+  }
+
+  addTripsFromExcelFile2(content: any) {
+
+    const trips: Trip[] = [];
+    this.tripsFromExcel.forEach(value => {
+      const trip = new JumiaTrip();
+      trip.ref = value[0];
+      trips.push(trip);
+    });
+    this.spinner.show();
+    this.tservice.getFiltreExcelTrips(trips).subscribe((res) => {
+      const excelTrips = res.body;
+      this.filtredExcelTrips = excelTrips.filter(value => value.statusTrip !== 'Not Found');
+      this.NonFoundfiltredExcelTrips = excelTrips.filter(value => value.statusTrip === 'Not Found');
+      this.filtredExcelTrips.forEach(jumiaTrip => {
+        this.items.push(jumiaTrip);
+      })
+
+      this.spinner.hide();
+      const options = {
+        title: "succès",
+        text: "Colis filtrés avec succès",
+        type: "success",
+      } as SweetAlertOptions;
+
+      Swal.fire(options).then(result => {
+        this.open(content);
+        console.log(result);
+      } );
+    },() => {
+      this.spinner.hide();
+      const options2 = {
+        title: "Ereur",
+        text: "Un Erreur a été survenu",
+        type: "error",
+      } as SweetAlertOptions;
+      Swal.fire(options2);
+    });
   }
 }
 @Component({

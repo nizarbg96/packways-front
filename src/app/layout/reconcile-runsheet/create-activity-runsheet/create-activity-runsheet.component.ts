@@ -744,6 +744,9 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
     this.tripService.updateTripsStatus('Livree',
       [this.activityRunsheetService.sacannedTrip.idTrip], this.user.name, '').subscribe((res) => {
       const trip: Trip = Array.of(JSON.parse(res['_body']).trips)[0][0];
+      trip.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste des colis (Livrés / Retournés)',
+        'Success'));
+      this.tripService.updateOneTrip(obj).subscribe();
       this.scanForceLivree = false;
       const indexNonTreated = this.listColisNonTreated.map((trp) => trp.idTrip).indexOf(trip.idTrip);
       const indexFailure = this.ListScanFailure.map((trp) => trp.idTrip).indexOf(trip.idTrip);

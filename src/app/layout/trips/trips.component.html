@@ -40,7 +40,11 @@
                                                         <div align="right" class="col-xl-1 text-xs-center" *ngIf="isVisible">
                                                                 <button type="button" class="btn btn-warning btn-sm" title="Générer le rapport de livraison." (click)="generateExcelReportForClient()"><i class="material-icons">library_books</i></button>
                                                         </div>
-                                                        <div *ngIf="!isVisible" align="right" class="col-xl-2 text-xs-center">
+                                                      <div *ngIf="isVisible" align="right" class="col-xl-1 text-xs-center">
+                                                        <label for="file-upload3" class="custom-file-upload btn-sm"><i class="fa fa-cloud-upload" title="filtrer par fichier excel."></i></label>
+                                                        <input id="file-upload3" type="file" (change)="onFileChangeExcelFilter($event, contentExcelTrips);" style="display: none;"/>
+                                                      </div>
+                                                      <div *ngIf="!isVisible" align="right" class="col-xl-2 text-xs-center">
                                                                 <button type="button" class="btn btn-primary btn-sm" title="Imprimer bon de livraison." (click)="open(contentRC)">Bon de Ramassage</button>
                                                         </div>
                                                         <div *ngIf="isVisible"align="right" class="col-xl-2 text-xs-center">
@@ -2176,4 +2180,68 @@
           <button type="button" class="btn btn-primary" (click)="downloadRapport();(c('Close click'))">Download</button>
   </div>
 </ng-template>
+<ng-template #contentExcelTrips let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Details de filtre</h4>
+    <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <h5>{{filtredExcelTrips.length}} colis trouvés dans le fichier excel et dans le système packways </h5>
+    <table class="table table-sm" id="contentToConvert" style="font-size:12px !important;">
+      <thead class="thead">
+      <tr class="thead-light text-center">
+        <th style="width:1%">Ref</th>
+        <th style="width:1%">Status</th>
+        <th style="width:1%">payé</th>
+        <th style="width:1%">Expéditeur</th>
+        <th style="width:1%">Destinataire</th>
+        <th style="width:1%">Msg</th>
+      </tr>
+      </thead>
+      <tbody style="font-size:14px !important;">
+      <tr *ngFor="let trp of filtredExcelTrips" class="table-active text-center" style="background-color: #ffffff;">
+        <td  style="background-color: whitesmoke">{{trp.refTrip}}</td>
+        <td  style="background-color: whitesmoke">{{trp.statusTrip }}</td>
+        <td  style="background-color: whitesmoke">{{trp.paymentStatus }}</td>
+        <td  style="background-color: whitesmoke">{{trp.userTrip.nameUser}} {{trp.userTrip.surnameUser}}</td>
+        <td style="background-color: whitesmoke" >{{trp.destTrip.contactAdr }}</td>
+        <td  *ngIf="(trp.msgTrip && trp.msgTrip.length > 0)" style="background-color: whitesmoke" >
+          <ul>
+            <li>{{trp.msgTrip[trp.msgTrip.length-1].contentMsg }}</li>
+            <li>{{trp.msgTrip[trp.msgTrip.length-1].dateMsg }}</li>
+          </ul>
+        </td>
+
+        <td *ngIf="!!trp.survey && (trp.msgTrip && trp.msgTrip.length === 0)" style="background-color: whitesmoke">-</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <hr>
+  <div class="modal-body">
+    <h5>{{NonFoundfiltredExcelTrips.length}} trouvés dans le fichier excel et  non trouvés dans le système de packways</h5>
+    <table class="table table-sm" id="contentToConvert" style="font-size:12px !important;">
+      <thead class="thead">
+      <tr class="thead-light text-center">
+        <th style="width:1%">Ref</th>
+        <th style="width:1%">Status</th>
+
+      </tr>
+      </thead>
+      <tbody style="font-size:14px !important;">
+      <tr *ngFor="let trp of NonFoundfiltredExcelTrips" class="table-active text-center" style="background-color: #ffffff;">
+        <td  style="background-color: whitesmoke">{{trp.refTrip}}</td>
+        <td  style="background-color: whitesmoke">{{trp.statusTrip }}</td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" ngbAutofocus class="btn btn-success" (click)="modalService.dismissAll('Ok click')">D'accord</button>
+  </div>
+</ng-template>
+
 

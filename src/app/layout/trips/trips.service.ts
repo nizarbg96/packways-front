@@ -68,6 +68,10 @@ export class TripService {
       `&BTN=` + btn  + `&key6=` + key6, {headers: this.headerOptions});
   }
 
+  getFiltreExcelTrips(trips: any[]){
+    return this.httpc.post<Trip[]>(`${this.url}/excel-trips/filter/`, trips, {observe: 'response', headers: this.headerOptions2});
+  }
+
   getTrips(id, size): Observable<any> {
     return this.http.get(`${this.url}/sansdate2?id=` + id + `&size=` + size, {headers: this.headerOptions});
   }
