@@ -306,128 +306,244 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
     }
     //
     if (verif === false) {
-      this.tripService.getTripscanListById(this.searchTermscanFailure).subscribe(data => {
-        let obj;
-        if(this.user.role === 'superAdmin'){
-           obj = Array.of(JSON.parse(data['_body']).data);
-        } else {
-          obj = data.body;
-        }
-        let verif = false;
-        // vérif
-        for (let index = 0; index < this.ListScanFailure.length; index++) {
-          if (obj.idTrip === this.ListScanFailure[index].idTrip || obj.refTrip === this.ListScanFailure[index].refTrip) {
-            verif = true;
-          }
-        }
-        if (verif === false) {
-          if (!!obj.entrepot) {
-            if (obj.entrepot.id !== this.activityRunsheet.entrepot.id) {
-              const msg = 'impossible de scanner le colis! colis n\'appartient pas à ce Hub';
-              this.snackBar.open(msg, 'Fermer', {duration: 8000, });
-              this.playFailureAudio();
-              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet: - Liste des colis (non Livrés / non Retournés):' + this.activityRunsheet.ref,
-                'Exception : ' + msg));
-              this.tripService.updateOneTrip(obj).subscribe();
-              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
-                const admin = resUser.json();
-                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet - Liste des colis (non Livrés / non Retournés):', this.activityRunsheet.ref);
-                this.conflitService.create(conflit).subscribe();
-              });
-              return;
+      if(this.user.role === 'superAdmin'){
+        this.tripService.getTripscanList(this.searchTermscanFailure).subscribe(data => {
+          const obj = Array.of(JSON.parse(data['_body']).data)[0];
+          let verif = false;
+          // vérif
+          for (let index = 0; index < this.ListScanFailure.length; index++) {
+            if (obj.idTrip === this.ListScanFailure[index].idTrip || obj.refTrip === this.ListScanFailure[index].refTrip) {
+              verif = true;
             }
           }
-          if ((obj.currentRunsheetId !== null) && (obj.currentRunsheetId !== 'null') && (obj.currentRunsheetId !== undefined)) {
-            if (obj.driverTrip.idDriver !== ('DT' + this.activityRunsheet.driver.idDriver)) {
-              const msg = 'le colis n\'appartient pas au livreur. Livreur de colis scanné: ' + obj.driverTrip.nameDriver + ' ' + obj.driverTrip.surnameDriver;
-              this.snackBar.open(msg, 'Fermer', {
-                duration: 8000,
-              });
-              this.playFailureAudio();
-              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
-                'Exception : ' + msg));
-              this.tripService.updateOneTrip(obj).subscribe();
-              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
-                const admin = resUser.json();
-                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet',  this.activityRunsheet.ref);
-                this.conflitService.create(conflit).subscribe();
-              });
-              return;
-            }
-
-            if (obj.statusTrip === 'Retour' || obj.statusTrip === 'livraison en cours' || obj.statusTrip === 'En cours de retour') {
-              const deliveryDate = new Date();
-              deliveryDate.setHours(0);
-              deliveryDate.setMinutes(0);
-              deliveryDate.setSeconds(0);
-              if (!obj.refJumia) {
-                if (obj.msgTrip.length === 0) {
-                  this.scannedTrip = obj;
-                  this.openSms(obj);
-                  return;
-                }  else if (obj.msgTrip[obj.msgTrip.length - 1].dateMsg < deliveryDate) {
-                  this.scannedTrip = obj;
-                  this.openSms(obj);
-                  return;
-                }
+          if (verif === false) {
+            if (!!obj.entrepot) {
+              if (obj.entrepot.id !== this.activityRunsheet.entrepot.id) {
+                const msg = 'impossible de scanner le colis! colis n\'appartient pas à ce Hub';
+                this.snackBar.open(msg, 'Fermer', {duration: 8000, });
+                this.playFailureAudio();
+                obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet: - Liste des colis (non Livrés / non Retournés):' + this.activityRunsheet.ref,
+                  'Exception : ' + msg));
+                this.tripService.updateOneTrip(obj).subscribe();
+                this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                  const admin = resUser.json();
+                  const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet - Liste des colis (non Livrés / non Retournés):', this.activityRunsheet.ref);
+                  this.conflitService.create(conflit).subscribe();
+                });
+                return;
               }
-              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
-                'Success'));
-              this.tripService.updateOneTrip(obj).subscribe();
-              this.ListScanFailure.push(obj);
-              this.playSuccessAudio();
-              const index = this.listColisNonTreated.indexOf(obj);
-              this.listColisNonTreated = this.listColisNonTreated.filter((trip) => trip.idTrip !== obj.idTrip);
-              this.activityRunsheet.listColisNonTreated = this.listColisNonTreated.map((trip) => trip.idTrip);
-              this.activityRunsheet.listColisFailure.push(new ColisFailureRunsheet(obj.idTrip, this.user.idAdmin, new Date(), false));
-              this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
-              });
-            } else {
-              const msg = 'L\'état de colis doit être "Retour" , "Livaison en cours" ou "En cours de retour"! Etat de colis scanné: ' + obj.statusTrip;
-              this.snackBar.open(msg + obj.statusTrip, 'Fermer', {
-                duration: 8000,
-              });
-              this.playFailureAudio();
-              if (!this.scanForceRetour) {
-                this.scanForceRetour = true;
+            }
+            if ((obj.currentRunsheetId !== null) && (obj.currentRunsheetId !== 'null') && (obj.currentRunsheetId !== undefined)) {
+              if (obj.driverTrip.idDriver !== ('DT' + this.activityRunsheet.driver.idDriver)) {
+                const msg = 'le colis n\'appartient pas au livreur. Livreur de colis scanné: ' + obj.driverTrip.nameDriver + ' ' + obj.driverTrip.surnameDriver;
+                this.snackBar.open(msg, 'Fermer', {
+                  duration: 8000,
+                });
+                this.playFailureAudio();
                 obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
                   'Exception : ' + msg));
+                this.tripService.updateOneTrip(obj).subscribe();
                 this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
                   const admin = resUser.json();
                   const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet',  this.activityRunsheet.ref);
                   this.conflitService.create(conflit).subscribe();
                 });
-                this.tripService.updateOneTrip(obj).subscribe((res) => {
-                  this.activityRunsheetService.sacannedTrip = res.body;
-                  this.openForceStatusFailure('forceFailure');
-                });
+                return;
               }
 
+              if (obj.statusTrip === 'Retour' || obj.statusTrip === 'livraison en cours' || obj.statusTrip === 'En cours de retour') {
+                const deliveryDate = new Date();
+                deliveryDate.setHours(0);
+                deliveryDate.setMinutes(0);
+                deliveryDate.setSeconds(0);
+                if (!obj.refJumia) {
+                  if (obj.msgTrip.length === 0) {
+                    this.scannedTrip = obj;
+                    this.openSms(obj);
+                    return;
+                  }  else if (obj.msgTrip[obj.msgTrip.length - 1].dateMsg < deliveryDate) {
+                    this.scannedTrip = obj;
+                    this.openSms(obj);
+                    return;
+                  }
+                }
+                obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
+                  'Success'));
+                this.tripService.updateOneTrip(obj).subscribe();
+                this.ListScanFailure.push(obj);
+                this.playSuccessAudio();
+                const index = this.listColisNonTreated.indexOf(obj);
+                this.listColisNonTreated = this.listColisNonTreated.filter((trip) => trip.idTrip !== obj.idTrip);
+                this.activityRunsheet.listColisNonTreated = this.listColisNonTreated.map((trip) => trip.idTrip);
+                this.activityRunsheet.listColisFailure.push(new ColisFailureRunsheet(obj.idTrip, this.user.idAdmin, new Date(), false));
+                this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
+                });
+              } else {
+                const msg = 'L\'état de colis doit être "Retour" , "Livaison en cours" ou "En cours de retour"! Etat de colis scanné: ' + obj.statusTrip;
+                this.snackBar.open(msg + obj.statusTrip, 'Fermer', {
+                  duration: 8000,
+                });
+                this.playFailureAudio();
+                if (!this.scanForceRetour) {
+                  this.scanForceRetour = true;
+                  obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
+                    'Exception : ' + msg));
+                  this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                    const admin = resUser.json();
+                    const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet',  this.activityRunsheet.ref);
+                    this.conflitService.create(conflit).subscribe();
+                  });
+                  this.tripService.updateOneTrip(obj).subscribe((res) => {
+                    this.activityRunsheetService.sacannedTrip = res.body;
+                    this.openForceStatusFailure('forceFailure');
+                  });
+                }
+
+              }
+            } else {
+              const msg = 'impossible de scanner le colis! Ce colis n\'existe pas dans une runsheet en cours. Etat de colis scanné : ' + obj.statusTrip;
+              this.snackBar.open(msg, 'Fermer', {
+                duration: 8000,
+              });
+              this.playFailureAudio();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet',  this.activityRunsheet.ref);
+                this.conflitService.create(conflit).subscribe();
+              });
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
+                'Exception : ' + msg));
+              this.tripService.updateOneTrip(obj).subscribe();
+
             }
+
           } else {
-            const msg = 'impossible de scanner le colis! Ce colis n\'existe pas dans une runsheet en cours. Etat de colis scanné : ' + obj.statusTrip;
-            this.snackBar.open(msg, 'Fermer', {
+            this.snackBar.open('Ce colis a été scanné', 'Fermer', {
               duration: 8000,
             });
             this.playFailureAudio();
-            this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
-              const admin = resUser.json();
-              const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet',  this.activityRunsheet.ref);
-              this.conflitService.create(conflit).subscribe();
-            });
-            obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
-              'Exception : ' + msg));
-            this.tripService.updateOneTrip(obj).subscribe();
-
           }
+        });
 
-        } else {
-          this.snackBar.open('Ce colis a été scanné', 'Fermer', {
-            duration: 8000,
-          });
-          this.playFailureAudio();
-        }
-      });
+      } else {
+        this.tripService.getTripscanListById(this.searchTermscanFailure).subscribe(data => {
+           const  obj = data.body;
+          let verif = false;
+          // vérif
+          for (let index = 0; index < this.ListScanFailure.length; index++) {
+            if (obj.idTrip === this.ListScanFailure[index].idTrip || obj.refTrip === this.ListScanFailure[index].refTrip) {
+              verif = true;
+            }
+          }
+          if (verif === false) {
+            if (!!obj.entrepot) {
+              if (obj.entrepot.id !== this.activityRunsheet.entrepot.id) {
+                const msg = 'impossible de scanner le colis! colis n\'appartient pas à ce Hub';
+                this.snackBar.open(msg, 'Fermer', {duration: 8000, });
+                this.playFailureAudio();
+                obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet: - Liste des colis (non Livrés / non Retournés):' + this.activityRunsheet.ref,
+                  'Exception : ' + msg));
+                this.tripService.updateOneTrip(obj).subscribe();
+                this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                  const admin = resUser.json();
+                  const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet - Liste des colis (non Livrés / non Retournés):', this.activityRunsheet.ref);
+                  this.conflitService.create(conflit).subscribe();
+                });
+                return;
+              }
+            }
+            if ((obj.currentRunsheetId !== null) && (obj.currentRunsheetId !== 'null') && (obj.currentRunsheetId !== undefined)) {
+              if (obj.driverTrip.idDriver !== ('DT' + this.activityRunsheet.driver.idDriver)) {
+                const msg = 'le colis n\'appartient pas au livreur. Livreur de colis scanné: ' + obj.driverTrip.nameDriver + ' ' + obj.driverTrip.surnameDriver;
+                this.snackBar.open(msg, 'Fermer', {
+                  duration: 8000,
+                });
+                this.playFailureAudio();
+                obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
+                  'Exception : ' + msg));
+                this.tripService.updateOneTrip(obj).subscribe();
+                this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                  const admin = resUser.json();
+                  const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet',  this.activityRunsheet.ref);
+                  this.conflitService.create(conflit).subscribe();
+                });
+                return;
+              }
+
+              if (obj.statusTrip === 'Retour' || obj.statusTrip === 'livraison en cours' || obj.statusTrip === 'En cours de retour') {
+                const deliveryDate = new Date();
+                deliveryDate.setHours(0);
+                deliveryDate.setMinutes(0);
+                deliveryDate.setSeconds(0);
+                if (!obj.refJumia) {
+                  if (obj.msgTrip.length === 0) {
+                    this.scannedTrip = obj;
+                    this.openSms(obj);
+                    return;
+                  }  else if (obj.msgTrip[obj.msgTrip.length - 1].dateMsg < deliveryDate) {
+                    this.scannedTrip = obj;
+                    this.openSms(obj);
+                    return;
+                  }
+                }
+                obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
+                  'Success'));
+                this.tripService.updateOneTrip(obj).subscribe();
+                this.ListScanFailure.push(obj);
+                this.playSuccessAudio();
+                const index = this.listColisNonTreated.indexOf(obj);
+                this.listColisNonTreated = this.listColisNonTreated.filter((trip) => trip.idTrip !== obj.idTrip);
+                this.activityRunsheet.listColisNonTreated = this.listColisNonTreated.map((trip) => trip.idTrip);
+                this.activityRunsheet.listColisFailure.push(new ColisFailureRunsheet(obj.idTrip, this.user.idAdmin, new Date(), false));
+                this.activityRunsheetService.update(this.activityRunsheet).subscribe((res) => {
+                });
+              } else {
+                const msg = 'L\'état de colis doit être "Retour" , "Livaison en cours" ou "En cours de retour"! Etat de colis scanné: ' + obj.statusTrip;
+                this.snackBar.open(msg + obj.statusTrip, 'Fermer', {
+                  duration: 8000,
+                });
+                this.playFailureAudio();
+                if (!this.scanForceRetour) {
+                  this.scanForceRetour = true;
+                  obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
+                    'Exception : ' + msg));
+                  this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                    const admin = resUser.json();
+                    const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet',  this.activityRunsheet.ref);
+                    this.conflitService.create(conflit).subscribe();
+                  });
+                  this.tripService.updateOneTrip(obj).subscribe((res) => {
+                    this.activityRunsheetService.sacannedTrip = res.body;
+                    this.openForceStatusFailure('forceFailure');
+                  });
+                }
+
+              }
+            } else {
+              const msg = 'impossible de scanner le colis! Ce colis n\'existe pas dans une runsheet en cours. Etat de colis scanné : ' + obj.statusTrip;
+              this.snackBar.open(msg, 'Fermer', {
+                duration: 8000,
+              });
+              this.playFailureAudio();
+              this.userService.getAdminById(this.user.idAdmin).subscribe((resUser) => {
+                const admin = resUser.json();
+                const conflit = new Conflit(null, obj.idTrip, new Date, this.user.name, admin.entrepot, msg, 'Reconcile Activity Runsheet',  this.activityRunsheet.ref);
+                this.conflitService.create(conflit).subscribe();
+              });
+              obj.historiqueScans.push(new HistoriqueScan(this.user.name, new Date(), 'Reconcile Activity Runsheet : ' + this.activityRunsheet.ref + ' - Liste (non livré / non retourné) ',
+                'Exception : ' + msg));
+              this.tripService.updateOneTrip(obj).subscribe();
+
+            }
+
+          } else {
+            this.snackBar.open('Ce colis a été scanné', 'Fermer', {
+              duration: 8000,
+            });
+            this.playFailureAudio();
+          }
+        });
+      }
     } else {
       this.snackBar.open('Ce colis a été scanné', 'Fermer', {
         duration: 8000,

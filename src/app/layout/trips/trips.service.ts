@@ -31,7 +31,6 @@ export class TripService {
   urlU = environment.serverUrl + '/user';
   urlA = environment.serverUrl + '/admin';
   jwt = JSON.parse(localStorage.getItem('currentUser')).token;
-  user
   savedSearch = new Subject<any[]>();
   headerOptions = new  Headers({
     'Content-Type':  'application/json',
@@ -146,14 +145,9 @@ export class TripService {
   getTripscanList(id) {
     return this.http.get(`${this.url}/one/` + id, {headers: this.headerOptions} );
   }
-  getTripscanListById(id){
-    const user =  JSON.parse(localStorage.getItem('currentUser')).data[0];
-    if(user.role === 'superAdmin'){
-      return this.http.get(`${this.url}/one/` + id, {headers: this.headerOptions} );
-    } else {
-      return this.httpc.get<Trip>(`${this.url}/oneId/` + id, {headers: this.headerOptions2, observe: 'response'} );
-    }
 
+  getTripscanListById(id): Observable<EntityResponseType> {
+    return this.httpc.get<Trip>(`${this.url}/oneId/` + id, {headers: this.headerOptions2, observe: 'response'} );
   }
   getTripscanListByRef(id): Observable<EntityResponseType> {
     return this.httpc.get<Trip>(`${this.url}/oneRef/` + id, {headers: this.headerOptions2, observe: 'response'} );

@@ -18,21 +18,23 @@
     <div class="row mt-2">
       <div class="col-md-10 Aligner">
         <fieldset *ngIf="failureStepper && activityRunsheet.status === 'draft'" class="scheduler-border-1">
-          <legend class="scheduler-border-1">Scan QR-Code</legend>
+          <legend class="scheduler-border-1" *ngIf="user.role !== 'superAdmin'">Scan Id QR-Code</legend>
+          <legend class="scheduler-border-1" *ngIf="user.role === 'superAdmin'">Scan Id/Ref QR-Code</legend>
+
           <form class="form-inline mr-auto">
             <input autocomplete="off" class="form-control" type="text" id="myInput" [(ngModel)]="searchTermscanFailure" [ngModelOptions]="{standalone: true}" placeholder="Chercher" aria-label="Search" width="100%">
             <button class="btn btn-mdb-color btn-rounded btn-sm my-0 ml-sm-2" (click)="scanListFailure()" type="submit" hidden><i class="fa fa-search"></i></button>
           </form>
         </fieldset>
         <fieldset *ngIf="successStepper && activityRunsheet.status === 'draft'" class="scheduler-border-1">
-          <legend class="scheduler-border-1">Scan QR-Code</legend>
+          <legend class="scheduler-border-1">Scan Ref QR-Code</legend>
           <form class="form-inline mr-auto">
             <input autocomplete="off" class="form-control" type="text" id="myInput" [(ngModel)]="searchTermScanSuccess" [ngModelOptions]="{standalone: true}" placeholder="Chercher" aria-label="Search" width="100%">
             <button class="btn btn-mdb-color btn-rounded btn-sm my-0 ml-sm-2" (click)="scanListSuccess()" type="submit" hidden><i class="fa fa-search"></i></button>
           </form>
         </fieldset>
         <fieldset *ngIf="pickUpStepper && activityRunsheet.status === 'draft'" class="scheduler-border-1">
-          <legend class="scheduler-border-1">Scan QR-Code</legend>
+          <legend class="scheduler-border-1">Scan Id QR-Code</legend>
           <form class="form-inline mr-auto">
             <input autocomplete="off" class="form-control" type="text" id="myInput" [(ngModel)]="searchTermScanPickUp" [ngModelOptions]="{standalone: true}" placeholder="Chercher" aria-label="Search" width="100%">
             <button class="btn btn-mdb-color btn-rounded btn-sm my-0 ml-sm-2" (click)="scanListPickUp()" type="submit" hidden><i class="fa fa-search"></i></button>

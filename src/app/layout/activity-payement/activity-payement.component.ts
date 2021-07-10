@@ -190,9 +190,11 @@ export class ActivityPayementComponent implements OnInit {
   }
 
   editActivity(activityPayement: ActivityPayement) {
+    this.spinner2.show();
     this.tripService.getListOfTips(activityPayement.listColisRecolted).subscribe((resTrips) => {
       this.activityPayementService.activityPayementInfo = {client: activityPayement.clientId, recoltedTrips: resTrips.body};
       this.activityPayementService.activityToEdit = activityPayement;
+      this.spinner2.hide();
       this.router.navigate(['/payements/create']);
     });
   }
