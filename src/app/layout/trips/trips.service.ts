@@ -145,8 +145,12 @@ export class TripService {
   getTripscanList(id) {
     return this.http.get(`${this.url}/one/` + id, {headers: this.headerOptions} );
   }
-  getTripscanListById(id): Observable<EntityResponseType> {
-    return this.httpc.get<Trip>(`${this.url}/oneId/` + id, {headers: this.headerOptions2, observe: 'response'} );
+  getTripscanListById(id, user): Observable<EntityResponseType> {
+    if(user.role === 'superAdmin'){
+      return this.httpc.get<Trip>(`${this.url}/one/` + id, {headers: this.headerOptions2, observe: 'response'} );
+    } else {
+      return this.httpc.get<Trip>(`${this.url}/oneId/` + id, {headers: this.headerOptions2, observe: 'response'} );
+    }
   }
   getTripscanListByRef(id): Observable<EntityResponseType> {
     return this.httpc.get<Trip>(`${this.url}/oneRef/` + id, {headers: this.headerOptions2, observe: 'response'} );

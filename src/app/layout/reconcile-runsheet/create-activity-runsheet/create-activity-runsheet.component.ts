@@ -306,8 +306,13 @@ export class CreateActivityRunsheetComponent implements OnInit, AfterViewInit {
     }
     //
     if (verif === false) {
-      this.tripService.getTripscanListById(this.searchTermscanFailure).subscribe(data => {
-        const obj = data.body;
+      this.tripService.getTripscanListById(this.searchTermscanFailure, this.user).subscribe(data => {
+        let obj;
+        if(this.user.role === 'superAdmin'){
+           obj = Array.of(JSON.parse(data['_body']).data);
+        } else {
+          obj = data.body;
+        }
         let verif = false;
         // vérif
         for (let index = 0; index < this.ListScanFailure.length; index++) {
