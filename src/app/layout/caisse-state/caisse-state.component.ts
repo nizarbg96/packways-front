@@ -129,6 +129,16 @@ export class CaisseStateComponent implements OnInit {
     });
   }
 
+  rectifierCaisse(caisse: Caisse) {
+    caisse.closed = false;
+    this.spinner2.show()
+    this.caisseService.update(caisse).subscribe(() => {
+      this.spinner2.hide();
+      this.caisseService.dialogExit.next('update');
+
+    })
+  }
+
   showMore() {
     this.loadingNextPage = true;
     if(this.newCoffreCreated){
