@@ -330,6 +330,7 @@ export class CreateActivityPayementComponent implements OnInit, AfterViewInit {
         this.activityPayement.status = 'confirmed';
         this.activityPayement.listEnCoursDePayementTrips = this.listColisToPay.map((trip) => trip.idTrip);
         this.activityPayement.listRapportTrips = this.listRapportTrips;
+        this.activityPayement.confirmedDate =  new Date();
         this.spinner2.show();
         this.activityPayementService.update(this.activityPayement).subscribe(() => {
           this.spinner2.hide();

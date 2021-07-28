@@ -13,6 +13,13 @@
     </div>
     <div class="row mt-2">
       <div class="col-md-10 Aligner">
+        <div class="row">
+          <div class="col-md-2 Aligner">
+            <ng2-completer [inputClass]="'form-control form-control-inline'" [datasource]="Listdriverauto" [minSearchLength]="0" [textSearching]="'Cherche...'"
+                           [textNoResults]="'Pas trouvé.'" [placeholder]="'Livreur'" (selected)="getSelectedDriver($event)" [(ngModel)]="affectedDriverNgModel">
+            </ng2-completer>
+          </div>
+        </div>
       </div>
       <div class="col-md-2 Aligner">
         <button style="width: 100%" mat-raised-button   color="primary" (click)="openDialog()">Affecter bordereau</button>
