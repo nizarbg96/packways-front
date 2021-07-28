@@ -32,7 +32,6 @@ export class GazTicketsComponent implements OnInit {
   filtredTickets: GasTicket[] = [];
   Listdriverauto = [];
   affectedDriverNgModel: any;
-  affectedDriverNgModel = '';
 
   constructor(public dialog: MatDialog, private gasTicketService: GasTicketService, private modalService: NgbModal,
               private snackBar: MatSnackBar) {
@@ -86,21 +85,21 @@ export class GazTicketsComponent implements OnInit {
   }
 
   getSelectedDriver($event: any) {
-    if (driver != null) {
+   /* if (driver != null) {
       const ind = this.Listdriverauto.indexOf(driver.title);
       this.affectedDriver = this.Listdriver[ind];
       this.driverService.getOneDriver(this.affectedDriver.idDriver).subscribe((oneDriver) => {
         // this.runsheetInfo.driver =  oneDriver.json();
         // this.cars = this.affectedDriver.affectedCars;
-        /*if(oneDriver.json().soutraitant){
+        /!*if(oneDriver.json().soutraitant){
           this.runsheetInfo.cout = oneDriver.json().fraisSoutraitance;
-        }*/
+        }*!/
         this.activityRunsheetService.findAllByDriver(oneDriver.json().refEmployee).subscribe((res) => {
           this.activitiesRunsheet = res.body;
         });
       });
     } else {
-    }
+    }*/
 
   }
 }
