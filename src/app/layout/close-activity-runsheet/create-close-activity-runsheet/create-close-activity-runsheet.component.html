@@ -446,7 +446,7 @@
               </div>
               <div class="col-md-3">
                 <fieldset class="scheduler-border">
-                  <legend class="scheduler-border text-center"><h6>Nombre de colis livrés</h6></legend>
+                  <legend class="scheduler-border text-center"><h6>Nombre de colis Livrés / Retournés</h6></legend>
                   <div class="control-group">
                     <label class="text-center font-weight-light">{{!!ListScanSuccess?ListScanSuccess.length:'-'}} colis</label>
                   </div>
@@ -454,7 +454,7 @@
               </div>
               <div class="col-md-3">
                 <fieldset class="scheduler-border">
-                  <legend class="scheduler-border text-center"><h6>Nombre de colis non livrés</h6></legend>
+                  <legend class="scheduler-border text-center"><h6>Nombre de colis Non Livrés / Non Retournés</h6></legend>
                   <div class="control-group">
                     <label class="text-center font-weight-light">{{!!ListScanFailure?ListScanFailure.length:'-'}} colis</label>
                   </div>
@@ -470,7 +470,15 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-4">
+                <fieldset class="scheduler-border">
+                  <legend class="scheduler-border text-center"><h6>Nombre des Stops</h6></legend>
+                  <div class="control-group">
+                    <label class="text-center font-weight-light">{{nbStop}}</label>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-4">
                 <fieldset class="scheduler-border">
                   <legend class="scheduler-border text-center"><h6>Valeur des colis traités</h6></legend>
                   <div class="control-group">
@@ -478,7 +486,7 @@
                   </div>
                 </fieldset>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <fieldset class="scheduler-border">
                   <legend class="scheduler-border text-center"><h6>Valeur des dépenses</h6></legend>
                   <div class="control-group">
@@ -499,6 +507,7 @@
             </div>
           </mat-card>
         </div>
+
       </div>
     </mat-step>
   </mat-horizontal-stepper>
